@@ -123,40 +123,6 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
                   <TooltipContent>View Details</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-
-              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        onClick={() => onEdit(cause)}
-                        className="h-8 w-8 text-muted-foreground hover:text-primary"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Edit Cause</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        onClick={() => onDelete(cause.id)}
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Delete Cause</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
             </div>
           </div>
 

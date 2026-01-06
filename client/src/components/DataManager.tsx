@@ -5,10 +5,12 @@ import {
   RotateCcw, 
   Trash, 
   Plus, 
-  Settings2, 
-  Save 
+  Database, 
+  Edit2, 
+  Trash2, 
+  AlertCircle
 } from 'lucide-react';
-import { Cause, causeSchema } from '@shared/schema';
+import { Cause } from '@shared/schema';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -22,21 +24,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from '@/hooks/use-toast';
-import { z } from 'zod';
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 
 interface DataManagerProps {
   causes: Cause[];
   onImport: (json: string) => boolean;
   onReset: () => void;
   onAddCause: (cause: Omit<Cause, 'id'>) => void;
+  onDeleteCause: (id: string) => void;
+  onEditCause: (cause: Cause) => void;
   canUndo: boolean;
   onUndo: () => void;
 }
 
-export function DataManager({ causes, onImport, onReset, onAddCause, canUndo, onUndo }: DataManagerProps) {
+export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCause, onEditCause, canUndo, onUndo }: DataManagerProps) {
   const { toast } = useToast();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
+  const [isDatabaseOpen, setIsDatabaseOpen] = useState(false);
   const [importText, setImportText] = useState("");
 
   const [newCause, setNewCause] = useState<{name: string, baseRate: number, symptoms: string}>({
@@ -89,13 +95,84 @@ export function DataManager({ causes, onImport, onReset, onAddCause, canUndo, on
 
   return (
     <div className="flex items-center gap-2">
-      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+      <Dialog open={isDatabaseOpen} onOpenChange={setIsDatabaseOpen}>
         <DialogTrigger asChild>
-          <Button className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20">
-            <Plus className="w-4 h-4" />
-            Add New Cause
+          <Button variant="outline" className="gap-2">
+            <Database className="w-4 h-4" />
+            Manage Database ({causes.length})
           </Button>
         </DialogTrigger>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <span>Condition Database</span>
+              <Button size="sm" onClick={() => {
+                setIsDatabaseOpen(false);
+                setIsAddOpen(true);
+              }} className="gap-2">
+                <Plus className="w-4 h-4" /> Add New
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          
+          <ScrollArea className="flex-1 mt-4 pr-4">
+            <div className="space-y-3">
+              {causes.length === 0 ? (
+                <div className="text-center py-12 bg-muted/30 rounded-lg border-2 border-dashed">
+                  <AlertCircle className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+                  <p className="text-muted-foreground">Database is empty.</p>
+                </div>
+              ) : (
+                causes.map(cause => (
+                  <div key={cause.id} className="p-4 rounded-lg border border-border bg-card flex items-start justify-between group hover:border-primary/30 transition-colors">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-bold">{cause.name}</h4>
+                        <Badge variant="secondary" className="text-[10px]">{cause.baseRate}% Base Rate</Badge>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {cause.symptoms.map(s => (
+                          <span key={s} className="text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground border border-transparent group-hover:border-border transition-colors">
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => onEditCause(cause)}>
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => {
+                        if(confirm(`Delete ${cause.name}?`)) onDeleteCause(cause.id);
+                      }}>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </ScrollArea>
+          
+          <div className="pt-4 border-t flex justify-between items-center mt-4">
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
+                <Download className="w-4 h-4" /> Export
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => setIsImportOpen(true)} className="gap-2">
+                <Upload className="w-4 h-4" /> Import
+              </Button>
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => {
+              if(confirm("Reset all conditions to defaults?")) onReset();
+            }} className="text-muted-foreground hover:text-destructive">
+              Reset to Defaults
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add New Condition</DialogTitle>
@@ -132,6 +209,10 @@ export function DataManager({ causes, onImport, onReset, onAddCause, canUndo, on
               />
             </div>
             <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setIsAddOpen(false);
+                setIsDatabaseOpen(true);
+              }}>Cancel</Button>
               <Button type="submit">Save Condition</Button>
             </DialogFooter>
           </form>
@@ -144,16 +225,7 @@ export function DataManager({ causes, onImport, onReset, onAddCause, canUndo, on
         <RotateCcw className="w-4 h-4" />
       </Button>
 
-      <Button variant="outline" size="icon" onClick={handleExport} title="Export JSON">
-        <Download className="w-4 h-4" />
-      </Button>
-
       <Dialog open={isImportOpen} onOpenChange={setIsImportOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline" size="icon" title="Import JSON">
-            <Upload className="w-4 h-4" />
-          </Button>
-        </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Import Data</DialogTitle>
@@ -169,23 +241,12 @@ export function DataManager({ causes, onImport, onReset, onAddCause, canUndo, on
               placeholder='[{"name": "Example", "baseRate": 50, "symptoms": ["a", "b"]}]'
             />
             <DialogFooter>
+              <Button variant="outline" onClick={() => setIsImportOpen(false)}>Cancel</Button>
               <Button onClick={handleImportSubmit}>Import Data</Button>
             </DialogFooter>
           </div>
         </DialogContent>
       </Dialog>
-
-      <Button 
-        variant="ghost" 
-        size="icon" 
-        onClick={() => {
-          if(confirm("Are you sure you want to reset the database to defaults?")) onReset();
-        }}
-        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-        title="Reset to Defaults"
-      >
-        <Trash className="w-4 h-4" />
-      </Button>
     </div>
   );
 }

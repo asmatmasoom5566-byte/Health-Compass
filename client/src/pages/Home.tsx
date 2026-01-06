@@ -57,6 +57,8 @@ export default function Home() {
             onImport={importData}
             onReset={resetDatabase}
             onAddCause={addCause}
+            onDeleteCause={deleteCause}
+            onEditCause={setEditingCause}
             canUndo={canUndo}
             onUndo={undo}
           />
