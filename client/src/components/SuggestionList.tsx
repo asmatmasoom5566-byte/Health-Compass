@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Cause } from '@shared/schema';
-import { Edit2, Trash2, AlertCircle } from 'lucide-react';
+import { Edit2, Trash2, AlertCircle, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Tooltip,
@@ -9,6 +9,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from '@/components/ui/button';
 
 interface SuggestionListProps {
   causes: Cause[];
@@ -24,6 +31,7 @@ interface ScoredCause extends Cause {
 }
 
 export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: SuggestionListProps) {
+  const [viewingCause, setViewingCause] = useState<ScoredCause | null>(null);
   
   const scoredCauses = useMemo(() => {
     return causes.map(cause => {
@@ -31,19 +39,13 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
         selectedSymptoms.includes(s.toLowerCase())
       );
       
-      // Simple scoring algorithm
-      // Base Rate + (Matches / Total Symptoms * 100) * Weight
-      // This is arbitrary for visual demo purposes
-      
       let rawScore = 0;
       if (cause.symptoms.length > 0) {
         rawScore = (matched.length / cause.symptoms.length) * 100;
       }
       
-      // Boost by base rate slightly, but prioritize symptom matches
       const weightedScore = (rawScore * 0.7) + (cause.baseRate * 0.3);
       
-      // If we have symptoms selected but 0 matches, score should be very low unless base rate is high
       const finalScore = selectedSymptoms.length > 0 && matched.length === 0 
         ? cause.baseRate * 0.1 
         : weightedScore;
@@ -56,7 +58,7 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
       } as ScoredCause;
     })
     .sort((a, b) => b.score - a.score)
-    .filter(c => c.score > 0); // Only show relevant results
+    .filter(c => c.score > 0); 
   }, [causes, selectedSymptoms]);
 
   if (selectedSymptoms.length === 0) {
@@ -102,46 +104,63 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
                 )}
               </h3>
               <p className="text-xs text-muted-foreground mt-1">
-                Base Rate: {cause.baseRate}% • Matches: {cause.matchCount}/{cause.symptoms.length}
+                Likelihood: {cause.score}%
               </p>
             </div>
-            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-1">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button onClick={() => onEdit(cause)} className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-primary transition-colors">
-                      <Edit2 className="w-4 h-4" />
-                    </button>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={() => setViewingCause(cause)}
+                      className="h-8 w-8 text-muted-foreground hover:text-primary"
+                    >
+                      <Info className="w-4 h-4" />
+                    </Button>
                   </TooltipTrigger>
-                  <TooltipContent>Edit Cause</TooltipContent>
+                  <TooltipContent>View Details</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
 
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button onClick={() => onDelete(cause.id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-muted-foreground hover:text-destructive transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Delete Cause</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => onEdit(cause)}
+                        className="h-8 w-8 text-muted-foreground hover:text-primary"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Edit Cause</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => onDelete(cause.id)}
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Delete Cause</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
           </div>
 
           <div className="space-y-1">
-            <div className="flex justify-between text-xs font-medium mb-1">
-              <span className={cn(
-                "transition-colors",
-                cause.score > 75 ? "text-green-600 dark:text-green-400" :
-                cause.score > 40 ? "text-amber-600 dark:text-amber-400" :
-                "text-muted-foreground"
-              )}>
-                Likelihood
-              </span>
-              <span>{cause.score}%</span>
-            </div>
             <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
               <motion.div 
                 initial={{ width: 0 }}
@@ -156,27 +175,72 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
               />
             </div>
           </div>
-
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {cause.symptoms.map(symptom => {
-              const isMatched = selectedSymptoms.includes(symptom.toLowerCase());
-              return (
-                <span 
-                  key={symptom}
-                  className={cn(
-                    "text-[10px] px-2 py-0.5 rounded-md border font-medium transition-colors",
-                    isMatched 
-                      ? "bg-primary/10 border-primary/20 text-primary" 
-                      : "bg-muted/50 border-transparent text-muted-foreground"
-                  )}
-                >
-                  {symptom}
-                </span>
-              );
-            })}
-          </div>
         </motion.div>
       ))}
+
+      <Dialog open={!!viewingCause} onOpenChange={(open) => !open && setViewingCause(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold flex items-center gap-2">
+              {viewingCause?.name}
+              {viewingCause && viewingCause.matchCount === viewingCause.symptoms.length && (
+                <span className="text-[10px] px-2 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full font-bold tracking-wider uppercase">
+                  Perfect Match
+                </span>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-muted/50 p-3 rounded-lg border border-border">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Match Score</p>
+                <p className="text-2xl font-bold text-primary">{viewingCause?.score}%</p>
+              </div>
+              <div className="bg-muted/50 p-3 rounded-lg border border-border">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Base Rate</p>
+                <p className="text-2xl font-bold text-foreground">{viewingCause?.baseRate}%</p>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold mb-3 flex items-center gap-2">
+                Associated Symptoms
+                <span className="text-xs font-normal text-muted-foreground">({viewingCause?.matchCount} matches)</span>
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {viewingCause?.symptoms.map(symptom => {
+                  const isMatched = selectedSymptoms.includes(symptom.toLowerCase());
+                  return (
+                    <span 
+                      key={symptom}
+                      className={cn(
+                        "text-xs px-3 py-1 rounded-full border font-medium transition-colors",
+                        isMatched 
+                          ? "bg-primary/10 border-primary/20 text-primary shadow-sm" 
+                          : "bg-muted/30 border-transparent text-muted-foreground"
+                      )}
+                    >
+                      {symptom}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pt-4 border-t flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setViewingCause(null)}>Close</Button>
+              <Button variant="default" onClick={() => {
+                if (viewingCause) onEdit(viewingCause);
+                setViewingCause(null);
+              }}>
+                <Edit2 className="w-4 h-4 mr-2" />
+                Edit Details
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
