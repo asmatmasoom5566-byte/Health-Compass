@@ -115,8 +115,8 @@ export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCau
             </DialogTitle>
           </DialogHeader>
           
-          <ScrollArea className="flex-1 mt-4 pr-4">
-            <div className="space-y-3">
+          <ScrollArea className="flex-1 mt-4 pr-4 h-[50vh]">
+            <div className="space-y-3 pb-4">
               {causes.length === 0 ? (
                 <div className="text-center py-12 bg-muted/30 rounded-lg border-2 border-dashed">
                   <AlertCircle className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
