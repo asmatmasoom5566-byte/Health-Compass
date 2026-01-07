@@ -20,11 +20,12 @@ interface CauseEditModalProps {
 }
 
 export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModalProps) {
-  const [formData, setFormData] = useState<{name: string, baseRate: number, symptoms: string, note: string}>({
+  const [formData, setFormData] = useState<{name: string, baseRate: number, symptoms: string, note: string, treatment: string}>({
     name: "",
     baseRate: 0,
     symptoms: "",
-    note: ""
+    note: "",
+    treatment: ""
   });
 
   useEffect(() => {
@@ -33,7 +34,8 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
         name: cause.name,
         baseRate: cause.baseRate,
         symptoms: cause.symptoms.join(", "),
-        note: cause.note || ""
+        note: cause.note || "",
+        treatment: cause.treatment || ""
       });
     }
   }, [cause]);
@@ -48,7 +50,8 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
       name: formData.name,
       baseRate: formData.baseRate,
       symptoms: symptomsList,
-      note: formData.note
+      note: formData.note,
+      treatment: formData.treatment
     });
     onClose();
   };
@@ -94,6 +97,15 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
               id="edit-note" 
               value={formData.note}
               onChange={e => setFormData({...formData, note: e.target.value})}
+              className="h-20"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-treatment">Treatment</Label>
+            <Textarea 
+              id="edit-treatment" 
+              value={formData.treatment}
+              onChange={e => setFormData({...formData, treatment: e.target.value})}
               className="h-20"
             />
           </div>

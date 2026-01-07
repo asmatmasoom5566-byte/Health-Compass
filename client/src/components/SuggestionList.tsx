@@ -128,9 +128,28 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
 
           {cause.note && (
             <p className="text-xs text-muted-foreground mt-2 italic border-l-2 border-primary/20 pl-2 line-clamp-2">
-              {cause.note}
+              Note: {cause.note}
             </p>
           )}
+
+          <div className="mt-3 flex flex-wrap gap-1">
+            {cause.symptoms.map(symptom => {
+              const isMatched = selectedSymptoms.includes(symptom.toLowerCase());
+              return (
+                <span 
+                  key={symptom}
+                  className={cn(
+                    "text-[9px] px-1.5 py-0.5 rounded border transition-colors",
+                    isMatched 
+                      ? "bg-primary/10 border-primary/20 text-primary font-bold" 
+                      : "bg-muted/30 border-transparent text-muted-foreground/60"
+                  )}
+                >
+                  {symptom}
+                </span>
+              );
+            })}
+          </div>
 
           <div className="space-y-1 mt-3">
             <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
@@ -205,6 +224,15 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
                 <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">Condition Note</p>
                 <p className="text-sm text-foreground italic leading-relaxed">
                   "{viewingCause.note}"
+                </p>
+              </div>
+            )}
+
+            {viewingCause?.treatment && (
+              <div className="bg-green-500/5 p-4 rounded-lg border border-green-500/10">
+                <p className="text-xs font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-2">Recommended Treatment</p>
+                <p className="text-sm text-foreground leading-relaxed">
+                  {viewingCause.treatment}
                 </p>
               </div>
             )}

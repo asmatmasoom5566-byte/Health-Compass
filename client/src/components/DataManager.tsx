@@ -45,11 +45,12 @@ export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCau
   const [isDatabaseOpen, setIsDatabaseOpen] = useState(false);
   const [importText, setImportText] = useState("");
 
-  const [newCause, setNewCause] = useState<{name: string, baseRate: number, symptoms: string, note: string}>({
+  const [newCause, setNewCause] = useState<{name: string, baseRate: number, symptoms: string, note: string, treatment: string}>({
     name: "",
     baseRate: 10,
     symptoms: "",
-    note: ""
+    note: "",
+    treatment: ""
   });
 
   const handleExport = () => {
@@ -85,11 +86,12 @@ export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCau
         name: newCause.name,
         baseRate: newCause.baseRate,
         symptoms: symptomsList,
-        note: newCause.note
+        note: newCause.note,
+        treatment: newCause.treatment
       });
 
       setIsAddOpen(false);
-      setNewCause({ name: "", baseRate: 10, symptoms: "", note: "" });
+      setNewCause({ name: "", baseRate: 10, symptoms: "", note: "", treatment: "" });
     } catch (err: any) {
       toast({ title: "Validation Error", description: err.message, variant: "destructive" });
     }
@@ -219,6 +221,16 @@ export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCau
                 value={newCause.note}
                 onChange={e => setNewCause({...newCause, note: e.target.value})}
                 placeholder="Important clinical considerations or typical presentation..."
+                className="h-20"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="treatment">Treatment</Label>
+              <Textarea 
+                id="treatment" 
+                value={newCause.treatment}
+                onChange={e => setNewCause({...newCause, treatment: e.target.value})}
+                placeholder="Recommended treatment, medications, or lifestyle changes..."
                 className="h-20"
               />
             </div>
