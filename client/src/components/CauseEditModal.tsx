@@ -20,10 +20,11 @@ interface CauseEditModalProps {
 }
 
 export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModalProps) {
-  const [formData, setFormData] = useState<{name: string, baseRate: number, symptoms: string}>({
+  const [formData, setFormData] = useState<{name: string, baseRate: number, symptoms: string, note: string}>({
     name: "",
     baseRate: 0,
-    symptoms: ""
+    symptoms: "",
+    note: ""
   });
 
   useEffect(() => {
@@ -31,7 +32,8 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
       setFormData({
         name: cause.name,
         baseRate: cause.baseRate,
-        symptoms: cause.symptoms.join(", ")
+        symptoms: cause.symptoms.join(", "),
+        note: cause.note || ""
       });
     }
   }, [cause]);
@@ -45,7 +47,8 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
     onSave(cause.id, {
       name: formData.name,
       baseRate: formData.baseRate,
-      symptoms: symptomsList
+      symptoms: symptomsList,
+      note: formData.note
     });
     onClose();
   };
@@ -83,6 +86,15 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
               value={formData.symptoms}
               onChange={e => setFormData({...formData, symptoms: e.target.value})}
               className="h-32"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-note">Specific Note</Label>
+            <Textarea 
+              id="edit-note" 
+              value={formData.note}
+              onChange={e => setFormData({...formData, note: e.target.value})}
+              className="h-20"
             />
           </div>
           <DialogFooter>

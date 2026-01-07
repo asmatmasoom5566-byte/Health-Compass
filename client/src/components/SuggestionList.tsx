@@ -194,6 +194,15 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
               </div>
             </div>
 
+            {viewingCause?.note && (
+              <div className="bg-primary/5 p-4 rounded-lg border border-primary/10">
+                <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">Condition Note</p>
+                <p className="text-sm text-foreground italic leading-relaxed">
+                  "{viewingCause.note}"
+                </p>
+              </div>
+            )}
+
             <div className="pt-4 border-t flex justify-end gap-2">
               <Button variant="outline" onClick={() => setViewingCause(null)}>Close</Button>
               <Button variant="default" onClick={() => {

@@ -45,10 +45,11 @@ export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCau
   const [isDatabaseOpen, setIsDatabaseOpen] = useState(false);
   const [importText, setImportText] = useState("");
 
-  const [newCause, setNewCause] = useState<{name: string, baseRate: number, symptoms: string}>({
+  const [newCause, setNewCause] = useState<{name: string, baseRate: number, symptoms: string, note: string}>({
     name: "",
     baseRate: 10,
-    symptoms: ""
+    symptoms: "",
+    note: ""
   });
 
   const handleExport = () => {
@@ -83,11 +84,12 @@ export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCau
       onAddCause({
         name: newCause.name,
         baseRate: newCause.baseRate,
-        symptoms: symptomsList
+        symptoms: symptomsList,
+        note: newCause.note
       });
 
       setIsAddOpen(false);
-      setNewCause({ name: "", baseRate: 10, symptoms: "" });
+      setNewCause({ name: "", baseRate: 10, symptoms: "", note: "" });
     } catch (err: any) {
       toast({ title: "Validation Error", description: err.message, variant: "destructive" });
     }
@@ -208,6 +210,16 @@ export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCau
                 onChange={e => setNewCause({...newCause, symptoms: e.target.value})}
                 placeholder="fever, sore throat, swollen lymph nodes..."
                 className="h-24"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="note">Specific Note</Label>
+              <Textarea 
+                id="note" 
+                value={newCause.note}
+                onChange={e => setNewCause({...newCause, note: e.target.value})}
+                placeholder="Important clinical considerations or typical presentation..."
+                className="h-20"
               />
             </div>
             <DialogFooter>
