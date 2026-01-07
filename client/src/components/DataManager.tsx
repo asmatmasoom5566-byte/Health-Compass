@@ -45,9 +45,8 @@ export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCau
   const [isDatabaseOpen, setIsDatabaseOpen] = useState(false);
   const [importText, setImportText] = useState("");
 
-  const [newCause, setNewCause] = useState<{name: string, baseRate: number, symptoms: string, note: string, treatment: string}>({
+  const [newCause, setNewCause] = useState<{name: string, symptoms: string, note: string, treatment: string}>({
     name: "",
-    baseRate: 10,
     symptoms: "",
     note: "",
     treatment: ""
@@ -84,14 +83,13 @@ export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCau
 
       onAddCause({
         name: newCause.name,
-        baseRate: newCause.baseRate,
         symptoms: symptomsList,
         note: newCause.note,
         treatment: newCause.treatment
       });
 
       setIsAddOpen(false);
-      setNewCause({ name: "", baseRate: 10, symptoms: "", note: "", treatment: "" });
+      setNewCause({ name: "", symptoms: "", note: "", treatment: "" });
     } catch (err: any) {
       toast({ title: "Validation Error", description: err.message, variant: "destructive" });
     }
@@ -133,7 +131,6 @@ export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCau
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <h4 className="font-bold">{cause.name}</h4>
-                        <Badge variant="secondary" className="text-[10px]">{cause.baseRate}% Base Rate</Badge>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {cause.symptoms.map(s => (
@@ -191,17 +188,6 @@ export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCau
                 value={newCause.name}
                 onChange={e => setNewCause({...newCause, name: e.target.value})}
                 placeholder="e.g. Strep Throat"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="baseRate">Base Probability Rate (0-100)</Label>
-              <Input 
-                id="baseRate" 
-                type="number" 
-                min="0" 
-                max="100"
-                value={newCause.baseRate}
-                onChange={e => setNewCause({...newCause, baseRate: parseInt(e.target.value) || 0})}
               />
             </div>
             <div className="space-y-2">

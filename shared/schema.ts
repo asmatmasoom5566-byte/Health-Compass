@@ -16,7 +16,6 @@ export const causes = pgTable("causes", {
 export const causeSchema = z.object({
   id: z.string(), // Client-side UUID
   name: z.string().min(1, "Name is required"),
-  baseRate: z.number().min(0).max(100),
   symptoms: z.array(z.string()),
   note: z.string().optional(),
   treatment: z.string().optional()

@@ -44,10 +44,10 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
         rawScore = (matched.length / cause.symptoms.length) * 100;
       }
       
-      const weightedScore = (rawScore * 0.7) + (cause.baseRate * 0.3);
+      const weightedScore = rawScore;
       
       const finalScore = selectedSymptoms.length > 0 && matched.length === 0 
-        ? cause.baseRate * 0.1 
+        ? 0 
         : weightedScore;
 
       return {
@@ -183,14 +183,10 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
           </DialogHeader>
           
           <div className="space-y-6 py-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div className="bg-muted/50 p-3 rounded-lg border border-border">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Match Score</p>
                 <p className="text-2xl font-bold text-primary">{viewingCause?.score}%</p>
-              </div>
-              <div className="bg-muted/50 p-3 rounded-lg border border-border">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Base Rate</p>
-                <p className="text-2xl font-bold text-foreground">{viewingCause?.baseRate}%</p>
               </div>
             </div>
 

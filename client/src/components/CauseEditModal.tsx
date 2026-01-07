@@ -20,9 +20,8 @@ interface CauseEditModalProps {
 }
 
 export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModalProps) {
-  const [formData, setFormData] = useState<{name: string, baseRate: number, symptoms: string, note: string, treatment: string}>({
+  const [formData, setFormData] = useState<{name: string, symptoms: string, note: string, treatment: string}>({
     name: "",
-    baseRate: 0,
     symptoms: "",
     note: "",
     treatment: ""
@@ -32,7 +31,6 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
     if (cause) {
       setFormData({
         name: cause.name,
-        baseRate: cause.baseRate,
         symptoms: cause.symptoms.join(", "),
         note: cause.note || "",
         treatment: cause.treatment || ""
@@ -48,7 +46,6 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
     
     onSave(cause.id, {
       name: formData.name,
-      baseRate: formData.baseRate,
       symptoms: symptomsList,
       note: formData.note,
       treatment: formData.treatment
@@ -69,17 +66,6 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
               id="edit-name" 
               value={formData.name}
               onChange={e => setFormData({...formData, name: e.target.value})}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-baseRate">Base Probability Rate (0-100)</Label>
-            <Input 
-              id="edit-baseRate" 
-              type="number" 
-              min="0" 
-              max="100"
-              value={formData.baseRate}
-              onChange={e => setFormData({...formData, baseRate: parseInt(e.target.value) || 0})}
             />
           </div>
           <div className="space-y-2">
