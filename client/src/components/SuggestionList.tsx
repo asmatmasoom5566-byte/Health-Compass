@@ -126,7 +126,13 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
             </div>
           </div>
 
-          <div className="space-y-1">
+          {cause.note && (
+            <p className="text-xs text-muted-foreground mt-2 italic border-l-2 border-primary/20 pl-2 line-clamp-2">
+              {cause.note}
+            </p>
+          )}
+
+          <div className="space-y-1 mt-3">
             <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
               <motion.div 
                 initial={{ width: 0 }}
