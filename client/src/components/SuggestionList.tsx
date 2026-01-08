@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Cause } from '@shared/schema';
-import { Edit2, Trash2, AlertCircle, Info } from 'lucide-react';
+import { Edit2, Trash2, AlertCircle, Info, Sparkles, Send, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 import {
   Tooltip,
   TooltipContent,
@@ -16,6 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface SuggestionListProps {
   causes: Cause[];
@@ -32,6 +35,49 @@ interface ScoredCause extends Cause {
 
 export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: SuggestionListProps) {
   const [viewingCause, setViewingCause] = useState<ScoredCause | null>(null);
+  const [isAIChatOpen, setIsAIChatOpen] = useState(false);
+  const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
+  const [chatInput, setChatInput] = useState("");
+
+  const { data: messages = [] } = useQuery({
+    queryKey: ['/api/chat/conversations', activeConversationId, 'messages'],
+    enabled: !!activeConversationId,
+  });
+
+  const createConversation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest('POST', '/api/chat/conversations', { 
+        title: `Analysis: ${selectedSymptoms.slice(0, 3).join(', ')}` 
+      });
+      return res.json();
+    },
+    onSuccess: (data) => {
+      setActiveConversationId(data.id);
+      // Automatically send initial analysis prompt
+      sendMessage.mutate({
+        conversationId: data.id,
+        content: `I am experiencing these symptoms: ${selectedSymptoms.join(', ')}. Based on these, can you provide a medical analysis and suggest potential conditions?`
+      });
+    }
+  });
+
+  const sendMessage = useMutation({
+    mutationFn: async ({ conversationId, content }: { conversationId: number, content: string }) => {
+      const res = await apiRequest('POST', `/api/chat/conversations/${conversationId}/messages`, { content });
+      return res.json();
+    },
+    onSuccess: () => {
+      setChatInput("");
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations', activeConversationId, 'messages'] });
+    }
+  });
+
+  const handleStartAIAnalysis = () => {
+    setIsAIChatOpen(true);
+    if (!activeConversationId) {
+      createConversation.mutate();
+    }
+  };
   
   const scoredCauses = useMemo(() => {
     return causes.map(cause => {
@@ -75,100 +121,113 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
     );
   }
 
-  if (scoredCauses.length === 0) {
-    return (
-      <div className="text-center p-8 bg-muted/20 rounded-xl">
-        <p className="text-muted-foreground">No matching causes found in database.</p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
-      {scoredCauses.map((cause, index) => (
-        <motion.div
-          key={cause.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.05 }}
-          className="group relative bg-white dark:bg-slate-800 p-5 rounded-xl border border-border shadow-sm hover:shadow-md transition-all"
+      <div className="flex justify-between items-center px-1">
+        <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Matches Found</h2>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          className="gap-2 text-primary hover:text-primary hover:bg-primary/5 border-primary/20"
+          onClick={handleStartAIAnalysis}
+          disabled={createConversation.isPending}
         >
-          <div className="flex justify-between items-start mb-3">
-            <div>
-              <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-                {cause.name}
-                {cause.matchCount === cause.symptoms.length && (
-                  <span className="text-[10px] px-2 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full font-bold tracking-wider uppercase">
-                    Perfect Match
-                  </span>
-                )}
-              </h3>
-              <p className="text-xs text-muted-foreground mt-1">
-                Likelihood: {cause.score}%
-              </p>
-            </div>
-            <div className="flex gap-1">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      onClick={() => setViewingCause(cause)}
-                      className="h-8 w-8 text-muted-foreground hover:text-primary"
-                    >
-                      <Info className="w-4 h-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>View Details</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </div>
+          {createConversation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+          AI Analysis
+        </Button>
+      </div>
 
-          {cause.note && (
-            <p className="text-xs text-muted-foreground mt-2 italic border-l-2 border-primary/20 pl-2 line-clamp-2">
-              Note: {cause.note}
-            </p>
-          )}
-
-          <div className="mt-3 flex flex-wrap gap-1">
-            {cause.symptoms.map(symptom => {
-              const isMatched = selectedSymptoms.includes(symptom.toLowerCase());
-              return (
-                <span 
-                  key={symptom}
-                  className={cn(
-                    "text-[9px] px-1.5 py-0.5 rounded border transition-colors",
-                    isMatched 
-                      ? "bg-primary/10 border-primary/20 text-primary font-bold" 
-                      : "bg-muted/30 border-transparent text-muted-foreground/60"
+      {scoredCauses.length === 0 ? (
+        <div className="text-center p-8 bg-muted/20 rounded-xl">
+          <p className="text-muted-foreground">No matching causes found in database.</p>
+        </div>
+      ) : (
+        scoredCauses.map((cause, index) => (
+          <motion.div
+            key={cause.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+            className="group relative bg-white dark:bg-slate-800 p-5 rounded-xl border border-border shadow-sm hover:shadow-md transition-all"
+          >
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                  {cause.name}
+                  {cause.matchCount === cause.symptoms.length && (
+                    <span className="text-[10px] px-2 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full font-bold tracking-wider uppercase">
+                      Perfect Match
+                    </span>
                   )}
-                >
-                  {symptom}
-                </span>
-              );
-            })}
-          </div>
-
-          <div className="space-y-1 mt-3">
-            <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: `${cause.score}%` }}
-                transition={{ duration: 1, ease: "easeOut" }}
-                className={cn(
-                  "h-full rounded-full transition-colors duration-500",
-                  cause.score > 75 ? "bg-gradient-to-r from-green-500 to-green-400" :
-                  cause.score > 40 ? "bg-gradient-to-r from-amber-500 to-amber-400" :
-                  "bg-gradient-to-r from-slate-400 to-slate-300"
-                )}
-              />
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Likelihood: {cause.score}%
+                </p>
+              </div>
+              <div className="flex gap-1">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => setViewingCause(cause)}
+                        className="h-8 w-8 text-muted-foreground hover:text-primary"
+                      >
+                        <Info className="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>View Details</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      ))}
 
+            {cause.note && (
+              <p className="text-xs text-muted-foreground mt-2 italic border-l-2 border-primary/20 pl-2 line-clamp-2">
+                Note: {cause.note}
+              </p>
+            )}
+
+            <div className="mt-3 flex flex-wrap gap-1">
+              {cause.symptoms.map(symptom => {
+                const isMatched = selectedSymptoms.includes(symptom.toLowerCase());
+                return (
+                  <span 
+                    key={symptom}
+                    className={cn(
+                      "text-[9px] px-1.5 py-0.5 rounded border transition-colors",
+                      isMatched 
+                        ? "bg-primary/10 border-primary/20 text-primary font-bold" 
+                        : "bg-muted/30 border-transparent text-muted-foreground/60"
+                    )}
+                  >
+                    {symptom}
+                  </span>
+                );
+              })}
+            </div>
+
+            <div className="space-y-1 mt-3">
+              <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: `${cause.score}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                  className={cn(
+                    "h-full rounded-full transition-colors duration-500",
+                    cause.score > 75 ? "bg-gradient-to-r from-green-500 to-green-400" :
+                    cause.score > 40 ? "bg-gradient-to-r from-amber-500 to-amber-400" :
+                    "bg-gradient-to-r from-slate-400 to-slate-300"
+                  )}
+                />
+              </div>
+            </div>
+          </motion.div>
+        ))
+      )}
+
+      {/* Cause Detail Dialog */}
       <Dialog open={!!viewingCause} onOpenChange={(open) => !open && setViewingCause(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -243,6 +302,65 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
                 Edit Details
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* AI Chat Dialog */}
+      <Dialog open={isAIChatOpen} onOpenChange={setIsAIChatOpen}>
+        <DialogContent className="sm:max-w-2xl h-[80vh] flex flex-col p-0">
+          <DialogHeader className="p-6 border-b">
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              AI Symptom Analysis
+            </DialogTitle>
+          </DialogHeader>
+
+          <ScrollArea className="flex-1 p-6">
+            <div className="space-y-4">
+              {(messages as any[]).map((m: any) => (
+                <div 
+                  key={m.id} 
+                  className={cn(
+                    "max-w-[80%] rounded-2xl p-4 text-sm",
+                    m.role === 'user' 
+                      ? "bg-primary text-primary-foreground ml-auto rounded-tr-none" 
+                      : "bg-muted text-foreground mr-auto rounded-tl-none"
+                  )}
+                >
+                  <p className="whitespace-pre-wrap leading-relaxed">{m.content}</p>
+                </div>
+              ))}
+              {sendMessage.isPending && (
+                <div className="bg-muted text-foreground mr-auto rounded-2xl rounded-tl-none p-4 max-w-[80%] flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-xs animate-pulse">Thinking...</span>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
+
+          <div className="p-4 border-t bg-background">
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (chatInput.trim() && activeConversationId) {
+                  sendMessage.mutate({ conversationId: activeConversationId, content: chatInput });
+                }
+              }}
+              className="flex gap-2"
+            >
+              <input
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Ask follow-up questions..."
+                className="flex-1 bg-muted rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                disabled={sendMessage.isPending}
+              />
+              <Button type="submit" size="icon" className="rounded-full h-10 w-10" disabled={sendMessage.isPending || !chatInput.trim()}>
+                <Send className="w-4 h-4" />
+              </Button>
+            </form>
           </div>
         </DialogContent>
       </Dialog>
