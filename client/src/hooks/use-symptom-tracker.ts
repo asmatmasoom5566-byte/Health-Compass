@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
-import { causeSchema, type Cause, INITIAL_CAUSES } from '@shared/schema';
+import { causeSchema, type Cause } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 
 // Types for our local state

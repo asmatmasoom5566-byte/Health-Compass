@@ -1,17 +1,18 @@
 import { useState, useMemo } from 'react';
+import { Link } from 'wouter';
 import { useSymptomTracker } from '@/hooks/use-symptom-tracker';
 import { SymptomInput } from '@/components/SymptomInput';
 import { SuggestionList } from '@/components/SuggestionList';
 import { DataManager } from '@/components/DataManager';
 import { CauseEditModal } from '@/components/CauseEditModal';
 import { Cause } from '@shared/schema';
-import { Stethoscope } from 'lucide-react';
+import { Stethoscope, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const {
     causes,
     selectedSymptoms,
-    history,
     addSymptom,
     removeSymptom,
     clearSymptoms,
@@ -20,7 +21,6 @@ export default function Home() {
     deleteCause,
     resetDatabase,
     importData,
-    undo,
     canUndo
   } = useSymptomTracker();
 
@@ -52,16 +52,24 @@ export default function Home() {
             </div>
           </div>
           
-          <DataManager 
-            causes={causes}
-            onImport={importData}
-            onReset={resetDatabase}
-            onAddCause={addCause}
-            onDeleteCause={deleteCause}
-            onEditCause={setEditingCause}
-            canUndo={canUndo}
-            onUndo={undo}
-          />
+          <div className="flex items-center gap-2">
+            <Link href="/history">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Clock className="w-4 h-4" />
+                History
+              </Button>
+            </Link>
+            <DataManager 
+              causes={causes}
+              onImport={importData}
+              onReset={resetDatabase}
+              onAddCause={addCause}
+              onDeleteCause={deleteCause}
+              onEditCause={setEditingCause}
+              canUndo={canUndo}
+              onUndo={() => {}}
+            />
+          </div>
         </div>
       </header>
 
