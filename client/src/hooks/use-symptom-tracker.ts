@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
-import { causeSchema, type Cause } from '@shared/schema';
+import { causeSchema, type Cause, INITIAL_CAUSES } from '@shared/schema';
+import { apiRequest } from '@/lib/queryClient';
 
 // Types for our local state
 export interface TrackerState {
@@ -214,7 +215,12 @@ export function useSymptomTracker() {
     const normalized = symptom.toLowerCase().trim();
     if (!normalized || selectedSymptoms.includes(normalized)) return;
     
-    setSelectedSymptoms(prev => [...prev, normalized]);
+    const newSymptoms = [...selectedSymptoms, normalized];
+    setSelectedSymptoms(newSymptoms);
+    
+    // Save to server history
+    apiRequest('POST', '/api/search-history', { symptoms: newSymptoms })
+      .catch(err => console.error("Failed to save search history:", err));
   };
 
   const removeSymptom = (symptom: string) => {
