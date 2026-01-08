@@ -201,70 +201,47 @@ export function useSymptomTracker() {
     return [];
   });
 
-  // Undo Stack
-  const [history, setHistory] = useState<TrackerState[]>([]);
+  // No Undo Stack - Removed as per user request
+  // const [history, setHistory] = useState<TrackerState[]>([]);
 
   // Persist to local storage whenever state changes
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ causes, selectedSymptoms }));
   }, [causes, selectedSymptoms]);
 
-  const pushHistory = useCallback(() => {
-    setHistory(prev => {
-      const newHistory = [...prev, { causes, selectedSymptoms }];
-      return newHistory.slice(-10); // Keep last 10
-    });
-  }, [causes, selectedSymptoms]);
-
-  const undo = useCallback(() => {
-    if (history.length === 0) return;
-    const previous = history[history.length - 1];
-    setHistory(prev => prev.slice(0, -1));
-    setCauses(previous.causes);
-    setSelectedSymptoms(previous.selectedSymptoms);
-    toast({ title: "Action Undone", description: "Restored previous state." });
-  }, [history, toast]);
-
   // Actions
   const addSymptom = (symptom: string) => {
     const normalized = symptom.toLowerCase().trim();
     if (!normalized || selectedSymptoms.includes(normalized)) return;
     
-    pushHistory();
     setSelectedSymptoms(prev => [...prev, normalized]);
   };
 
   const removeSymptom = (symptom: string) => {
-    pushHistory();
     setSelectedSymptoms(prev => prev.filter(s => s !== symptom));
   };
 
   const clearSymptoms = () => {
-    pushHistory();
     setSelectedSymptoms([]);
   };
 
   const addCause = (cause: Omit<Cause, 'id'>) => {
-    pushHistory();
     const newCause: Cause = { ...cause, id: crypto.randomUUID() };
     setCauses(prev => [...prev, newCause]);
     toast({ title: "Cause Added", description: `${newCause.name} added to database.` });
   };
 
   const updateCause = (id: string, updates: Partial<Cause>) => {
-    pushHistory();
     setCauses(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
     toast({ title: "Cause Updated", description: "Changes saved successfully." });
   };
 
   const deleteCause = (id: string) => {
-    pushHistory();
     setCauses(prev => prev.filter(c => c.id !== id));
     toast({ title: "Cause Deleted", variant: "destructive" });
   };
 
   const resetDatabase = () => {
-    pushHistory();
     setCauses(INITIAL_CAUSES);
     setSelectedSymptoms([]);
     localStorage.removeItem(STORAGE_KEY);
@@ -277,7 +254,6 @@ export function useSymptomTracker() {
       const schema = z.array(causeSchema);
       const validated = schema.parse(parsed);
       
-      pushHistory();
       setCauses(validated);
       toast({ title: "Import Successful", description: `${validated.length} causes loaded.` });
       return true;
@@ -294,7 +270,6 @@ export function useSymptomTracker() {
   return {
     causes,
     selectedSymptoms,
-    history,
     addSymptom,
     removeSymptom,
     clearSymptoms,
@@ -303,7 +278,6 @@ export function useSymptomTracker() {
     deleteCause,
     resetDatabase,
     importData,
-    undo,
-    canUndo: history.length > 0
+    canUndo: false
   };
 }

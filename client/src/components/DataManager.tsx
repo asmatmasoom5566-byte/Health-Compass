@@ -231,9 +231,9 @@ export function DataManager({ causes, onImport, onReset, onAddCause, onDeleteCau
         </DialogContent>
       </Dialog>
 
-      <div className="h-6 w-px bg-border mx-2" />
+      <div className="h-6 w-px bg-border mx-2 hidden" />
 
-      <Button variant="outline" size="icon" onClick={onUndo} disabled={!canUndo} title="Undo">
+      <Button variant="outline" size="icon" onClick={onUndo} disabled={!canUndo} title="Undo" className="hidden">
         <RotateCcw className="w-4 h-4" />
       </Button>
 
