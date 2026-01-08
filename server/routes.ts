@@ -2,12 +2,18 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
+import { registerChatRoutes } from "./replit_integrations/chat";
+import { registerImageRoutes } from "./replit_integrations/image";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
   
+  // Register AI Integrations
+  registerChatRoutes(app);
+  registerImageRoutes(app);
+
   // Placeholder for future sync endpoint
   app.post(api.sync.push.path, async (req, res) => {
     // In a real implementation, we would save to DB here.

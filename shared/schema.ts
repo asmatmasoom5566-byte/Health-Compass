@@ -33,3 +33,5 @@ export type AppData = z.infer<typeof appDataSchema>;
 export const insertCauseSchema = createInsertSchema(causes);
 export type InsertCause = z.infer<typeof insertCauseSchema>;
 export type CauseItem = typeof causes.$inferSelect;
+
+export * from "./models/chat";

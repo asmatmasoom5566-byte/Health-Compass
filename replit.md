@@ -39,9 +39,10 @@ Preferred communication style: Simple, everyday language.
 ### Application Features
 - Symptom input with autocomplete from known symptoms
 - Real-time cause matching with weighted scoring
+- AI-powered symptom analysis via OpenAI (gpt-5)
+- Image generation for medical context (gpt-image-1)
 - CRUD operations for medical conditions/causes
 - Import/export data as JSON
-- Undo functionality for data changes
 - Pre-seeded with 35+ conditions relevant to Afghan healthcare context
 
 ## External Dependencies
