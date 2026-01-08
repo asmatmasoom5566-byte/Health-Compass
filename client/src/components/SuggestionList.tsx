@@ -184,7 +184,7 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
             </div>
 
             {cause.note && (
-              <p className="text-xs text-muted-foreground mt-2 italic border-l-2 border-primary/20 pl-2 line-clamp-2">
+              <p className="text-xs text-muted-foreground mt-2 italic border-l-2 border-primary/20 pl-2">
                 Note: {cause.note}
               </p>
             )}
