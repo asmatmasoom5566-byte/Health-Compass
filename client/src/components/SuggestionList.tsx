@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -276,68 +277,77 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
             </DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-6 py-4">
-            <div className="grid grid-cols-1 gap-4">
-              <div className="bg-muted/50 p-3 rounded-lg border border-border">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Match Score</p>
-                <p className="text-2xl font-bold text-primary">{viewingCause?.score}%</p>
+          <ScrollArea className="max-h-[70vh] pr-4">
+            <div className="space-y-6 py-4">
+              <div className="grid grid-cols-1 gap-4">
+                <div className="bg-muted/50 p-3 rounded-lg border border-border">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Match Score</p>
+                  <p className="text-2xl font-bold text-primary">{viewingCause?.score}%</p>
+                </div>
               </div>
-            </div>
 
-            <div>
-              <p className="text-sm font-semibold mb-3 flex items-center gap-2">
-                Associated Symptoms
-                <span className="text-xs font-normal text-muted-foreground">({viewingCause?.matchCount} matches)</span>
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {viewingCause?.symptoms.map(symptom => {
-                  const isMatched = selectedSymptoms.includes(symptom.toLowerCase());
-                  return (
-                    <span 
-                      key={symptom}
-                      className={cn(
-                        "text-xs px-3 py-1 rounded-full border font-medium transition-colors",
-                        isMatched 
-                          ? "bg-primary/10 border-primary/20 text-primary shadow-sm" 
-                          : "bg-muted/30 border-transparent text-muted-foreground"
-                      )}
-                    >
-                      {symptom}
-                    </span>
-                  );
-                })}
-              </div>
-            </div>
-
-            {viewingCause?.note && (
-              <div className="bg-primary/5 p-4 rounded-lg border border-primary/10">
-                <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">Condition Note</p>
-                <p className="text-sm text-foreground italic leading-relaxed">
-                  "{viewingCause.note}"
+              <div>
+                <p className="text-sm font-semibold mb-3 flex items-center gap-2">
+                  Associated Symptoms
+                  <span className="text-xs font-normal text-muted-foreground">({viewingCause?.matchCount} matches)</span>
                 </p>
+                <div className="flex flex-wrap gap-2">
+                  {viewingCause?.symptoms.map(symptom => {
+                    const isMatched = selectedSymptoms.includes(symptom.toLowerCase());
+                    return (
+                      <span 
+                        key={symptom}
+                        className={cn(
+                          "text-xs px-3 py-1 rounded-full border font-medium transition-colors",
+                          isMatched 
+                            ? "bg-primary/10 border-primary/20 text-primary shadow-sm" 
+                            : "bg-muted/30 border-transparent text-muted-foreground"
+                        )}
+                      >
+                        {symptom}
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
-            )}
 
-            {viewingCause?.treatment && (
-              <div className="bg-green-500/5 p-4 rounded-lg border border-green-500/10">
-                <p className="text-xs font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-2">Recommended Treatment</p>
-                <p className="text-sm text-foreground leading-relaxed">
-                  {viewingCause.treatment}
-                </p>
-              </div>
-            )}
+              {viewingCause?.details && (
+                <div className="bg-muted/30 p-4 rounded-lg border border-border">
+                  <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">Condition Details</p>
+                  <p className="text-sm text-foreground leading-relaxed">
+                    {viewingCause.details}
+                  </p>
+                </div>
+              )}
 
-            <div className="pt-4 border-t flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setViewingCause(null)}>Close</Button>
-              <Button variant="default" onClick={() => {
-                if (viewingCause) onEdit(viewingCause);
-                setViewingCause(null);
-              }}>
-                <Edit2 className="w-4 h-4 mr-2" />
-                Edit Details
-              </Button>
+              {viewingCause?.labTest && (
+                <div className="bg-blue-500/5 p-4 rounded-lg border border-blue-500/10">
+                  <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-2">Lab Tests</p>
+                  <p className="text-sm text-foreground leading-relaxed">
+                    {viewingCause.labTest}
+                  </p>
+                </div>
+              )}
+
+              {viewingCause?.note && (
+                <div className="bg-primary/5 p-4 rounded-lg border border-primary/10">
+                  <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">Condition Note</p>
+                  <p className="text-sm text-foreground italic leading-relaxed">
+                    "{viewingCause.note}"
+                  </p>
+                </div>
+              )}
+
+              {viewingCause?.treatment && (
+                <div className="bg-green-500/5 p-4 rounded-lg border border-green-500/10">
+                  <p className="text-xs font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-2">Recommended Treatment</p>
+                  <p className="text-sm text-foreground leading-relaxed">
+                    {viewingCause.treatment}
+                  </p>
+                </div>
+              )}
             </div>
-          </div>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
 
@@ -351,27 +361,29 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
             </DialogTitle>
           </DialogHeader>
 
-          <ScrollArea className="flex-1 p-6">
-            <div className="space-y-4">
-              {(messages as any[]).map((m: any) => (
-                <div 
-                  key={m.id} 
-                  className={cn(
-                    "max-w-[80%] rounded-2xl p-4 text-sm",
-                    m.role === 'user' 
-                      ? "bg-primary text-primary-foreground ml-auto rounded-tr-none" 
-                      : "bg-muted text-foreground mr-auto rounded-tl-none"
-                  )}
-                >
-                  <p className="whitespace-pre-wrap leading-relaxed">{m.content}</p>
-                </div>
-              ))}
-              {sendMessage.isPending && (
-                <div className="bg-muted text-foreground mr-auto rounded-2xl rounded-tl-none p-4 max-w-[80%] flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span className="text-xs animate-pulse">Thinking...</span>
-                </div>
-              )}
+          <ScrollArea className="max-h-[80vh] p-0">
+            <div className="p-6">
+              <div className="space-y-4">
+                {(messages as any[]).map((m: any) => (
+                  <div 
+                    key={m.id} 
+                    className={cn(
+                      "max-w-[80%] rounded-2xl p-4 text-sm",
+                      m.role === 'user' 
+                        ? "bg-primary text-primary-foreground ml-auto rounded-tr-none" 
+                        : "bg-muted text-foreground mr-auto rounded-tl-none"
+                    )}
+                  >
+                    <p className="whitespace-pre-wrap leading-relaxed">{m.content}</p>
+                  </div>
+                ))}
+                {sendMessage.isPending && (
+                  <div className="bg-muted text-foreground mr-auto rounded-2xl rounded-tl-none p-4 max-w-[80%] flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-xs animate-pulse">Thinking...</span>
+                  </div>
+                )}
+              </div>
             </div>
           </ScrollArea>
 
@@ -396,7 +408,18 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
                 <Send className="w-4 h-4" />
               </Button>
             </form>
-          </div>
+          </ScrollArea>
+
+          <DialogFooter className="px-6 py-4 border-t">
+            <Button variant="outline" onClick={() => setViewingCause(null)}>Close</Button>
+            <Button variant="default" onClick={() => {
+              if (viewingCause) onEdit(viewingCause);
+              setViewingCause(null);
+            }}>
+              <Edit2 className="w-4 h-4 mr-2" />
+              Edit Details
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
