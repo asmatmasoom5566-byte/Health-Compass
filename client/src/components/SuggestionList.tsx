@@ -151,8 +151,11 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
             className="group relative bg-white dark:bg-slate-800 p-5 rounded-xl border border-border shadow-sm hover:shadow-md transition-all"
           >
             <div className="flex justify-between items-start mb-3">
-              <div>
-                <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <div className="flex-1">
+                <h3 
+                  className="text-lg font-bold text-foreground flex items-center gap-2 cursor-pointer hover:text-primary transition-colors"
+                  onClick={() => setViewingCause(cause)}
+                >
                   {cause.name}
                   {cause.matchCount === cause.symptoms.length && (
                     <span className="text-[10px] px-2 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full font-bold tracking-wider uppercase">
@@ -183,29 +186,37 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
               </div>
             </div>
 
-            {cause.note && (
-              <p className="text-xs text-muted-foreground mt-2 italic border-l-2 border-primary/20 pl-2">
-                Note: {cause.note}
-              </p>
-            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+              <div>
+                <p className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">Symptoms Detail</p>
+                <div className="flex flex-wrap gap-1">
+                  {cause.symptoms.map(symptom => {
+                    const isMatched = selectedSymptoms.includes(symptom.toLowerCase());
+                    return (
+                      <span 
+                        key={symptom}
+                        className={cn(
+                          "text-[9px] px-1.5 py-0.5 rounded border transition-colors",
+                          isMatched 
+                            ? "bg-green-100 border-green-200 text-green-700 font-bold dark:bg-green-900/30 dark:border-green-800 dark:text-green-400" 
+                            : "bg-muted/30 border-transparent text-muted-foreground/60"
+                        )}
+                      >
+                        {symptom}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
 
-            <div className="mt-3 flex flex-wrap gap-1">
-              {cause.symptoms.map(symptom => {
-                const isMatched = selectedSymptoms.includes(symptom.toLowerCase());
-                return (
-                  <span 
-                    key={symptom}
-                    className={cn(
-                      "text-[9px] px-1.5 py-0.5 rounded border transition-colors",
-                      isMatched 
-                        ? "bg-primary/10 border-primary/20 text-primary font-bold" 
-                        : "bg-muted/30 border-transparent text-muted-foreground/60"
-                    )}
-                  >
-                    {symptom}
-                  </span>
-                );
-              })}
+              {cause.note && (
+                <div>
+                  <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Note</p>
+                  <p className="text-[10px] text-red-700 dark:text-red-300 italic border-l-2 border-red-200 dark:border-red-900 pl-2 line-clamp-3">
+                    {cause.note}
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="space-y-1 mt-3">

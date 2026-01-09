@@ -44,10 +44,10 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-xl font-bold tracking-tight text-foreground font-display leading-none">
-                MediMatch<span className="text-primary">.ai</span>
+                DR. ASMAT MASOOM
               </h1>
               <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                Symptom Analysis Engine
+                symptom analysis engine
               </p>
             </div>
           </div>
@@ -89,11 +89,9 @@ export default function Home() {
             </div>
 
             <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6">
-              <h3 className="text-sm font-semibold text-primary mb-2">How it works</h3>
+              <h3 className="text-sm font-semibold text-primary mb-2">Condition Details</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Enter observed symptoms above. The system calculates likelihood scores based on known base rates and symptom overlaps from your local database. 
-                <br/><br/>
-                Add new conditions or import medical data to improve accuracy.
+                Select a condition from the results on the right to view full details, including symptoms and recommended treatments.
               </p>
             </div>
           </div>
