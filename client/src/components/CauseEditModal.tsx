@@ -65,65 +65,67 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
         <DialogHeader>
           <DialogTitle>Edit Condition</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-          <div className="space-y-2">
-            <Label htmlFor="edit-name">Condition Name</Label>
-            <Input 
-              id="edit-name" 
-              value={formData.name}
-              onChange={e => setFormData({...formData, name: e.target.value})}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-symptoms">Symptoms (comma separated)</Label>
-            <Textarea 
-              id="edit-symptoms" 
-              value={formData.symptoms}
-              onChange={e => setFormData({...formData, symptoms: e.target.value})}
-              className="h-24"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-details">Condition Details</Label>
-            <Textarea 
-              id="edit-details" 
-              value={formData.details}
-              onChange={e => setFormData({...formData, details: e.target.value})}
-              className="h-24"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-lab-test">Lab Tests</Label>
-            <Textarea 
-              id="edit-lab-test" 
-              value={formData.labTest}
-              onChange={e => setFormData({...formData, labTest: e.target.value})}
-              className="h-24"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-note">Specific Note</Label>
-            <Textarea 
-              id="edit-note" 
-              value={formData.note}
-              onChange={e => setFormData({...formData, note: e.target.value})}
-              className="h-20"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-treatment">Treatment</Label>
-            <Textarea 
-              id="edit-treatment" 
-              value={formData.treatment}
-              onChange={e => setFormData({...formData, treatment: e.target.value})}
-              className="h-20"
-            />
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit">Save Changes</Button>
-          </DialogFooter>
-        </form>
+        <ScrollArea className="max-h-[80vh]">
+          <form onSubmit={handleSubmit} className="space-y-4 pt-4 px-1 pb-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-name">Condition Name</Label>
+              <Input 
+                id="edit-name" 
+                value={formData.name}
+                onChange={e => setFormData({...formData, name: e.target.value})}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-symptoms">Symptoms (comma separated)</Label>
+              <Textarea 
+                id="edit-symptoms" 
+                value={formData.symptoms}
+                onChange={e => setFormData({...formData, symptoms: e.target.value})}
+                className="h-24"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-details">Condition Details</Label>
+              <Textarea 
+                id="edit-details" 
+                value={formData.details}
+                onChange={e => setFormData({...formData, details: e.target.value})}
+                className="h-24"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-lab-test">Lab Tests</Label>
+              <Textarea 
+                id="edit-lab-test" 
+                value={formData.labTest}
+                onChange={e => setFormData({...formData, labTest: e.target.value})}
+                className="h-24"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-note">Specific Note</Label>
+              <Textarea 
+                id="edit-note" 
+                value={formData.note}
+                onChange={e => setFormData({...formData, note: e.target.value})}
+                className="h-20"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-treatment">Treatment</Label>
+              <Textarea 
+                id="edit-treatment" 
+                value={formData.treatment}
+                onChange={e => setFormData({...formData, treatment: e.target.value})}
+                className="h-20"
+              />
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+              <Button type="submit">Save Changes</Button>
+            </DialogFooter>
+          </form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

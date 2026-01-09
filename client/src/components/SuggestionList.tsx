@@ -187,7 +187,7 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-3">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-3">
               <div>
                 <p className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">Symptoms Detail</p>
                 <div className="flex flex-wrap gap-1">
@@ -217,6 +217,15 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
                 </p>
               </div>
 
+              {cause.note && (
+                <div>
+                  <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Note</p>
+                  <p className="text-[10px] text-red-700 dark:text-red-300 italic border-l-2 border-red-200 dark:border-red-900 pl-2">
+                    {cause.note}
+                  </p>
+                </div>
+              )}
+
               <div>
                 <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Lab Test</p>
                 <p className="text-[10px] text-foreground leading-relaxed">
@@ -224,11 +233,11 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
                 </p>
               </div>
 
-              {cause.note && (
+              {cause.treatment && (
                 <div>
-                  <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Note</p>
-                  <p className="text-[10px] text-red-700 dark:text-red-300 italic border-l-2 border-red-200 dark:border-red-900 pl-2">
-                    {cause.note}
+                  <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-1">Treatment</p>
+                  <p className="text-[10px] text-foreground leading-relaxed">
+                    {cause.treatment}
                   </p>
                 </div>
               )}

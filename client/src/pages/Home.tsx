@@ -112,16 +112,16 @@ export default function Home() {
                       <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Details</p>
                       <p className="text-sm text-foreground leading-relaxed">{selectedCondition.details || "No details available."}</p>
                     </div>
-                    <div>
-                      <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Lab Test</p>
-                      <p className="text-sm text-foreground leading-relaxed">{selectedCondition.labTest || "No lab tests specified."}</p>
-                    </div>
                     {selectedCondition.note && (
                       <div>
                         <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Note</p>
                         <p className="text-sm text-red-700 dark:text-red-300 italic border-l-2 border-red-200 pl-2">{selectedCondition.note}</p>
                       </div>
                     )}
+                    <div>
+                      <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Lab Test</p>
+                      <p className="text-sm text-foreground leading-relaxed">{selectedCondition.labTest || "No lab tests specified."}</p>
+                    </div>
                     {selectedCondition.treatment && (
                       <div>
                         <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-1">Treatment</p>
