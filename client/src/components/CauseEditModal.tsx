@@ -20,11 +20,13 @@ interface CauseEditModalProps {
 }
 
 export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModalProps) {
-  const [formData, setFormData] = useState<{name: string, symptoms: string, note: string, treatment: string}>({
+  const [formData, setFormData] = useState<{name: string, symptoms: string, note: string, treatment: string, details: string, labTest: string}>({
     name: "",
     symptoms: "",
     note: "",
-    treatment: ""
+    treatment: "",
+    details: "",
+    labTest: ""
   });
 
   useEffect(() => {
@@ -33,7 +35,9 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
         name: cause.name,
         symptoms: cause.symptoms.join(", "),
         note: cause.note || "",
-        treatment: cause.treatment || ""
+        treatment: cause.treatment || "",
+        details: cause.details || "",
+        labTest: cause.labTest || ""
       });
     }
   }, [cause]);
@@ -48,7 +52,9 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
       name: formData.name,
       symptoms: symptomsList,
       note: formData.note,
-      treatment: formData.treatment
+      treatment: formData.treatment,
+      details: formData.details,
+      labTest: formData.labTest
     });
     onClose();
   };
@@ -74,7 +80,25 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
               id="edit-symptoms" 
               value={formData.symptoms}
               onChange={e => setFormData({...formData, symptoms: e.target.value})}
-              className="h-32"
+              className="h-24"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-details">Condition Details</Label>
+            <Textarea 
+              id="edit-details" 
+              value={formData.details}
+              onChange={e => setFormData({...formData, details: e.target.value})}
+              className="h-24"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-lab-test">Lab Tests</Label>
+            <Textarea 
+              id="edit-lab-test" 
+              value={formData.labTest}
+              onChange={e => setFormData({...formData, labTest: e.target.value})}
+              className="h-24"
             />
           </div>
           <div className="space-y-2">

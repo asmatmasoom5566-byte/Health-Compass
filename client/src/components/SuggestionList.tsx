@@ -25,6 +25,7 @@ interface SuggestionListProps {
   selectedSymptoms: string[];
   onEdit: (cause: Cause) => void;
   onDelete: (id: string) => void;
+  onSelect: (cause: Cause) => void;
 }
 
 interface ScoredCause extends Cause {
@@ -186,7 +187,7 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-3">
               <div>
                 <p className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">Symptoms Detail</p>
                 <div className="flex flex-wrap gap-1">
@@ -209,10 +210,24 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
                 </div>
               </div>
 
+              <div>
+                <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Details</p>
+                <p className="text-[10px] text-foreground leading-relaxed">
+                  {cause.details || "No details available."}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Lab Test</p>
+                <p className="text-[10px] text-foreground leading-relaxed">
+                  {cause.labTest || "No lab tests specified."}
+                </p>
+              </div>
+
               {cause.note && (
                 <div>
                   <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Note</p>
-                  <p className="text-[10px] text-red-700 dark:text-red-300 italic border-l-2 border-red-200 dark:border-red-900 pl-2 line-clamp-3">
+                  <p className="text-[10px] text-red-700 dark:text-red-300 italic border-l-2 border-red-200 dark:border-red-900 pl-2">
                     {cause.note}
                   </p>
                 </div>
