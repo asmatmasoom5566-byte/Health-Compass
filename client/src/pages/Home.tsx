@@ -6,8 +6,9 @@ import { SuggestionList } from '@/components/SuggestionList';
 import { DataManager } from '@/components/DataManager';
 import { CauseEditModal } from '@/components/CauseEditModal';
 import { Cause } from '@shared/schema';
-import { Stethoscope, Clock } from 'lucide-react';
+import { Stethoscope, Clock, ScrollText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function Home() {
   const {
