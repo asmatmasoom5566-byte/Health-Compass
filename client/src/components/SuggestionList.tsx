@@ -408,7 +408,7 @@ export function SuggestionList({ causes, selectedSymptoms, onEdit, onDelete }: S
                 <Send className="w-4 h-4" />
               </Button>
             </form>
-          </ScrollArea>
+          </div>
 
           <DialogFooter className="px-6 py-4 border-t">
             <Button variant="outline" onClick={() => setViewingCause(null)}>Close</Button>
