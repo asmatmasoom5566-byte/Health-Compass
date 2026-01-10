@@ -136,6 +136,20 @@ export function SuggestionList({
     }
   };
 
+  const [expandedCauseIds, setExpandedCauseIds] = useState<Set<string>>(new Set());
+
+  const toggleExpand = (id: string) => {
+    setExpandedCauseIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
   const scoredCauses = useMemo(() => {
     return causes
       .map((cause) => {
@@ -231,7 +245,7 @@ export function SuggestionList({
               <div className="flex-1">
                 <h3
                   className="text-xl font-black text-primary flex items-center gap-2 cursor-pointer hover:underline decoration-2"
-                  onClick={() => setViewingCause(cause)}
+                  onClick={() => toggleExpand(cause.id)}
                 >
                   {cause.name}
                   {cause.matchCount === cause.symptoms.length && (
@@ -305,12 +319,27 @@ export function SuggestionList({
                 </div>
               </div>
 
-              {cause.details && (
+              {expandedCauseIds.has(cause.id) && cause.details && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="overflow-hidden"
+                >
+                  <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1 border-b border-primary/10 pb-0.5">
+                    Condition Details
+                  </p>
+                  <p className="text-[10px] text-foreground leading-relaxed whitespace-pre-wrap">
+                    {cause.details}
+                  </p>
+                </motion.div>
+              )}
+
+              {!expandedCauseIds.has(cause.id) && cause.details && (
                 <div>
                   <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1 border-b border-primary/10 pb-0.5">
                     Symptom Details
                   </p>
-                  <p className="text-[10px] text-foreground leading-relaxed">
+                  <p className="text-[10px] text-foreground leading-relaxed line-clamp-2">
                     {cause.details}
                   </p>
                 </div>
