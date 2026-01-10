@@ -21,9 +21,10 @@ interface CauseEditModalProps {
 }
 
 export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModalProps) {
-  const [formData, setFormData] = useState<{name: string, symptoms: string, note: string, treatment: string, details: string, labTest: string}>({
+  const [formData, setFormData] = useState<{name: string, symptoms: string, atypicalSymptoms: string, note: string, treatment: string, details: string, labTest: string}>({
     name: "",
     symptoms: "",
+    atypicalSymptoms: "",
     note: "",
     treatment: "",
     details: "",
@@ -35,6 +36,7 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
       setFormData({
         name: cause.name,
         symptoms: cause.symptoms.join(", "),
+        atypicalSymptoms: cause.atypicalSymptoms?.join(", ") || "",
         note: cause.note || "",
         treatment: cause.treatment || "",
         details: cause.details || "",
@@ -48,10 +50,12 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
     if (!cause) return;
 
     const symptomsList = formData.symptoms.split(',').map(s => s.trim()).filter(Boolean);
+    const atypicalList = formData.atypicalSymptoms.split(',').map(s => s.trim()).filter(Boolean);
     
     onSave(cause.id, {
       name: formData.name,
       symptoms: symptomsList,
+      atypicalSymptoms: atypicalList,
       note: formData.note,
       treatment: formData.treatment,
       details: formData.details,
@@ -82,6 +86,15 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
                 id="edit-symptoms" 
                 value={formData.symptoms}
                 onChange={e => setFormData({...formData, symptoms: e.target.value})}
+                className="h-24"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-atypical">Atypical Symptoms (comma separated)</Label>
+              <Textarea 
+                id="edit-atypical" 
+                value={formData.atypicalSymptoms}
+                onChange={e => setFormData({...formData, atypicalSymptoms: e.target.value})}
                 className="h-24"
               />
             </div>

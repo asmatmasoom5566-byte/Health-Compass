@@ -235,10 +235,10 @@ export function SuggestionList({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-3">
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mt-3">
               <div>
                 <p className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">
-                  Symptoms Detail
+                  Symptoms
                 </p>
                 <div className="flex flex-wrap gap-1">
                   {cause.symptoms.map((symptom) => {
@@ -264,23 +264,41 @@ export function SuggestionList({
 
               <div>
                 <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">
-                  Details
+                  Symptom Details
                 </p>
                 <p className="text-[10px] text-foreground leading-relaxed">
                   {cause.details || "No details available."}
                 </p>
               </div>
 
-              {cause.note && (
-                <div>
-                  <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">
-                    Note
-                  </p>
-                  <p className="text-[10px] text-red-700 dark:text-red-300 italic border-l-2 border-red-200 dark:border-red-900 pl-2">
-                    {cause.note}
-                  </p>
+              <div>
+                <p className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1">
+                  Atypical Symptoms
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  {cause.atypicalSymptoms?.length ? (
+                    cause.atypicalSymptoms.map((symptom) => (
+                      <span
+                        key={symptom}
+                        className="text-[9px] px-1.5 py-0.5 rounded border bg-purple-50 border-purple-100 text-purple-700 dark:bg-purple-900/20 dark:border-purple-800 dark:text-purple-400"
+                      >
+                        {symptom}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-[9px] text-muted-foreground italic">None specified</span>
+                  )}
                 </div>
-              )}
+              </div>
+
+              <div>
+                <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">
+                  Note
+                </p>
+                <p className="text-[10px] text-foreground leading-relaxed">
+                  {cause.note || "No note available."}
+                </p>
+              </div>
 
               <div>
                 <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">
@@ -291,16 +309,14 @@ export function SuggestionList({
                 </p>
               </div>
 
-              {cause.treatment && (
-                <div>
-                  <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-1">
-                    Treatment
-                  </p>
-                  <p className="text-[10px] text-foreground leading-relaxed">
-                    {cause.treatment}
-                  </p>
-                </div>
-              )}
+              <div>
+                <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-1">
+                  Treatment
+                </p>
+                <p className="text-[10px] text-foreground leading-relaxed">
+                  {cause.treatment || "No treatment specified."}
+                </p>
+              </div>
             </div>
 
             <div className="space-y-1 mt-3">
@@ -383,6 +399,24 @@ export function SuggestionList({
                   })}
                 </div>
               </div>
+
+              {viewingCause?.atypicalSymptoms && viewingCause.atypicalSymptoms.length > 0 && (
+                <div className="bg-purple-500/5 p-4 rounded-lg border border-purple-500/10">
+                  <p className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-2">
+                    Atypical Symptoms
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {viewingCause.atypicalSymptoms.map((symptom) => (
+                      <span
+                        key={symptom}
+                        className="text-xs px-3 py-1 rounded-full border border-purple-200 bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:border-purple-800 dark:text-purple-400 font-medium"
+                      >
+                        {symptom}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {viewingCause?.details && (
                 <div className="bg-muted/30 p-4 rounded-lg border border-border">
