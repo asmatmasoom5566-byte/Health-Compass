@@ -205,21 +205,21 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-lab-test">Lab Tests</Label>
-              <Textarea 
-                id="edit-lab-test" 
-                value={formData.labTest}
-                onChange={e => setFormData({...formData, labTest: e.target.value})}
-                className="h-24"
-              />
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="edit-note">Specific Note</Label>
               <Textarea 
                 id="edit-note" 
                 value={formData.note}
                 onChange={e => setFormData({...formData, note: e.target.value})}
                 className="h-20"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-lab-test">Lab Tests</Label>
+              <Textarea 
+                id="edit-lab-test" 
+                value={formData.labTest}
+                onChange={e => setFormData({...formData, labTest: e.target.value})}
+                className="h-24"
               />
             </div>
             <div className="space-y-2">
