@@ -49,6 +49,22 @@ export function SuggestionList({
   onEdit,
   onDelete,
 }: SuggestionListProps) {
+  useEffect(() => {
+    const savedFontSize = localStorage.getItem('app-font-size');
+    if (savedFontSize) {
+      document.documentElement.style.setProperty('--app-font-size', `${savedFontSize}px`);
+    }
+    
+    const savedTheme = localStorage.getItem('app-theme');
+    if (savedTheme) {
+      const root = document.documentElement;
+      ["teal", "blue", "green", "red", "purple", "orange"].forEach(t => root.classList.remove(`theme-${t}`));
+      if (savedTheme !== "teal") {
+        root.classList.add(`theme-${savedTheme}`);
+      }
+    }
+  }, []);
+
   const [viewingCause, setViewingCause] = useState<ScoredCause | null>(null);
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<

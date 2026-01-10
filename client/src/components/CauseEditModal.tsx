@@ -37,7 +37,16 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
   });
 
   useEffect(() => {
+    const savedFontSize = localStorage.getItem('app-font-size');
+    if (savedFontSize) setFontSize(parseInt(savedFontSize, 10));
+    
+    const savedTheme = localStorage.getItem('app-theme');
+    if (savedTheme) setTheme(savedTheme);
+  }, [isOpen]);
+
+  useEffect(() => {
     document.documentElement.style.setProperty('--app-font-size', `${fontSize}px`);
+    localStorage.setItem('app-font-size', fontSize.toString());
   }, [fontSize]);
 
   useEffect(() => {
@@ -46,6 +55,7 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
     if (theme !== "teal") {
       root.classList.add(`theme-${theme}`);
     }
+    localStorage.setItem('app-theme', theme);
   }, [theme]);
 
   const cycleTheme = () => {
@@ -65,8 +75,18 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
         details: cause.details || "",
         labTest: cause.labTest || ""
       });
+    } else {
+      setFormData({
+        name: "",
+        symptoms: "",
+        atypicalSymptoms: "",
+        note: "",
+        treatment: "",
+        details: "",
+        labTest: ""
+      });
     }
-  }, [cause]);
+  }, [cause, isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,11 +107,31 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
     onClose();
   };
 
+  const handleCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const symptomsList = formData.symptoms.split(',').map(s => s.trim()).filter(Boolean);
+    const atypicalList = formData.atypicalSymptoms.split(',').map(s => s.trim()).filter(Boolean);
+    
+    onSave("", {
+      name: formData.name,
+      symptoms: symptomsList,
+      atypicalSymptoms: atypicalList,
+      note: formData.note,
+      treatment: formData.treatment,
+      details: formData.details,
+      labTest: formData.labTest
+    });
+    onClose();
+  };
+
+  const formAction = cause ? handleSubmit : handleCreate;
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader className="flex flex-row items-center justify-between pr-8">
-          <DialogTitle>Edit Condition</DialogTitle>
+          <DialogTitle>{cause ? "Edit Condition" : "Add Condition"}</DialogTitle>
           <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-full border border-border scale-90">
             <div className="flex items-center gap-1 border-r pr-2">
               <Button 
@@ -126,7 +166,7 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
           </div>
         </DialogHeader>
         <ScrollArea className="max-h-[80vh]">
-          <form onSubmit={handleSubmit} className="space-y-4 pt-4 px-1 pb-4">
+          <form onSubmit={formAction} className="space-y-4 pt-4 px-1 pb-4">
             <div className="space-y-2">
               <Label htmlFor="edit-name">Condition Name</Label>
               <Input 
