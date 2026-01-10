@@ -199,10 +199,10 @@ export function SuggestionList({
             transition={{ delay: index * 0.05 }}
             className="group relative bg-white dark:bg-slate-800 p-5 rounded-xl border border-border shadow-sm hover:shadow-md transition-all"
           >
-            <div className="flex justify-between items-start mb-3">
+            <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
                 <h3
-                  className="text-lg font-bold text-foreground flex items-center gap-2 cursor-pointer hover:text-primary transition-colors"
+                  className="text-xl font-black text-primary flex items-center gap-2 cursor-pointer hover:underline decoration-2"
                   onClick={() => setViewingCause(cause)}
                 >
                   {cause.name}
@@ -212,11 +212,26 @@ export function SuggestionList({
                     </span>
                   )}
                 </h3>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Likelihood: {cause.score}%
+                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden mt-2">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${cause.score}%` }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className={cn(
+                      "h-full rounded-full transition-colors duration-500",
+                      cause.score > 75
+                        ? "bg-gradient-to-r from-green-500 to-green-400"
+                        : cause.score > 40
+                          ? "bg-gradient-to-r from-amber-500 to-amber-400"
+                          : "bg-gradient-to-r from-slate-400 to-slate-300",
+                    )}
+                  />
+                </div>
+                <p className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground mt-1">
+                  Database Match Likelihood: {cause.score}%
                 </p>
               </div>
-              <div className="flex gap-1">
+              <div className="flex gap-1 ml-4">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -235,9 +250,9 @@ export function SuggestionList({
               </div>
             </div>
 
-            <div className="flex flex-col gap-4 mt-3">
+            <div className="flex flex-col gap-4">
               <div>
-                <p className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">
+                <p className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1 border-b border-green-100 dark:border-green-900/30 pb-0.5">
                   Symptoms
                 </p>
                 <div className="flex flex-wrap gap-1">
@@ -264,7 +279,7 @@ export function SuggestionList({
 
               {cause.details && (
                 <div>
-                  <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">
+                  <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1 border-b border-primary/10 pb-0.5">
                     Symptom Details
                   </p>
                   <p className="text-[10px] text-foreground leading-relaxed">
@@ -275,7 +290,7 @@ export function SuggestionList({
 
               {cause.atypicalSymptoms && cause.atypicalSymptoms.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1">
+                  <p className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 border-b border-purple-100 dark:border-purple-900/30 pb-0.5">
                     Atypical Symptoms
                   </p>
                   <div className="flex flex-wrap gap-1">
@@ -293,10 +308,10 @@ export function SuggestionList({
 
               {cause.note && (
                 <div>
-                  <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">
-                    Note
+                  <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 border-b border-red-100 dark:border-red-900/30 pb-0.5">
+                    Specific Note
                   </p>
-                  <p className="text-[10px] text-foreground leading-relaxed">
+                  <p className="text-[10px] text-foreground leading-relaxed font-medium">
                     {cause.note}
                   </p>
                 </div>
@@ -304,7 +319,7 @@ export function SuggestionList({
 
               {cause.labTest && (
                 <div>
-                  <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">
+                  <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 border-b border-blue-100 dark:border-blue-900/30 pb-0.5">
                     Lab Test
                   </p>
                   <p className="text-[10px] text-foreground leading-relaxed">
@@ -315,7 +330,7 @@ export function SuggestionList({
 
               {cause.treatment && (
                 <div>
-                  <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-1">
+                  <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-1 border-b border-teal-100 dark:border-teal-900/30 pb-0.5">
                     Treatment
                   </p>
                   <p className="text-[10px] text-foreground leading-relaxed">
@@ -323,24 +338,6 @@ export function SuggestionList({
                   </p>
                 </div>
               )}
-            </div>
-
-            <div className="space-y-1 mt-3">
-              <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${cause.score}%` }}
-                  transition={{ duration: 1, ease: "easeOut" }}
-                  className={cn(
-                    "h-full rounded-full transition-colors duration-500",
-                    cause.score > 75
-                      ? "bg-gradient-to-r from-green-500 to-green-400"
-                      : cause.score > 40
-                        ? "bg-gradient-to-r from-amber-500 to-amber-400"
-                        : "bg-gradient-to-r from-slate-400 to-slate-300",
-                  )}
-                />
-              </div>
             </div>
           </motion.div>
         ))
