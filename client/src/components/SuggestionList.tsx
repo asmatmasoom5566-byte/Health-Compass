@@ -50,19 +50,31 @@ export function SuggestionList({
   onDelete,
 }: SuggestionListProps) {
   useEffect(() => {
-    const savedFontSize = localStorage.getItem('app-font-size');
-    if (savedFontSize) {
-      document.documentElement.style.setProperty('--app-font-size', `${savedFontSize}px`);
-    }
-    
-    const savedTheme = localStorage.getItem('app-theme');
-    if (savedTheme) {
-      const root = document.documentElement;
-      ["teal", "blue", "green", "red", "purple", "orange"].forEach(t => root.classList.remove(`theme-${t}`));
-      if (savedTheme !== "teal") {
-        root.classList.add(`theme-${savedTheme}`);
+    const handleStorageChange = () => {
+      const savedFontSize = localStorage.getItem('app-font-size');
+      if (savedFontSize) {
+        document.documentElement.style.setProperty('--app-font-size', `${savedFontSize}px`);
       }
-    }
+      
+      const savedTheme = localStorage.getItem('app-theme');
+      if (savedTheme) {
+        const root = document.documentElement;
+        ["teal", "blue", "green", "red", "purple", "orange"].forEach(t => root.classList.remove(`theme-${t}`));
+        if (savedTheme !== "teal") {
+          root.classList.add(`theme-${savedTheme}`);
+        }
+      }
+    };
+
+    handleStorageChange();
+    window.addEventListener('storage', handleStorageChange);
+    // Also listen for a custom event from the modal since storage event only fires for other tabs
+    window.addEventListener('app-style-update', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('app-style-update', handleStorageChange);
+    };
   }, []);
 
   const [viewingCause, setViewingCause] = useState<ScoredCause | null>(null);

@@ -47,6 +47,7 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
   useEffect(() => {
     document.documentElement.style.setProperty('--app-font-size', `${fontSize}px`);
     localStorage.setItem('app-font-size', fontSize.toString());
+    window.dispatchEvent(new Event('app-style-update'));
   }, [fontSize]);
 
   useEffect(() => {
@@ -56,6 +57,7 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
       root.classList.add(`theme-${theme}`);
     }
     localStorage.setItem('app-theme', theme);
+    window.dispatchEvent(new Event('app-style-update'));
   }, [theme]);
 
   const cycleTheme = () => {
