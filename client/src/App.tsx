@@ -47,7 +47,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div className="fixed top-4 right-4 z-50 flex items-center gap-2 bg-background/80 backdrop-blur shadow-sm p-1.5 rounded-full border border-border">
+        <div className="fixed top-4 right-4 z-[100] flex items-center gap-2 bg-background/80 backdrop-blur shadow-sm p-1.5 rounded-full border border-border">
           <div className="flex items-center gap-1 border-r pr-2">
             <Button 
               size="icon" 
