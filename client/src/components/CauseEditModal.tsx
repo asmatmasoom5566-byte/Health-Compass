@@ -12,6 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Plus, Minus, Palette } from "lucide-react";
+
+const THEMES = ["teal", "blue", "green", "red", "purple", "orange"];
 
 interface CauseEditModalProps {
   cause: Cause | null;
@@ -21,6 +24,8 @@ interface CauseEditModalProps {
 }
 
 export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModalProps) {
+  const [fontSize, setFontSize] = useState(14);
+  const [theme, setTheme] = useState("teal");
   const [formData, setFormData] = useState<{name: string, symptoms: string, atypicalSymptoms: string, note: string, treatment: string, details: string, labTest: string}>({
     name: "",
     symptoms: "",
@@ -30,6 +35,24 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
     details: "",
     labTest: ""
   });
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--app-font-size', `${fontSize}px`);
+  }, [fontSize]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    THEMES.forEach(t => root.classList.remove(`theme-${t}`));
+    if (theme !== "teal") {
+      root.classList.add(`theme-${theme}`);
+    }
+  }, [theme]);
+
+  const cycleTheme = () => {
+    const currentIndex = THEMES.indexOf(theme);
+    const nextIndex = (currentIndex + 1) % THEMES.length;
+    setTheme(THEMES[nextIndex]);
+  };
 
   useEffect(() => {
     if (cause) {
@@ -66,9 +89,41 @@ export function CauseEditModal({ cause, isOpen, onClose, onSave }: CauseEditModa
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent>
-        <DialogHeader>
+      <DialogContent className="sm:max-w-2xl">
+        <DialogHeader className="flex flex-row items-center justify-between pr-8">
           <DialogTitle>Edit Condition</DialogTitle>
+          <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-full border border-border scale-90">
+            <div className="flex items-center gap-1 border-r pr-2">
+              <Button 
+                size="icon" 
+                variant="ghost" 
+                className="h-7 w-7 rounded-full" 
+                onClick={() => setFontSize(s => Math.max(12, s - 1))}
+                type="button"
+              >
+                <Minus className="h-3 w-3" />
+              </Button>
+              <span className="text-[10px] font-bold w-4 text-center">{fontSize}</span>
+              <Button 
+                size="icon" 
+                variant="ghost" 
+                className="h-7 w-7 rounded-full" 
+                onClick={() => setFontSize(s => Math.min(20, s + 1))}
+                type="button"
+              >
+                <Plus className="h-3 w-3" />
+              </Button>
+            </div>
+            <Button 
+              size="icon" 
+              variant="ghost" 
+              className="h-7 w-7 rounded-full text-primary" 
+              onClick={cycleTheme}
+              type="button"
+            >
+              <Palette className="h-4 w-4" />
+            </Button>
+          </div>
         </DialogHeader>
         <ScrollArea className="max-h-[80vh]">
           <form onSubmit={handleSubmit} className="space-y-4 pt-4 px-1 pb-4">
