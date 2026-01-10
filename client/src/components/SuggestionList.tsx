@@ -317,33 +317,33 @@ export function SuggestionList({
                     );
                   })}
                 </div>
+
+                {expandedCauseIds.has(cause.id) && cause.details && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="overflow-hidden mt-3 bg-primary/5 p-2 rounded-lg border border-primary/10"
+                  >
+                    <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1 border-b border-primary/20 pb-0.5">
+                      Condition Details
+                    </p>
+                    <p className="text-[10px] text-foreground leading-relaxed whitespace-pre-wrap">
+                      {cause.details}
+                    </p>
+                  </motion.div>
+                )}
+
+                {!expandedCauseIds.has(cause.id) && cause.details && (
+                  <div className="mt-2">
+                    <p className="text-[10px] font-bold text-primary/60 uppercase tracking-widest mb-1 border-b border-primary/5 pb-0.5">
+                      Quick Details
+                    </p>
+                    <p className="text-[10px] text-foreground/70 leading-relaxed line-clamp-1">
+                      {cause.details}
+                    </p>
+                  </div>
+                )}
               </div>
-
-              {expandedCauseIds.has(cause.id) && cause.details && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  className="overflow-hidden"
-                >
-                  <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1 border-b border-primary/10 pb-0.5">
-                    Condition Details
-                  </p>
-                  <p className="text-[10px] text-foreground leading-relaxed whitespace-pre-wrap">
-                    {cause.details}
-                  </p>
-                </motion.div>
-              )}
-
-              {!expandedCauseIds.has(cause.id) && cause.details && (
-                <div>
-                  <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1 border-b border-primary/10 pb-0.5">
-                    Symptom Details
-                  </p>
-                  <p className="text-[10px] text-foreground leading-relaxed line-clamp-2">
-                    {cause.details}
-                  </p>
-                </div>
-              )}
 
               {cause.atypicalSymptoms && cause.atypicalSymptoms.length > 0 && (
                 <div>
