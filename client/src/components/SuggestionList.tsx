@@ -235,7 +235,7 @@ export function SuggestionList({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mt-3">
+            <div className="flex flex-col gap-4 mt-3">
               <div>
                 <p className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">
                   Symptoms
@@ -262,61 +262,67 @@ export function SuggestionList({
                 </div>
               </div>
 
-              <div>
-                <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">
-                  Symptom Details
-                </p>
-                <p className="text-[10px] text-foreground leading-relaxed">
-                  {cause.details || "No details available."}
-                </p>
-              </div>
+              {cause.details && (
+                <div>
+                  <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">
+                    Symptom Details
+                  </p>
+                  <p className="text-[10px] text-foreground leading-relaxed">
+                    {cause.details}
+                  </p>
+                </div>
+              )}
 
-              <div>
-                <p className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1">
-                  Atypical Symptoms
-                </p>
-                <div className="flex flex-wrap gap-1">
-                  {cause.atypicalSymptoms?.length ? (
-                    cause.atypicalSymptoms.map((symptom) => (
+              {cause.atypicalSymptoms && cause.atypicalSymptoms.length > 0 && (
+                <div>
+                  <p className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1">
+                    Atypical Symptoms
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {cause.atypicalSymptoms.map((symptom) => (
                       <span
                         key={symptom}
                         className="text-[9px] px-1.5 py-0.5 rounded border bg-purple-50 border-purple-100 text-purple-700 dark:bg-purple-900/20 dark:border-purple-800 dark:text-purple-400"
                       >
                         {symptom}
                       </span>
-                    ))
-                  ) : (
-                    <span className="text-[9px] text-muted-foreground italic">None specified</span>
-                  )}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div>
-                <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">
-                  Note
-                </p>
-                <p className="text-[10px] text-foreground leading-relaxed">
-                  {cause.note || "No note available."}
-                </p>
-              </div>
+              {cause.note && (
+                <div>
+                  <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">
+                    Note
+                  </p>
+                  <p className="text-[10px] text-foreground leading-relaxed">
+                    {cause.note}
+                  </p>
+                </div>
+              )}
 
-              <div>
-                <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">
-                  Lab Test
-                </p>
-                <p className="text-[10px] text-foreground leading-relaxed">
-                  {cause.labTest || "No lab tests specified."}
-                </p>
-              </div>
+              {cause.labTest && (
+                <div>
+                  <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">
+                    Lab Test
+                  </p>
+                  <p className="text-[10px] text-foreground leading-relaxed">
+                    {cause.labTest}
+                  </p>
+                </div>
+              )}
 
-              <div>
-                <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-1">
-                  Treatment
-                </p>
-                <p className="text-[10px] text-foreground leading-relaxed">
-                  {cause.treatment || "No treatment specified."}
-                </p>
-              </div>
+              {cause.treatment && (
+                <div>
+                  <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-1">
+                    Treatment
+                  </p>
+                  <p className="text-[10px] text-foreground leading-relaxed">
+                    {cause.treatment}
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="space-y-1 mt-3">
