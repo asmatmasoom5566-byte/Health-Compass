@@ -99,7 +99,7 @@ export default function Home() {
                 <ScrollArea className="h-[300px] pr-4">
                   <div className="space-y-4">
                     <div>
-                      <p className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">Symptoms Detail</p>
+                      <p className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">Symptoms</p>
                       <div className="flex flex-wrap gap-1">
                         {selectedCondition.symptoms.map(s => (
                           <span key={s} className="text-[10px] px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-100 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800">
@@ -108,9 +108,21 @@ export default function Home() {
                         ))}
                       </div>
                     </div>
+                    {selectedCondition.atypicalSymptoms && selectedCondition.atypicalSymptoms.length > 0 && (
+                      <div>
+                        <p className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1">Atypical Symptoms</p>
+                        <div className="flex flex-wrap gap-1">
+                          {selectedCondition.atypicalSymptoms.map(s => (
+                            <span key={s} className="text-[10px] px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-800">
+                              {s}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     <div>
-                      <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Details</p>
-                      <p className="text-sm text-foreground leading-relaxed">{selectedCondition.details || "No details available."}</p>
+                      <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Condition Details</p>
+                      <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{selectedCondition.details || "No details available."}</p>
                     </div>
                     {selectedCondition.note && (
                       <div>

@@ -48,6 +48,7 @@ export function SuggestionList({
   selectedSymptoms,
   onEdit,
   onDelete,
+  onSelect,
 }: SuggestionListProps) {
   useEffect(() => {
     const handleStorageChange = () => {
@@ -68,7 +69,6 @@ export function SuggestionList({
 
     handleStorageChange();
     window.addEventListener('storage', handleStorageChange);
-    // Also listen for a custom event from the modal since storage event only fires for other tabs
     window.addEventListener('app-style-update', handleStorageChange);
     
     return () => {
@@ -79,9 +79,7 @@ export function SuggestionList({
 
   const [viewingCause, setViewingCause] = useState<ScoredCause | null>(null);
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
-  const [activeConversationId, setActiveConversationId] = useState<
-    number | null
-  >(null);
+  const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const [chatInput, setChatInput] = useState("");
 
   const { data: messages = [] } = useQuery({
@@ -98,7 +96,6 @@ export function SuggestionList({
     },
     onSuccess: (data) => {
       setActiveConversationId(data.id);
-      // Automatically send initial analysis prompt
       sendMessage.mutate({
         conversationId: data.id,
         content: `I am experiencing these symptoms: ${selectedSymptoms.join(", ")}. Based on these, can you provide a medical analysis and suggest potential conditions?`,
@@ -134,12 +131,6 @@ export function SuggestionList({
     if (!activeConversationId) {
       createConversation.mutate();
     }
-  };
-
-  const [expandedCauseIds, setExpandedCauseIds] = useState<Set<string>>(new Set());
-
-  const toggleExpand = (cause: Cause) => {
-    onSelect(cause);
   };
 
   const scoredCauses = useMemo(() => {
