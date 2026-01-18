@@ -24,6 +24,9 @@ export const causeSchema = z.object({
   id: z.string(), // Client-side UUID
   name: z.string().min(1, "Name is required"),
   symptoms: z.array(z.string()),
+  atypicalSymptoms: z.array(z.string()).optional(),
+  details: z.string().optional(),
+  labTest: z.string().optional(),
   note: z.string().optional(),
   treatment: z.string().optional()
 });

@@ -1,14 +1,31 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Clock, Tag } from "lucide-react";
+import { Clock, Tag, Copy, Check } from "lucide-react";
 import { format } from "date-fns";
 import { SearchHistory } from "@shared/schema";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 export default function History() {
-  const { data: history = [], isLoading } = useQuery<SearchHistory[]>({
+  const { toast } = useToast();
+  const [copiedId, setCopiedId] = useState<number | null>(null);
+  const { data: rawHistory = [], isLoading } = useQuery<SearchHistory[]>({
     queryKey: ["/api/search-history"],
   });
+
+  const history = rawHistory.slice(0, 5);
+
+  const copyToClipboard = (id: number, symptoms: string[]) => {
+    navigator.clipboard.writeText(symptoms.join(", "));
+    setCopiedId(id);
+    toast({
+      title: "Copied!",
+      description: "Symptoms copied to clipboard",
+    });
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
@@ -42,6 +59,18 @@ export default function History() {
                     <Clock className="w-3 h-3" />
                     {format(new Date(item.timestamp), "PPP p")}
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => copyToClipboard(item.id, item.symptoms)}
+                  >
+                    {copiedId === item.id ? (
+                      <Check className="w-4 h-4 text-green-500" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </Button>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">

@@ -6,6 +6,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/Home";
 import History from "@/pages/History";
 import NotFound from "@/pages/not-found";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Plus, Minus, Palette } from "lucide-react";
 
 function Router() {
   return (

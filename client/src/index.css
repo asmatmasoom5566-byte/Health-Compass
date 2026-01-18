@@ -62,12 +62,22 @@
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary;
     font-family: var(--font-body);
+    font-size: var(--app-font-size, 14px);
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     @apply font-bold tracking-tight text-foreground;
   }
+
+  .text-\[9px\] { font-size: calc(var(--app-font-size, 14px) * 0.64) !important; }
+  .text-\[10px\] { font-size: calc(var(--app-font-size, 14px) * 0.71) !important; }
+  .text-xs { font-size: calc(var(--app-font-size, 14px) * 0.85) !important; }
+  .text-sm { font-size: var(--app-font-size, 14px) !important; }
+  .text-base { font-size: calc(var(--app-font-size, 14px) * 1.14) !important; }
+  .text-lg { font-size: calc(var(--app-font-size, 14px) * 1.28) !important; }
+  .text-xl { font-size: calc(var(--app-font-size, 14px) * 1.42) !important; }
+  .text-2xl { font-size: calc(var(--app-font-size, 14px) * 1.71) !important; }
 }
 
 @layer components {

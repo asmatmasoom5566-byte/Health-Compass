@@ -23,7 +23,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSearchHistory(): Promise<SearchHistory[]> {
-    return await db.select().from(searchHistory).orderBy(desc(searchHistory.timestamp));
+    return await db.select().from(searchHistory).orderBy(desc(searchHistory.timestamp)).limit(5);
   }
 
   async addSearchHistory(insertHistory: InsertSearchHistory): Promise<SearchHistory> {
