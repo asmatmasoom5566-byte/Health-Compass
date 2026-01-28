@@ -7,14 +7,6 @@ const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
 });
 
-export async function chat(messages: { role: "user" | "assistant" | "system", content: string }[]) {
-  const response = await openai.chat.completions.create({
-    model: "gpt-4o",
-    messages: messages as any,
-  });
-  return { content: response.choices[0]?.message?.content || "" };
-}
-
 export function registerChatRoutes(app: Express): void {
   // Get all conversations
   app.get("/api/conversations", async (req: Request, res: Response) => {
