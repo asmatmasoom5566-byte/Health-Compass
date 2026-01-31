@@ -126,74 +126,23 @@ export default function Home() {
                     selectedSymptoms={selectedSymptoms}
                     onAdd={(s) => {
                       addSymptom(s);
-                      if (!session) startAnalysis(s);
                     }}
                     onRemove={removeSymptom}
                     onClear={() => {
                       clearSymptoms();
-                      setSession(null);
                     }}
                     knownSymptoms={knownSymptoms}
                   />
                 </CardContent>
               </Card>
 
-              {session && (
-                <Card className="rounded-2xl shadow-md border-primary/20 bg-primary/5 animate-in fade-in zoom-in-95 duration-300">
-                  <CardHeader>
-                    <CardTitle className="text-sm font-bold text-primary flex items-center gap-2 uppercase tracking-wider">
-                      <ArrowRight className="w-4 h-4" />
-                      AI Follow-up
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    {session.status === 'active' ? (
-                      <div className="space-y-4">
-                        <p className="text-lg font-medium text-foreground leading-tight">
-                          {session.currentQuestion}
-                        </p>
-                        <div className="flex gap-3">
-                          <Button 
-                            className="flex-1 bg-green-600 hover:bg-green-700 text-white gap-2 h-12"
-                            onClick={() => submitAnswer(true)}
-                            disabled={loading}
-                          >
-                            <Check className="w-5 h-5" /> YES
-                          </Button>
-                          <Button 
-                            className="flex-1 bg-red-600 hover:bg-red-700 text-white gap-2 h-12"
-                            onClick={() => submitAnswer(false)}
-                            disabled={loading}
-                          >
-                            <X className="w-5 h-5" /> NO
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        <p className="text-sm font-semibold text-muted-foreground uppercase">Analysis Completed</p>
-                        <div className="space-y-2">
-                          {session.diagnosisScores?.map((score, idx) => (
-                            <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-800 border border-border shadow-sm">
-                              <span className="font-bold">{score.name}</span>
-                              <span className="text-primary font-mono text-sm">{score.score}% Match</span>
-                            </div>
-                          ))}
-                        </div>
-                        <Button variant="outline" className="w-full" onClick={() => setSession(null)}>New Analysis</Button>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              )}
-
               {selectedCondition ? (
-                <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-border animate-in fade-in slide-in-from-top-4 duration-300">
-                  <div className="flex items-center justify-between mb-4">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-border animate-in fade-in slide-in-from-top-4 duration-300 max-h-[calc(100vh-250px)] flex flex-col">
+                  <div className="flex items-center justify-between mb-4 flex-shrink-0">
                     <h3 className="text-lg font-bold text-foreground font-display">{selectedCondition.name}</h3>
                     <Button variant="ghost" size="sm" onClick={() => setSelectedCondition(null)}>Close</Button>
                   </div>
-                  <ScrollArea className="h-[400px] pr-4">
+                  <ScrollArea className="flex-1 pr-4">
                     <div className="space-y-4">
                       <div>
                         <p className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">Symptoms</p>
