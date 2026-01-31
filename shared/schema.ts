@@ -11,6 +11,7 @@ export const causes = pgTable("causes", {
   name: text("name").notNull(),
   baseRate: integer("base_rate").notNull(), // 0-100
   symptoms: jsonb("symptoms").$type<string[]>().notNull(),
+  fullReview: text("full_review"),
 });
 
 export const searchHistory = pgTable("search_history", {
@@ -38,7 +39,8 @@ export const causeSchema = z.object({
   details: z.string().optional(),
   labTest: z.string().optional(),
   note: z.string().optional(),
-  treatment: z.string().optional()
+  treatment: z.string().optional(),
+  fullReview: z.string().optional()
 });
 
 export const appDataSchema = z.object({

@@ -113,142 +113,150 @@ export default function Home() {
           
           {/* Left Column: Input */}
           <div className="lg:col-span-5 space-y-6">
-            <Card className="rounded-2xl shadow-sm border-border overflow-visible">
-              <CardHeader>
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-primary" />
-                  Symptom Entry
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <SymptomInput 
-                  selectedSymptoms={selectedSymptoms}
-                  onAdd={(s) => {
-                    addSymptom(s);
-                    if (!session) startAnalysis(s);
-                  }}
-                  onRemove={removeSymptom}
-                  onClear={() => {
-                    clearSymptoms();
-                    setSession(null);
-                  }}
-                  knownSymptoms={knownSymptoms}
-                />
-              </CardContent>
-            </Card>
-
-            {session && (
-              <Card className="rounded-2xl shadow-md border-primary/20 bg-primary/5 animate-in fade-in zoom-in-95 duration-300">
+            <div className="sticky top-24 z-20 space-y-6">
+              <Card className="rounded-2xl shadow-sm border-border overflow-visible">
                 <CardHeader>
-                  <CardTitle className="text-sm font-bold text-primary flex items-center gap-2 uppercase tracking-wider">
-                    <ArrowRight className="w-4 h-4" />
-                    AI Follow-up
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-primary" />
+                    Symptom Entry
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  {session.status === 'active' ? (
-                    <div className="space-y-4">
-                      <p className="text-lg font-medium text-foreground leading-tight">
-                        {session.currentQuestion}
-                      </p>
-                      <div className="flex gap-3">
-                        <Button 
-                          className="flex-1 bg-green-600 hover:bg-green-700 text-white gap-2 h-12"
-                          onClick={() => submitAnswer(true)}
-                          disabled={loading}
-                        >
-                          <Check className="w-5 h-5" /> YES
-                        </Button>
-                        <Button 
-                          className="flex-1 bg-red-600 hover:bg-red-700 text-white gap-2 h-12"
-                          onClick={() => submitAnswer(false)}
-                          disabled={loading}
-                        >
-                          <X className="w-5 h-5" /> NO
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <p className="text-sm font-semibold text-muted-foreground uppercase">Analysis Completed</p>
-                      <div className="space-y-2">
-                        {session.diagnosisScores?.map((score, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-800 border border-border shadow-sm">
-                            <span className="font-bold">{score.name}</span>
-                            <span className="text-primary font-mono text-sm">{score.score}% Match</span>
-                          </div>
-                        ))}
-                      </div>
-                      <Button variant="outline" className="w-full" onClick={() => setSession(null)}>New Analysis</Button>
-                    </div>
-                  )}
+                <CardContent>
+                  <SymptomInput 
+                    selectedSymptoms={selectedSymptoms}
+                    onAdd={(s) => {
+                      addSymptom(s);
+                      if (!session) startAnalysis(s);
+                    }}
+                    onRemove={removeSymptom}
+                    onClear={() => {
+                      clearSymptoms();
+                      setSession(null);
+                    }}
+                    knownSymptoms={knownSymptoms}
+                  />
                 </CardContent>
               </Card>
-            )}
 
-            {selectedCondition ? (
-              <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-border animate-in fade-in slide-in-from-top-4 duration-300">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-foreground font-display">{selectedCondition.name}</h3>
-                  <Button variant="ghost" size="sm" onClick={() => setSelectedCondition(null)}>Close</Button>
-                </div>
-                <ScrollArea className="h-[300px] pr-4">
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">Symptoms</p>
-                      <div className="flex flex-wrap gap-1">
-                        {selectedCondition.symptoms.map(s => (
-                          <span key={s} className="text-[10px] px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-100 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800">
-                            {s}
-                          </span>
-                        ))}
+              {session && (
+                <Card className="rounded-2xl shadow-md border-primary/20 bg-primary/5 animate-in fade-in zoom-in-95 duration-300">
+                  <CardHeader>
+                    <CardTitle className="text-sm font-bold text-primary flex items-center gap-2 uppercase tracking-wider">
+                      <ArrowRight className="w-4 h-4" />
+                      AI Follow-up
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {session.status === 'active' ? (
+                      <div className="space-y-4">
+                        <p className="text-lg font-medium text-foreground leading-tight">
+                          {session.currentQuestion}
+                        </p>
+                        <div className="flex gap-3">
+                          <Button 
+                            className="flex-1 bg-green-600 hover:bg-green-700 text-white gap-2 h-12"
+                            onClick={() => submitAnswer(true)}
+                            disabled={loading}
+                          >
+                            <Check className="w-5 h-5" /> YES
+                          </Button>
+                          <Button 
+                            className="flex-1 bg-red-600 hover:bg-red-700 text-white gap-2 h-12"
+                            onClick={() => submitAnswer(false)}
+                            disabled={loading}
+                          >
+                            <X className="w-5 h-5" /> NO
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                    {selectedCondition.atypicalSymptoms && selectedCondition.atypicalSymptoms.length > 0 && (
+                    ) : (
+                      <div className="space-y-4">
+                        <p className="text-sm font-semibold text-muted-foreground uppercase">Analysis Completed</p>
+                        <div className="space-y-2">
+                          {session.diagnosisScores?.map((score, idx) => (
+                            <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-800 border border-border shadow-sm">
+                              <span className="font-bold">{score.name}</span>
+                              <span className="text-primary font-mono text-sm">{score.score}% Match</span>
+                            </div>
+                          ))}
+                        </div>
+                        <Button variant="outline" className="w-full" onClick={() => setSession(null)}>New Analysis</Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {selectedCondition ? (
+                <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-border animate-in fade-in slide-in-from-top-4 duration-300">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-foreground font-display">{selectedCondition.name}</h3>
+                    <Button variant="ghost" size="sm" onClick={() => setSelectedCondition(null)}>Close</Button>
+                  </div>
+                  <ScrollArea className="h-[400px] pr-4">
+                    <div className="space-y-4">
                       <div>
-                        <p className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1">Atypical Symptoms</p>
+                        <p className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">Symptoms</p>
                         <div className="flex flex-wrap gap-1">
-                          {selectedCondition.atypicalSymptoms.map(s => (
-                            <span key={s} className="text-[10px] px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-800">
+                          {selectedCondition.symptoms.map(s => (
+                            <span key={s} className="text-[10px] px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-100 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800">
                               {s}
                             </span>
                           ))}
                         </div>
                       </div>
-                    )}
-                    <div>
-                      <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Condition Details</p>
-                      <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{selectedCondition.details || "No details available."}</p>
+                      {selectedCondition.atypicalSymptoms && selectedCondition.atypicalSymptoms.length > 0 && (
+                        <div>
+                          <p className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1">Atypical Symptoms</p>
+                          <div className="flex flex-wrap gap-1">
+                            {selectedCondition.atypicalSymptoms.map(s => (
+                              <span key={s} className="text-[10px] px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-800">
+                                {s}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Condition Details</p>
+                        <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{selectedCondition.details || "No details available."}</p>
+                      </div>
+                      {selectedCondition.fullReview && (
+                        <div>
+                          <p className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-1">Full Review</p>
+                          <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap bg-orange-50/50 dark:bg-orange-900/10 p-2 rounded-md border border-orange-100 dark:border-orange-800">{selectedCondition.fullReview}</p>
+                        </div>
+                      )}
+                      {selectedCondition.note && (
+                        <div>
+                          <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Note</p>
+                          <p className="text-sm text-red-700 dark:text-red-300 italic border-l-2 border-red-200 pl-2">{selectedCondition.note}</p>
+                        </div>
+                      )}
+                      {selectedCondition.labTest && (
+                        <div>
+                          <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Lab Test</p>
+                          <p className="text-sm text-foreground leading-relaxed">{selectedCondition.labTest}</p>
+                        </div>
+                      )}
+                      {selectedCondition.treatment && (
+                        <div>
+                          <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-1">Treatment</p>
+                          <p className="text-sm text-foreground leading-relaxed">{selectedCondition.treatment}</p>
+                        </div>
+                      )}
                     </div>
-                    {selectedCondition.note && (
-                      <div>
-                        <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Note</p>
-                        <p className="text-sm text-red-700 dark:text-red-300 italic border-l-2 border-red-200 pl-2">{selectedCondition.note}</p>
-                      </div>
-                    )}
-                    {selectedCondition.labTest && (
-                      <div>
-                        <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Lab Test</p>
-                        <p className="text-sm text-foreground leading-relaxed">{selectedCondition.labTest}</p>
-                      </div>
-                    )}
-                    {selectedCondition.treatment && (
-                      <div>
-                        <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest mb-1">Treatment</p>
-                        <p className="text-sm text-foreground leading-relaxed">{selectedCondition.treatment}</p>
-                      </div>
-                    )}
-                  </div>
-                </ScrollArea>
-              </div>
-            ) : (
-              <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6">
-                <h3 className="text-sm font-semibold text-primary mb-2">Condition Details</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Select a condition from the results on the right to view full details, including symptoms and recommended treatments.
-                </p>
-              </div>
-            )}
+                  </ScrollArea>
+                </div>
+              ) : (
+                <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6">
+                  <h3 className="text-sm font-semibold text-primary mb-2">Condition Details</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Select a condition from the results on the right to view full details, including symptoms and recommended treatments.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right Column: Results */}
