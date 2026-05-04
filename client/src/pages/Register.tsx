@@ -62,20 +62,42 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await register({
-        fullName: formData.fullName,
-        phone: formData.phone,
-        password: generatedPassword, // Use generated password
-        profession: formData.profession,
-        clinicHospital: formData.clinicHospital || undefined,
-        inviteCode: formData.inviteCode || undefined,
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          phone: formData.phone,
+          password: generatedPassword,
+          profession: formData.profession,
+          clinicHospital: formData.clinicHospital || undefined,
+          inviteCode: formData.inviteCode || undefined,
+        }),
       });
 
-      setSuccess(`Registration successful! Your password is: ${generatedPassword}. Please save it securely. You can login after admin approval.`);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Registration failed');
+      }
+
+      const result = await response.json();
+
+      // If this is the first user (admin), auto-login
+      if (result.autoLogin && result.user) {
+        setSuccess(`Registration successful! Your password is: ${generatedPassword}. Please save it securely.`);
+        
+        // Store user data in AuthContext
+        localStorage.setItem('auth_token', 'session'); // Session-based auth
+        window.location.href = '/'; // Redirect to home
+        return;
+      }
+
+      // For regular users, show password and redirect to login
+      setSuccess(`Registration successful! Your password is: ${result.password || generatedPassword}. Please save it securely. Waiting for admin approval.`);
       
       setTimeout(() => {
         navigate('/login');
-      }, 5000);
+      }, 8000);
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {

@@ -17,6 +17,7 @@ interface User {
   fullName: string;
   email: string | null;
   phone: string | null;
+  passwordHash: string;
   status: string;
   role: string;
   profession: string;
@@ -44,7 +45,6 @@ export default function AdminDashboard() {
   const [, navigate] = useLocation();
   const [users, setUsers] = useState<User[]>([]);
   const [inviteCodes, setInviteCodes] = useState<InviteCode[]>([]);
-  const [auditTrail, setAuditTrail] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -62,10 +62,9 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [usersRes, codesRes, auditRes] = await Promise.all([
+      const [usersRes, codesRes] = await Promise.all([
         fetch('/api/admin/users'),
         fetch('/api/admin/invite-codes'),
-        fetch('/api/admin/audit-trail'),
       ]);
 
       if (usersRes.ok) {
@@ -75,10 +74,6 @@ export default function AdminDashboard() {
       if (codesRes.ok) {
         const data = await codesRes.json();
         setInviteCodes(data.inviteCodes);
-      }
-      if (auditRes.ok) {
-        const data = await auditRes.json();
-        setAuditTrail(data.auditTrail);
       }
     } catch (err) {
       setError('Failed to fetch data');
@@ -225,6 +220,35 @@ This action cannot be undone and will permanently remove:
     return colors[role] || 'bg-gray-500';
   };
 
+  const handleDeleteInviteCode = async (codeId: number, code: string) => {
+    if (!window.confirm(`Are you sure you want to delete invite code "${code}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/invite-codes/${codeId}`, {
+        method: 'DELETE',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+        },
+      });
+
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to delete invite code');
+      }
+
+      setSuccess('Invite code deleted successfully');
+      setTimeout(() => setSuccess(''), 3000);
+      fetchData();
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete invite code');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -276,10 +300,6 @@ This action cannot be undone and will permanently remove:
               <Key className="mr-2 h-4 w-4" />
               Invite Codes ({inviteCodes.length})
             </TabsTrigger>
-            <TabsTrigger value="audit">
-              <Activity className="mr-2 h-4 w-4" />
-              Audit Trail ({auditTrail.length})
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users" className="space-y-4">
@@ -321,12 +341,13 @@ This action cannot be undone and will permanently remove:
                           <h3 className="font-semibold">{u.fullName}</h3>
                           <Badge className={getStatusColor(u.status)}>{u.status}</Badge>
                           <Badge className={getRoleBadge(u.role)}>{u.role.replace('_', ' ')}</Badge>
-                          {u.emailVerified && <Badge variant="outline">Email ✓</Badge>}
-                          {u.phoneVerified && <Badge variant="outline">Phone ✓</Badge>}
+                          {u.phoneVerified && <Badge variant="outline">Phone Verified ✓</Badge>}
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          {u.email || u.phone} • {u.profession} • {u.country || 'No country'} • Joined {new Date(u.createdAt).toLocaleDateString()}
-                        </p>
+                        <div className="text-sm text-muted-foreground space-y-1 mt-2">
+                          <p>📱 {u.phone || 'No phone'}</p>
+                          <p>💼 {u.profession}{u.clinicHospital ? ` • ${u.clinicHospital}` : ''}</p>
+                          <p>📅 Joined {new Date(u.createdAt).toLocaleDateString()}</p>
+                        </div>
                       </div>
                       <div className="flex gap-2">
                         {u.status === 'pending' && (
@@ -450,37 +471,20 @@ This action cannot be undone and will permanently remove:
                           >
                             Copy
                           </Button>
+                          {code.usedCount === 0 && (
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleDeleteInviteCode(code.id, code.code)}
+                              title="Delete invite code"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
                         </div>
                       </div>
                     ))
                   )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="audit">
-            <Card>
-              <CardHeader>
-                <CardTitle>Audit Trail</CardTitle>
-                <CardDescription>User status change history</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {auditTrail.map((entry) => (
-                    <div key={entry.id} className="flex items-center gap-4 p-4 border rounded-lg">
-                      <Clock className="h-5 w-5 text-muted-foreground" />
-                      <div className="flex-1">
-                        <p className="font-medium">
-                          User #{entry.userId} status changed: {entry.previousStatus} → {entry.newStatus}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(entry.createdAt).toLocaleString()} • By Admin #{entry.changedBy}
-                          {entry.reason && ` • Reason: ${entry.reason}`}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
                 </div>
               </CardContent>
             </Card>

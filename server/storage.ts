@@ -588,6 +588,22 @@ class InMemoryStorage {
     return filtered;
   }
 
+  async deleteInviteCode(codeId: number): Promise<boolean> {
+    const index = this.inviteCodes.findIndex(c => c.id === codeId);
+    if (index === -1) {
+      return false;
+    }
+    
+    // Only delete if not used
+    const code = this.inviteCodes[index];
+    if (code.usedCount > 0) {
+      throw new Error('Cannot delete invite code that has been used');
+    }
+    
+    this.inviteCodes.splice(index, 1);
+    return true;
+  }
+
   async createStatusAuditEntry(insertEntry: Omit<UserStatusAudit, 'id' | 'createdAt'>): Promise<UserStatusAudit> {
     const newEntry: UserStatusAudit = {
       id: this.nextId++,

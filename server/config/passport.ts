@@ -26,12 +26,11 @@ export function configurePassport() {
       {
         usernameField: 'phone', // Phone number is now the primary identifier
         passwordField: 'password',
-        passReqToCallback: true,
       },
-      async (req, phone, password, done) => {
+      async (phone, password, done) => {
         try {
-          if (!phone) {
-            return done(null, false, { message: 'Phone number is required' });
+          if (!phone || !password) {
+            return done(null, false, { message: 'Missing credentials' });
           }
 
           // Find user by phone
@@ -73,12 +72,6 @@ export function configurePassport() {
           if (!isValidPassword) {
             return done(null, false, { message: 'Invalid credentials' });
           }
-
-          // Update last login
-          await storage.updateUser(user.id, {
-            lastLoginAt: new Date(),
-            lastLoginIp: req.ip || req.socket.remoteAddress,
-          });
 
           return done(null, user);
         } catch (error) {

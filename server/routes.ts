@@ -105,14 +105,37 @@ export async function registerRoutes(
         await storage.updateInviteCodeUsage(inviteCode);
       }
 
-      res.status(201).json({
-        message: isFirstUser 
-          ? 'Admin account created successfully' 
-          : 'Registration successful. Please wait for admin approval.',
-        userId: user.id,
-        status: user.status,
-        requiresVerification: !isFirstUser,
-      });
+      // For first admin user, auto-login by returning user data
+      if (isFirstUser) {
+        // Update last login
+        await storage.updateUser(user.id, {
+          lastLoginAt: new Date(),
+          lastLoginIp: req.ip || req.socket.remoteAddress,
+        });
+
+        res.status(201).json({
+          message: 'Admin account created successfully',
+          user: {
+            id: user.id,
+            fullName: user.fullName,
+            email: user.email,
+            phone: user.phone,
+            status: user.status,
+            role: user.role,
+            emailVerified: user.emailVerified,
+            phoneVerified: user.phoneVerified,
+          },
+          autoLogin: true,
+        });
+      } else {
+        res.status(201).json({
+          message: 'Registration successful. Please wait for admin approval.',
+          userId: user.id,
+          status: user.status,
+          requiresApproval: true,
+          password: password, // Return the generated password so user can save it
+        });
+      }
     } catch (error) {
       console.error('Registration error:', error);
       res.status(500).json({ error: 'Registration failed' });
@@ -492,6 +515,27 @@ export async function registerRoutes(
     } catch (error) {
       console.error('Create invite code error:', error);
       res.status(500).json({ error: 'Failed to create invite code' });
+    }
+  });
+
+  // Delete Invite Code (Admin only)
+  app.delete("/api/admin/invite-codes/:id", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const codeId = parseInt(req.params.id);
+      
+      const success = await storage.deleteInviteCode(codeId);
+      
+      if (!success) {
+        return res.status(404).json({ error: 'Invite code not found' });
+      }
+
+      res.json({ message: 'Invite code deleted successfully' });
+    } catch (error: any) {
+      console.error('Delete invite code error:', error);
+      if (error.message.includes('has been used')) {
+        return res.status(400).json({ error: error.message });
+      }
+      res.status(500).json({ error: 'Failed to delete invite code' });
     }
   });
 
