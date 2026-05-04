@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from '../components/ui/alert';
 import { Badge } from '../components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Loader2, Users, Shield, Activity, Search, UserCheck, UserX, Clock, Key, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react';
+import { Loader2, Users, Shield, Activity, Search, UserCheck, UserX, Clock, Key, RefreshCw, AlertCircle, CheckCircle, Trash2 } from 'lucide-react';
 
 interface User {
   id: number;
@@ -120,6 +120,40 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       setError('Failed to update user role');
+    }
+  };
+
+  const handleDeleteUser = async (userId: number, userName: string) => {
+    // Confirm deletion
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${userName}"?
+
+This action cannot be undone and will permanently remove:
+- User account
+- All associated data
+- Login access`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (response.ok) {
+        setSuccess('User deleted successfully');
+        fetchData();
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        const error = await response.json();
+        setError(error.error || 'Failed to delete user');
+        setTimeout(() => setError(''), 5000);
+      }
+    } catch (err) {
+      setError('Failed to delete user');
+      setTimeout(() => setError(''), 5000);
     }
   };
 
@@ -322,6 +356,16 @@ export default function AdminDashboard() {
                             </div>
                           </DialogContent>
                         </Dialog>
+                        {user?.id !== u.id && (
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            onClick={() => handleDeleteUser(u.id, u.fullName)}
+                            title="Delete user permanently"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}

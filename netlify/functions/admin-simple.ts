@@ -10,6 +10,23 @@ import crypto from 'crypto';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
 
+// User interface
+interface User {
+  id: number;
+  fullName: string;
+  email: string | null;
+  phone: string | null;
+  passwordHash: string;
+  profession: string;
+  country: string | null;
+  clinicHospital: string | null;
+  status: string;
+  role: string;
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  createdAt: string;
+}
+
 // Invite code interface
 interface InviteCode {
   id: number;
@@ -23,6 +40,8 @@ interface InviteCode {
 }
 
 // In-memory storage
+let users: User[] = [];
+let nextUserId = 1;
 let inviteCodes: InviteCode[] = [];
 let nextInviteCodeId = 1;
 
@@ -227,6 +246,57 @@ export const handler: Handler = async (event, context) => {
         headers: corsHeaders,
         body: JSON.stringify({
           message: 'Invite code deleted successfully',
+        }),
+      };
+    }
+
+    // DELETE /api/admin/users/:id - Delete user
+    if (event.httpMethod === 'DELETE' && cleanPath.match(/^\/api\/admin\/users\/\d+$/)) {
+      const adminCheck = verifyAdmin(event);
+      if ('status' in adminCheck) {
+        return {
+          statusCode: adminCheck.status,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: adminCheck.error }),
+        };
+      }
+
+      const userId = parseInt(cleanPath.split('/').pop() || '0');
+      
+      // Prevent admin from deleting their own account
+      if (userId === adminCheck.userId) {
+        return {
+          statusCode: 403,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: 'Cannot delete your own account' }),
+        };
+      }
+
+      // Find and remove user
+      const userIndex = users.findIndex(u => u.id === userId);
+      if (userIndex === -1) {
+        return {
+          statusCode: 404,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: 'User not found' }),
+        };
+      }
+
+      const deletedUser = users[userIndex];
+      users.splice(userIndex, 1);
+
+      console.log(`✅ User ${deletedUser.email || deletedUser.phone} (ID: ${userId}) deleted by admin ${adminCheck.userId}`);
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({
+          message: 'User deleted successfully',
+          user: {
+            id: deletedUser.id,
+            fullName: deletedUser.fullName,
+            email: deletedUser.email,
+          },
         }),
       };
     }
