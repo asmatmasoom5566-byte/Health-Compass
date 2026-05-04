@@ -208,13 +208,19 @@ export default function Register() {
               </div>
 
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="inviteCode">Invite Code (Optional)</Label>
+                <Label htmlFor="inviteCode">Invite Code *</Label>
                 <Input
                   id="inviteCode"
-                  placeholder="Enter invite code if you have one"
+                  placeholder="Enter your invite code (required)"
                   value={formData.inviteCode}
-                  onChange={(e) => setFormData({ ...formData, inviteCode: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, inviteCode: e.target.value.toUpperCase() })}
+                  required
+                  className="font-mono uppercase"
+                  maxLength={20}
                 />
+                <p className="text-xs text-muted-foreground">
+                  Invite codes are single-use and must be provided by an administrator
+                </p>
               </div>
             </div>
 

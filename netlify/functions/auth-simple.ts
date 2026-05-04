@@ -29,6 +29,21 @@ interface User {
 let users: User[] = [];
 let nextId = 1;
 
+// Invite codes storage
+interface InviteCode {
+  id: number;
+  code: string;
+  createdBy: number;
+  maxUses: number;
+  usedCount: number;
+  usedBy: number[]; // User IDs who used this code
+  isActive: boolean;
+  createdAt: string;
+}
+
+let inviteCodes: InviteCode[] = [];
+let nextInviteCodeId = 1;
+
 // CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -55,7 +70,7 @@ function ensureAdminExists() {
     // Pre-hashed password for: asmat334499
     const adminPasswordHash = simpleHash('asmat334499');
     
-    users.push({
+    const adminUser = {
       id: nextId++,
       fullName: 'Asmat Kakar',
       email: 'asmatmasoom5566@gmail.com',
@@ -68,10 +83,66 @@ function ensureAdminExists() {
       role: 'admin',
       emailVerified: true,
       phoneVerified: true,
+    };
+    
+    users.push(adminUser);
+    
+    // Create default invite code
+    inviteCodes.push({
+      id: nextInviteCodeId++,
+      code: 'ASMAT881166',
+      createdBy: adminUser.id,
+      maxUses: 1,
+      usedCount: 0,
+      usedBy: [],
+      isActive: true,
+      createdAt: new Date().toISOString(),
     });
     
-    console.log('✅ Admin user created with ID:', nextId - 1);
+    console.log('✅ Admin user created with ID:', adminUser.id);
+    console.log('✅ Default invite code created: ASMAT881166');
   }
+}
+
+// Validate invite code
+function validateInviteCode(code: string): { valid: boolean; error?: string } {
+  if (!code) {
+    return { valid: false, error: 'Invite code is required' };
+  }
+
+  const inviteCode = inviteCodes.find(ic => ic.code === code);
+  
+  if (!inviteCode) {
+    return { valid: false, error: 'Invalid invite code' };
+  }
+
+  if (!inviteCode.isActive) {
+    return { valid: false, error: 'This invite code has been deactivated' };
+  }
+
+  if (inviteCode.usedCount >= inviteCode.maxUses) {
+    return { valid: false, error: 'This invite code has already been used' };
+  }
+
+  return { valid: true };
+}
+
+// Use invite code (increment usage count)
+function useInviteCode(code: string, userId: number): boolean {
+  const inviteCode = inviteCodes.find(ic => ic.code === code);
+  
+  if (!inviteCode) return false;
+  
+  inviteCode.usedCount += 1;
+  inviteCode.usedBy.push(userId);
+  
+  // Deactivate if max uses reached
+  if (inviteCode.usedCount >= inviteCode.maxUses) {
+    inviteCode.isActive = false;
+  }
+  
+  console.log(`✅ Invite code ${code} used by user ${userId}. Used ${inviteCode.usedCount}/${inviteCode.maxUses} times`);
+  return true;
 }
 
 export const handler: Handler = async (event, context) => {
@@ -94,13 +165,32 @@ export const handler: Handler = async (event, context) => {
     // POST /api/auth/register
     if (event.httpMethod === 'POST' && cleanPath === '/api/auth/register') {
       const body = JSON.parse(event.body || '{}');
-      const { fullName, email, phone, password, profession, country, clinicHospital } = body;
+      const { fullName, email, phone, password, profession, country, clinicHospital, inviteCode } = body;
 
       if (!fullName || !password) {
         return {
           statusCode: 400,
           headers: corsHeaders,
           body: JSON.stringify({ error: 'Full name and password are required' }),
+        };
+      }
+
+      // Invite code is REQUIRED for registration
+      if (!inviteCode) {
+        return {
+          statusCode: 400,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: 'Invite code is required for registration' }),
+        };
+      }
+
+      // Validate invite code
+      const validation = validateInviteCode(inviteCode);
+      if (!validation.valid) {
+        return {
+          statusCode: 400,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: validation.error }),
         };
       }
 
@@ -135,6 +225,9 @@ export const handler: Handler = async (event, context) => {
       };
 
       users.push(newUser);
+
+      // Mark invite code as used
+      useInviteCode(inviteCode, newUser.id);
 
       // Generate JWT token
       const token = jwt.sign(

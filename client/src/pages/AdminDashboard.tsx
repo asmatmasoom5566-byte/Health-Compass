@@ -334,33 +334,62 @@ export default function AdminDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle>Invite Codes</CardTitle>
-                <CardDescription>Create and manage invitation codes</CardDescription>
+                <CardDescription>Create and manage single-use invitation codes</CardDescription>
               </CardHeader>
               <CardContent>
                 <Button onClick={() => handleCreateInviteCode()} className="mb-4">
                   <Key className="mr-2 h-4 w-4" />
-                  Generate New Invite Code
+                  Generate Single-Use Code
                 </Button>
 
                 <div className="space-y-2">
-                  {inviteCodes.map((code) => (
-                    <div key={code.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <code className="bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded font-mono text-sm">
-                            {code.code}
-                          </code>
-                          <Badge variant={code.isActive ? 'default' : 'secondary'}>
-                            {code.isActive ? 'Active' : 'Inactive'}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {code.email || code.phone || 'No restriction'} • Used {code.usedCount}/{code.maxUses} times
-                          {code.expiresAt && ` • Expires ${new Date(code.expiresAt).toLocaleDateString()}`}
-                        </p>
-                      </div>
+                  {inviteCodes.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Key className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                      <p className="text-lg font-medium">No invite codes yet</p>
+                      <p className="text-sm mt-2">Generate your first invite code to allow new users to register</p>
                     </div>
-                  ))}
+                  ) : (
+                    inviteCodes.map((code) => (
+                      <div key={code.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <code className="bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded font-mono text-sm font-bold">
+                              {code.code}
+                            </code>
+                            <Badge variant={code.isActive ? 'default' : 'secondary'}>
+                              {code.isActive ? 'Active' : 'Used'}
+                            </Badge>
+                            {code.usedCount >= code.maxUses && (
+                              <Badge variant="outline">Max Uses Reached</Badge>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Created: {new Date(code.createdAt).toLocaleDateString()} • 
+                            Used {code.usedCount}/{code.maxUses} time{code.maxUses > 1 ? 's' : ''}
+                          </p>
+                          {code.usedCount > 0 && (
+                            <p className="text-xs text-green-600 mt-1">
+                              ✓ Code has been used
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              navigator.clipboard.writeText(code.code);
+                              setSuccess('Code copied to clipboard!');
+                              setTimeout(() => setSuccess(''), 2000);
+                            }}
+                          >
+                            Copy
+                          </Button>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>

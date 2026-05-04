@@ -1,32 +1,30 @@
 /**
  * Simple Admin Handler for Netlify
  * Self-contained with JWT authentication
+ * Manages users and invite codes
  */
 
 import { Handler, HandlerEvent } from '@netlify/functions';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
 
-// In-memory storage (same as auth-simple)
-interface User {
+// Invite code interface
+interface InviteCode {
   id: number;
-  fullName: string;
-  email: string | null;
-  phone: string | null;
-  passwordHash: string;
-  profession: string;
-  country: string | null;
-  clinicHospital: string | null;
-  status: string;
-  role: string;
-  emailVerified: boolean;
-  phoneVerified: boolean;
+  code: string;
+  createdBy: number;
+  maxUses: number;
+  usedCount: number;
+  usedBy: number[];
+  isActive: boolean;
+  createdAt: string;
 }
 
-// This would normally connect to a database
-// For now, we'll import from auth-simple's storage
-let users: any[] = [];
+// In-memory storage
+let inviteCodes: InviteCode[] = [];
+let nextInviteCodeId = 1;
 
 // CORS headers
 const corsHeaders = {
@@ -34,6 +32,16 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
 };
+
+// Generate random invite code
+function generateInviteCode(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  for (let i = 0; i < 12; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
 
 // Verify admin
 function verifyAdmin(event: HandlerEvent) {
@@ -72,26 +80,7 @@ export const handler: Handler = async (event, context) => {
   const cleanPath = path.split('?')[0];
 
   try {
-    // GET /api/admin/users
-    if (event.httpMethod === 'GET' && cleanPath === '/api/admin/users') {
-      const adminCheck = verifyAdmin(event);
-      if ('status' in adminCheck) {
-        return {
-          statusCode: adminCheck.status,
-          headers: corsHeaders,
-          body: JSON.stringify({ error: adminCheck.error }),
-        };
-      }
-
-      // Return empty array or connect to actual storage
-      return {
-        statusCode: 200,
-        headers: corsHeaders,
-        body: JSON.stringify({ users: [] }),
-      };
-    }
-
-    // GET /api/admin/invite-codes
+    // GET /api/admin/invite-codes - List all invite codes
     if (event.httpMethod === 'GET' && cleanPath === '/api/admin/invite-codes') {
       const adminCheck = verifyAdmin(event);
       if ('status' in adminCheck) {
@@ -106,21 +95,16 @@ export const handler: Handler = async (event, context) => {
         statusCode: 200,
         headers: corsHeaders,
         body: JSON.stringify({
-          inviteCodes: [
-            {
-              id: 1,
-              code: 'ASMAT881166',
-              maxUses: 10,
-              usedCount: 0,
-              isActive: true,
-            },
-          ],
+          inviteCodes: inviteCodes.map(code => ({
+            ...code,
+            usedBy: undefined, // Don't expose user IDs
+          })),
         }),
       };
     }
 
-    // GET /api/admin/audit-trail
-    if (event.httpMethod === 'GET' && cleanPath === '/api/admin/audit-trail') {
+    // POST /api/admin/invite-codes - Create new invite code
+    if (event.httpMethod === 'POST' && cleanPath === '/api/admin/invite-codes') {
       const adminCheck = verifyAdmin(event);
       if ('status' in adminCheck) {
         return {
@@ -130,10 +114,120 @@ export const handler: Handler = async (event, context) => {
         };
       }
 
+      const body = JSON.parse(event.body || '{}');
+      const maxUses = body.maxUses || 1; // Default to single-use
+
+      const newCode: InviteCode = {
+        id: nextInviteCodeId++,
+        code: generateInviteCode(),
+        createdBy: adminCheck.userId,
+        maxUses: maxUses,
+        usedCount: 0,
+        usedBy: [],
+        isActive: true,
+        createdAt: new Date().toISOString(),
+      };
+
+      inviteCodes.push(newCode);
+
+      console.log(`✅ Invite code created: ${newCode.code} (Max uses: ${maxUses})`);
+
+      return {
+        statusCode: 201,
+        headers: corsHeaders,
+        body: JSON.stringify({
+          message: 'Invite code created successfully',
+          inviteCode: {
+            ...newCode,
+            usedBy: undefined,
+          },
+        }),
+      };
+    }
+
+    // PUT /api/admin/invite-codes/:id - Update invite code (activate/deactivate)
+    if (event.httpMethod === 'PUT' && cleanPath.match(/^\/api\/admin\/invite-codes\/\d+$/)) {
+      const adminCheck = verifyAdmin(event);
+      if ('status' in adminCheck) {
+        return {
+          statusCode: adminCheck.status,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: adminCheck.error }),
+        };
+      }
+
+      const codeId = parseInt(cleanPath.split('/').pop() || '0');
+      const body = JSON.parse(event.body || '{}');
+      
+      const codeIndex = inviteCodes.findIndex(c => c.id === codeId);
+      if (codeIndex === -1) {
+        return {
+          statusCode: 404,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: 'Invite code not found' }),
+        };
+      }
+
+      // Update fields
+      if (typeof body.isActive === 'boolean') {
+        inviteCodes[codeIndex].isActive = body.isActive;
+      }
+      if (body.maxUses && body.maxUses > 0) {
+        inviteCodes[codeIndex].maxUses = body.maxUses;
+        // Reactivate if maxUses increased
+        if (inviteCodes[codeIndex].usedCount < inviteCodes[codeIndex].maxUses) {
+          inviteCodes[codeIndex].isActive = true;
+        }
+      }
+
+      console.log(`✅ Invite code ${codeId} updated`);
+
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ auditTrail: [] }),
+        body: JSON.stringify({
+          message: 'Invite code updated successfully',
+          inviteCode: {
+            ...inviteCodes[codeIndex],
+            usedBy: undefined,
+          },
+        }),
+      };
+    }
+
+    // DELETE /api/admin/invite-codes/:id - Delete invite code
+    if (event.httpMethod === 'DELETE' && cleanPath.match(/^\/api\/admin\/invite-codes\/\d+$/)) {
+      const adminCheck = verifyAdmin(event);
+      if ('status' in adminCheck) {
+        return {
+          statusCode: adminCheck.status,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: adminCheck.error }),
+        };
+      }
+
+      const codeId = parseInt(cleanPath.split('/').pop() || '0');
+      const codeIndex = inviteCodes.findIndex(c => c.id === codeId);
+      
+      if (codeIndex === -1) {
+        return {
+          statusCode: 404,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: 'Invite code not found' }),
+        };
+      }
+
+      const deletedCode = inviteCodes[codeIndex];
+      inviteCodes.splice(codeIndex, 1);
+
+      console.log(`✅ Invite code ${deletedCode.code} deleted`);
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({
+          message: 'Invite code deleted successfully',
+        }),
       };
     }
 
