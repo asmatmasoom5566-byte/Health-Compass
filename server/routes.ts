@@ -451,16 +451,22 @@ export async function registerRoutes(
       const userId = parseInt(req.params.id);
       const adminId = (req.user as any).id;
 
+      console.log(`🗑️  Delete request: Admin ${adminId} wants to delete user ${userId}`);
+
       // Prevent admin from deleting their own account
       if (userId === adminId) {
+        console.log('❌ Self-deletion prevented');
         return res.status(403).json({ error: 'Cannot delete your own account' });
       }
 
       // Check if user exists
       const user = await storage.getUserById(userId);
       if (!user) {
+        console.log('❌ User not found:', userId);
         return res.status(404).json({ error: 'User not found' });
       }
+
+      console.log(`📋 Found user to delete: ${user.email || user.phone} (${user.fullName})`);
 
       // Delete user
       await storage.deleteUser(userId);
@@ -476,7 +482,7 @@ export async function registerRoutes(
         }
       });
     } catch (error) {
-      console.error('Delete user error:', error);
+      console.error('❌ Delete user error:', error);
       res.status(500).json({ error: 'Failed to delete user' });
     }
   });

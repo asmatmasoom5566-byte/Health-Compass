@@ -140,6 +140,14 @@ This action cannot be undone and will permanently remove:
       // Get auth token
       const token = localStorage.getItem('auth_token');
       
+      if (!token) {
+        setError('Not authenticated. Please login again.');
+        setTimeout(() => setError(''), 5000);
+        return;
+      }
+
+      console.log('Deleting user:', userId, 'with token:', token.substring(0, 20) + '...');
+      
       const response = await fetch(`/api/admin/users/${userId}`, {
         method: 'DELETE',
         headers: { 
@@ -148,17 +156,23 @@ This action cannot be undone and will permanently remove:
         },
       });
 
+      console.log('Delete response status:', response.status);
+      
       if (response.ok) {
+        const data = await response.json();
+        console.log('Delete successful:', data);
         setSuccess('User deleted successfully');
         fetchData();
         setTimeout(() => setSuccess(''), 3000);
       } else {
         const error = await response.json();
+        console.error('Delete failed:', error);
         setError(error.error || 'Failed to delete user');
         setTimeout(() => setError(''), 5000);
       }
     } catch (err) {
-      setError('Failed to delete user');
+      console.error('Delete error:', err);
+      setError('Failed to delete user: Network error');
       setTimeout(() => setError(''), 5000);
     }
   };
