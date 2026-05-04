@@ -93,11 +93,11 @@ export default function Register() {
       }
 
       // For regular users, show password and redirect to login
-      setSuccess(`Registration successful! Your password is: ${result.password || generatedPassword}. Please save it securely. Waiting for admin approval.`);
+      setSuccess(`Registration successful! Your password is: ${result.password || generatedPassword}. Please save it securely. You can now login immediately!`);
       
       setTimeout(() => {
         navigate('/login');
-      }, 8000);
+      }, 6000);
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {

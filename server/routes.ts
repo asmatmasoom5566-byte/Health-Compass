@@ -82,7 +82,7 @@ export async function registerRoutes(
       const autoVerifyFirstAdmin = process.env.AUTO_VERIFY_FIRST_ADMIN === 'true';
 
       const role = isFirstUser ? 'admin' : 'standard_member';
-      const status = isFirstUser ? 'approved' : 'pending';
+      const status = 'approved'; // Auto-approve all users
 
       // Create user
       const user = await storage.createUser({
@@ -97,7 +97,7 @@ export async function registerRoutes(
         status,
         role,
         emailVerified: false,
-        phoneVerified: isFirstUser && autoVerifyFirstAdmin,
+        phoneVerified: true, // Auto-verify all users
         lastLoginIp: null,
       });
 
@@ -130,10 +130,9 @@ export async function registerRoutes(
         });
       } else {
         res.status(201).json({
-          message: 'Registration successful. Please wait for admin approval.',
+          message: 'Registration successful! You can now login.',
           userId: user.id,
           status: user.status,
-          requiresApproval: true,
           password: password, // Return the generated password so user can save it
         });
       }

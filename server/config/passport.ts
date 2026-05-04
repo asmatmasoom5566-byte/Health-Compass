@@ -40,13 +40,7 @@ export function configurePassport() {
             return done(null, false, { message: 'Invalid credentials' });
           }
 
-          // Check user status
-          if (user.status === 'pending') {
-            return done(null, false, { 
-              message: 'Account pending approval. Please wait for administrator approval.' 
-            });
-          }
-
+          // Check user status - only reject if suspended or rejected
           if (user.status === 'rejected') {
             return done(null, false, { 
               message: 'Account has been rejected. Please contact support.' 
@@ -56,13 +50,6 @@ export function configurePassport() {
           if (user.status === 'suspended') {
             return done(null, false, { 
               message: 'Account has been suspended. Please contact support.' 
-            });
-          }
-
-          // Check phone verification status
-          if (!user.phoneVerified) {
-            return done(null, false, { 
-              message: 'Please wait for admin approval before logging in.' 
             });
           }
 
