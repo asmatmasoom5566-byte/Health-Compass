@@ -6,43 +6,12 @@
 import { Handler } from '@netlify/functions';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { storage, initializeStorage, User } from './shared-storage';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
 
-// Simple in-memory user storage (will reset on each deploy)
-interface User {
-  id: number;
-  fullName: string;
-  email: string | null;
-  phone: string | null;
-  passwordHash: string;
-  profession: string;
-  country: string | null;
-  clinicHospital: string | null;
-  status: string;
-  role: string;
-  emailVerified: boolean;
-  phoneVerified: boolean;
-}
-
-// Global users array (persists during function warm state)
-let users: User[] = [];
-let nextId = 1;
-
-// Invite codes storage
-interface InviteCode {
-  id: number;
-  code: string;
-  createdBy: number;
-  maxUses: number;
-  usedCount: number;
-  usedBy: number[]; // User IDs who used this code
-  isActive: boolean;
-  createdAt: string;
-}
-
-let inviteCodes: InviteCode[] = [];
-let nextInviteCodeId = 1;
+// Initialize storage on import
+initializeStorage();
 
 // CORS headers
 const corsHeaders = {
@@ -66,12 +35,12 @@ function simpleVerify(password: string, hash: string): boolean {
 
 // Initialize default admin
 function ensureAdminExists() {
-  if (users.length === 0) {
+  if (storage.users.length === 0) {
     // Pre-hashed password for: asmat334499
     const adminPasswordHash = simpleHash('asmat334499');
     
     const adminUser = {
-      id: nextId++,
+      id: storage.nextUserId++,
       fullName: 'Asmat Kakar',
       email: 'asmatmasoom5566@gmail.com',
       phone: '0784690946',
@@ -83,13 +52,14 @@ function ensureAdminExists() {
       role: 'admin',
       emailVerified: true,
       phoneVerified: true,
+      createdAt: new Date().toISOString(),
     };
     
-    users.push(adminUser);
+    storage.users.push(adminUser);
     
     // Create default invite code
-    inviteCodes.push({
-      id: nextInviteCodeId++,
+    storage.inviteCodes.push({
+      id: storage.nextInviteCodeId++,
       code: 'ASMAT881166',
       createdBy: adminUser.id,
       maxUses: 1,
@@ -110,7 +80,7 @@ function validateInviteCode(code: string): { valid: boolean; error?: string } {
     return { valid: false, error: 'Invite code is required' };
   }
 
-  const inviteCode = inviteCodes.find(ic => ic.code === code);
+  const inviteCode = storage.inviteCodes.find(ic => ic.code === code);
   
   if (!inviteCode) {
     return { valid: false, error: 'Invalid invite code' };
@@ -129,7 +99,7 @@ function validateInviteCode(code: string): { valid: boolean; error?: string } {
 
 // Use invite code (increment usage count)
 function useInviteCode(code: string, userId: number): boolean {
-  const inviteCode = inviteCodes.find(ic => ic.code === code);
+  const inviteCode = storage.inviteCodes.find(ic => ic.code === code);
   
   if (!inviteCode) return false;
   
@@ -207,10 +177,10 @@ export const handler: Handler = async (event, context) => {
       const passwordHash = simpleHash(password);
 
       // Check if first user (make them admin)
-      const isFirstUser = users.length === 0 || (users.length === 1 && users[0].email === 'asmatmasoom5566@gmail.com');
+      const isFirstUser = storage.users.length === 0 || (storage.users.length === 1 && storage.users[0].email === 'asmatmasoom5566@gmail.com');
 
       const newUser: User = {
-        id: nextId++,
+        id: storage.nextUserId++,
         fullName,
         email: email || null,
         phone: phone || null,
@@ -219,12 +189,13 @@ export const handler: Handler = async (event, context) => {
         country: country || null,
         clinicHospital: clinicHospital || null,
         status: 'approved', // Auto-approve for now
-        role: users.length === 0 ? 'admin' : 'standard_member',
+        role: storage.users.length === 0 ? 'admin' : 'standard_member',
         emailVerified: true,
         phoneVerified: true,
+        createdAt: new Date().toISOString(),
       };
 
-      users.push(newUser);
+      storage.users.push(newUser);
 
       // Mark invite code as used
       useInviteCode(inviteCode, newUser.id);
@@ -275,14 +246,14 @@ export const handler: Handler = async (event, context) => {
       }
 
       console.log('Login attempt for:', email);
-      console.log('Total users:', users.length);
+      console.log('Total users:', storage.users.length);
 
       // Find user
-      const user = users.find(u => u.email === email || u.phone === email);
+      const user = storage.users.find(u => u.email === email || u.phone === email);
 
       if (!user) {
         console.log('User not found:', email);
-        console.log('Available users:', users.map(u => u.email));
+        console.log('Available users:', storage.users.map(u => u.email));
         return {
           statusCode: 401,
           headers: corsHeaders,
@@ -353,7 +324,7 @@ export const handler: Handler = async (event, context) => {
 
       try {
         const decoded = jwt.verify(token, JWT_SECRET) as any;
-        const user = users.find(u => u.id === decoded.userId);
+        const user = storage.users.find(u => u.id === decoded.userId);
 
         if (!user) {
           return {
