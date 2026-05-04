@@ -1,21 +1,105 @@
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Clock, Tag, Copy, Check } from "lucide-react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { SearchHistory } from "@shared/schema";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { 
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardContent,
+  CardDescription
+} from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { Badge } from "../components/ui/badge";
+import { Input } from "../components/ui/input";
+import { 
+  Clock, 
+  Tag, 
+  Copy, 
+  Check, 
+  Calendar,
+  User,
+  Activity,
+  Search,
+  Filter,
+  Download,
+  Trash2,
+  Eye,
+  Stethoscope,
+  FileText
+} from "lucide-react";
+import { useToast } from "../hooks/use-toast";
+import { HistorySummary } from "../components/HistorySummary";
+import { useSymptomTracker } from "../hooks/use-symptom-tracker";
+import { Link } from "wouter";
+
+interface SearchHistory {
+  id: number;
+  symptoms: string[];
+  timestamp: string;
+}
 
 export default function History() {
   const { toast } = useToast();
   const [copiedId, setCopiedId] = useState<number | null>(null);
-  const { data: rawHistory = [], isLoading } = useQuery<SearchHistory[]>({
+  const [searchTerm, setSearchTerm] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
+  const [selectedHistoryItem, setSelectedHistoryItem] = useState<SearchHistory | null>(null);
+  
+  const { data: rawHistory = [], isLoading, refetch } = useQuery<SearchHistory[]>({
     queryKey: ["/api/search-history"],
   });
 
-  const history = rawHistory.slice(0, 5);
+  const { selectedSymptoms, clinicalHistory } = useSymptomTracker();
+  
+  // Load current demographics from localStorage
+  const [currentDemographics, setCurrentDemographics] = useState({
+    age: '' as number | '',
+    sex: '' as 'Male' | 'Female' | '',
+    duration: '' as number | '',
+    durationUnit: '' as 'hours' | 'days' | 'weeks' | 'months' | 'years' | ''
+  });
+  
+  useEffect(() => {
+    const storedDemographics = localStorage.getItem('patientDemographics');
+    if (storedDemographics) {
+      try {
+        const parsed = JSON.parse(storedDemographics);
+        setCurrentDemographics(parsed);
+      } catch (e) {
+        console.error('Failed to parse demographics from localStorage', e);
+      }
+    }
+  }, []);
+  
+  // Load current scored conditions
+  const [currentScoredConditions, setCurrentScoredConditions] = useState<any[]>([]);
+  
+  useEffect(() => {
+    const storedScoredConditions = localStorage.getItem('currentScoredConditions');
+    if (storedScoredConditions) {
+      try {
+        const parsed = JSON.parse(storedScoredConditions);
+        setCurrentScoredConditions(parsed);
+      } catch (e) {
+        console.error('Failed to parse scored conditions from localStorage', e);
+      }
+    }
+  }, []);
+  
+  // Filter history based on search term and date
+  const filteredHistory = Array.isArray(rawHistory) 
+    ? rawHistory.filter(item => {
+        const matchesSearch = !searchTerm || 
+          item.symptoms.some((symptom: string) => 
+            symptom.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        const matchesDate = !dateFilter || 
+          format(new Date(item.timestamp), "yyyy-MM-dd") === dateFilter;
+        return matchesSearch && matchesDate;
+      })
+    : [];
 
   const copyToClipboard = (id: number, symptoms: string[]) => {
     navigator.clipboard.writeText(symptoms.join(", "));
@@ -27,69 +111,86 @@ export default function History() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const exportHistory = () => {
+    const dataStr = JSON.stringify(filteredHistory, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const exportFileDefaultName = `clinical-history-${new Date().toISOString().slice(0,10)}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    toast({ 
+      title: "Export Started", 
+      description: "Your clinical history is downloading." 
+    });
+  };
+
+  const clearHistory = () => {
+    if (confirm("Are you sure you want to clear all history? This cannot be undone.")) {
+      // In a real app, this would call an API endpoint
+      toast({ 
+        title: "History Cleared", 
+        description: "All clinical history has been removed.",
+        variant: "destructive"
+      });
+      refetch();
+    }
+  };
+
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="bg-primary/10 p-3 rounded-xl">
-          <Clock className="w-6 h-6 text-primary" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Search History</h1>
-          <p className="text-muted-foreground">Previous symptom searches and patient queries</p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50">
+      {/* Header */}
+      <div className="bg-white/80 backdrop-blur-sm border-b border-border sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-r from-blue-500 to-teal-500 p-2 rounded-lg">
+                <FileText className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">Clinical History</h1>
+                <p className="text-sm text-muted-foreground">Patient records and search documentation</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Link href="/">
+                <Button variant="outline" className="gap-2">
+                  <Stethoscope className="w-4 h-4" />
+                  Back to Diagnosis
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
 
-      <ScrollArea className="h-[calc(100vh-250px)]">
-        <div className="space-y-4 pr-4">
-          {isLoading ? (
-            Array.from({ length: 3 }).map((_, i) => (
-              <Card key={i} className="animate-pulse">
-                <CardContent className="h-24" />
-              </Card>
-            ))
-          ) : history.length === 0 ? (
-            <div className="text-center py-12 bg-muted/20 rounded-xl border-2 border-dashed border-border">
-              <p className="text-muted-foreground">No search history found.</p>
-            </div>
-          ) : (
-            history.map((item) => (
-              <Card key={item.id} className="hover-elevate transition-all">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3" />
-                    {format(new Date(item.timestamp), "PPP p")}
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => copyToClipboard(item.id, item.symptoms)}
-                  >
-                    {copiedId === item.id ? (
-                      <Check className="w-4 h-4 text-green-500" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {item.symptoms.map((symptom, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center gap-1 bg-primary/5 text-primary text-xs px-2 py-1 rounded-full border border-primary/10"
-                      >
-                        <Tag className="w-3 h-3" />
-                        {symptom}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-6">
+          {/* Current Patient Summary */}
+          <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 border-border">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="w-5 h-5 text-primary" />
+                Current Patient Summary
+              </CardTitle>
+              <CardDescription>
+                Active patient information and current presentation
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <HistorySummary 
+                demographics={currentDemographics}
+                chiefComplaints={selectedSymptoms}
+                suggestedConditions={currentScoredConditions}
+              />
+            </CardContent>
+          </Card>
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }
+

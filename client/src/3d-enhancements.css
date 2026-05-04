@@ -1,0 +1,598 @@
+/* 3D Color Enhancement System */
+/* Modern 3D Visual Effects and Depth System */
+
+/* 3D Color Palette */
+:root {
+  /* Primary 3D Colors - Deep with lighting effects */
+  --3d-primary-100: 270 100% 95%;
+  --3d-primary-200: 270 100% 85%;
+  --3d-primary-300: 270 100% 75%;
+  --3d-primary-400: 270 100% 65%;
+  --3d-primary-500: 270 100% 55%;
+  --3d-primary-600: 270 100% 45%;
+  --3d-primary-700: 270 100% 35%;
+  --3d-primary-800: 270 100% 25%;
+  --3d-primary-900: 270 100% 15%;
+  
+  /* Secondary 3D Colors - Warm with depth */
+  --3d-secondary-100: 330 100% 95%;
+  --3d-secondary-200: 330 100% 85%;
+  --3d-secondary-300: 330 100% 75%;
+  --3d-secondary-400: 330 100% 65%;
+  --3d-secondary-500: 330 100% 55%;
+  --3d-secondary-600: 330 100% 45%;
+  --3d-secondary-700: 330 100% 35%;
+  --3d-secondary-800: 330 100% 25%;
+  --3d-secondary-900: 330 100% 15%;
+  
+  /* Accent 3D Colors - Vibrant with highlights */
+  --3d-accent-100: 40 100% 90%;
+  --3d-accent-200: 40 100% 80%;
+  --3d-accent-300: 40 100% 70%;
+  --3d-accent-400: 40 100% 60%;
+  --3d-accent-500: 40 100% 50%;
+  --3d-accent-600: 40 100% 40%;
+  --3d-accent-700: 40 100% 30%;
+  --3d-accent-800: 40 100% 20%;
+  --3d-accent-900: 40 100% 10%;
+  
+  /* 3D Depth Shadows */
+  --shadow-3d-sm: 0 2px 4px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-3d-md: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-3d-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+  --shadow-3d-xl: 0 20px 25px rgba(0,0,0,0.15), 0 10px 10px rgba(0,0,0,0.04);
+  --shadow-3d-2xl: 0 25px 50px rgba(0,0,0,0.25), 0 15px 15px rgba(0,0,0,0.06);
+  
+  /* 3D Lighting Effects */
+  --highlight-3d: rgba(255,255,255,0.3);
+  --lowlight-3d: rgba(0,0,0,0.2);
+  --glow-3d: 0 0 20px rgba(139, 92, 246, 0.5);
+  --inner-glow-3d: inset 0 0 15px rgba(255,255,255,0.1);
+}
+
+/* 3D Card Components */
+.card-3d {
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-primary-400)) 0%, 
+    hsl(var(--3d-primary-500)) 50%, 
+    hsl(var(--3d-primary-600)) 100%);
+  border: 1px solid hsl(var(--3d-primary-300));
+  box-shadow: var(--shadow-3d-lg);
+  border-radius: var(--radius);
+  transform: translateZ(0);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-3d::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  background: linear-gradient(to bottom, 
+    var(--highlight-3d) 0%, 
+    transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.card-3d::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20%;
+  background: linear-gradient(to top, 
+    var(--lowlight-3d) 0%, 
+    transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.card-3d:hover {
+  transform: translateY(-5px) translateZ(10px);
+  box-shadow: var(--shadow-3d-xl);
+  border-color: hsl(var(--3d-primary-200));
+}
+
+/* 3D Button Components */
+.btn-3d-primary {
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-primary-500)) 0%, 
+    hsl(var(--3d-primary-600)) 100%);
+  color: white;
+  border: 1px solid hsl(var(--3d-primary-400));
+  box-shadow: var(--shadow-3d-md);
+  border-radius: var(--radius);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-3d-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--highlight-3d) 50%, 
+    transparent 100%);
+  transition: left 0.5s;
+}
+
+.btn-3d-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-3d-lg);
+  border-color: hsl(var(--3d-primary-300));
+}
+
+.btn-3d-primary:hover::before {
+  left: 100%;
+}
+
+.btn-3d-secondary {
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-secondary-500)) 0%, 
+    hsl(var(--3d-secondary-600)) 100%);
+  color: white;
+  border: 1px solid hsl(var(--3d-secondary-400));
+  box-shadow: var(--shadow-3d-md);
+  border-radius: var(--radius);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-3d-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-3d-lg);
+  border-color: hsl(var(--3d-secondary-300));
+}
+
+/* 3D Gradient Text Effects */
+.text-3d-gradient {
+  background: linear-gradient(135deg, 
+    hsl(var(--3d-primary-400)) 0%, 
+    hsl(var(--3d-secondary-400)) 50%, 
+    hsl(var(--3d-accent-400)) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+  position: relative;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.text-3d-glow {
+  background: linear-gradient(135deg, 
+    hsl(var(--3d-primary-300)) 0%, 
+    hsl(var(--3d-secondary-300)) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  text-shadow: 0 0 10px hsl(var(--3d-primary-400));
+  filter: drop-shadow(0 0 5px hsl(var(--3d-primary-300)));
+}
+
+/* 3D Container Effects */
+.container-3d {
+  background: linear-gradient(145deg, 
+    hsl(var(--background)) 0%, 
+    hsl(var(--3d-primary-100)) 100%);
+  border: 1px solid hsl(var(--border));
+  box-shadow: var(--shadow-3d-md);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.container-3d::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    hsl(var(--3d-primary-400)) 0%, 
+    hsl(var(--3d-secondary-400)) 50%, 
+    hsl(var(--3d-accent-400)) 100%);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+/* 3D Input Fields */
+.input-3d {
+  background: linear-gradient(145deg, 
+    hsl(var(--background)) 0%, 
+    hsl(var(--3d-primary-50)) 100%);
+  border: 2px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  box-shadow: var(--shadow-3d-sm);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.input-3d:focus {
+  outline: none;
+  border-color: hsl(var(--3d-primary-400));
+  box-shadow: 0 0 0 3px hsl(var(--3d-primary-200)), var(--shadow-3d-md);
+  transform: translateY(-1px);
+}
+
+/* 3D Badge Components */
+.badge-3d {
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-primary-500)) 0%, 
+    hsl(var(--3d-primary-600)) 100%);
+  color: white;
+  border: 1px solid hsl(var(--3d-primary-400));
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-3d-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.badge-3d:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-3d-md);
+}
+
+/* 3D Navigation Elements */
+.nav-3d {
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-primary-600)) 0%, 
+    hsl(var(--3d-primary-700)) 100%);
+  border: 1px solid hsl(var(--3d-primary-500));
+  box-shadow: var(--shadow-3d-lg);
+  border-radius: var(--radius);
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-3d::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    hsl(var(--3d-accent-400)) 0%, 
+    hsl(var(--3d-secondary-400)) 100%);
+}
+
+/* 3D Progress Bars */
+.progress-3d {
+  height: 12px;
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-primary-200)) 0%, 
+    hsl(var(--3d-primary-300)) 100%);
+  border-radius: 9999px;
+  overflow: hidden;
+  box-shadow: var(--shadow-3d-sm);
+  position: relative;
+}
+
+.progress-3d::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, 
+    var(--highlight-3d) 0%, 
+    transparent 100%);
+}
+
+.progress-3d-fill {
+  height: 100%;
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-primary-500)) 0%, 
+    hsl(var(--3d-primary-600)) 100%);
+  border-radius: 9999px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-3d-fill::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, 
+    var(--highlight-3d) 0%, 
+    transparent 100%);
+}
+
+/* 3D Alert Components */
+.alert-3d {
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-primary-100)) 0%, 
+    hsl(var(--3d-primary-200)) 100%);
+  border: 1px solid hsl(var(--3d-primary-300));
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow-3d-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.alert-3d::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, 
+    hsl(var(--3d-primary-500)) 0%, 
+    hsl(var(--3d-primary-600)) 100%);
+}
+
+.alert-3d-success {
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-accent-100)) 0%, 
+    hsl(var(--3d-accent-200)) 100%);
+  border: 1px solid hsl(var(--3d-accent-300));
+}
+
+.alert-3d-success::before {
+  background: linear-gradient(to bottom, 
+    hsl(var(--3d-accent-500)) 0%, 
+    hsl(var(--3d-accent-600)) 100%);
+}
+
+/* 3D Table Components */
+.table-3d {
+  background: white;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-3d-lg);
+  border: 1px solid hsl(var(--border));
+}
+
+.table-3d th {
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-primary-500)) 0%, 
+    hsl(var(--3d-primary-600)) 100%);
+  color: white;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+.table-3d th::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, 
+    var(--highlight-3d) 0%, 
+    transparent 100%);
+}
+
+.table-3d td {
+  padding: 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+  background: linear-gradient(145deg, 
+    white 0%, 
+    hsl(var(--3d-primary-50)) 100%);
+  transition: background 0.2s ease;
+}
+
+.table-3d tr:hover td {
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-primary-100)) 0%, 
+    hsl(var(--3d-primary-200)) 100%);
+}
+
+/* 3D Modal Components */
+.modal-3d-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-3d {
+  background: linear-gradient(145deg, 
+    white 0%, 
+    hsl(var(--3d-primary-50)) 100%);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-3d-2xl);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: hidden;
+  position: relative;
+  transform: translateZ(0);
+  animation: modalAppear 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+}
+
+/* 3D Loading Spinners */
+.spinner-3d {
+  width: 40px;
+  height: 40px;
+  border: 4px solid hsl(var(--3d-primary-200));
+  border-top: 4px solid hsl(var(--3d-primary-500));
+  border-radius: 50%;
+  animation: spin3d 1s linear infinite;
+  box-shadow: var(--shadow-3d-sm);
+}
+
+@keyframes spin3d {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 3D Feature Highlighting */
+.feature-3d-highlight {
+  background: linear-gradient(135deg, 
+    hsl(var(--3d-primary-100)) 0%, 
+    hsl(var(--3d-secondary-100)) 50%, 
+    hsl(var(--3d-accent-100)) 100%);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+  background-clip: padding-box;
+}
+
+.feature-3d-highlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    hsl(var(--3d-primary-400)) 0%, 
+    hsl(var(--3d-secondary-400)) 50%, 
+    hsl(var(--3d-accent-400)) 100%);
+  border-radius: var(--radius);
+  padding: 2px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  z-index: -1;
+}
+
+/* Enhanced 3D Effects for Specific Components */
+.medical-knowledge-3d {
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-primary-50)) 0%, 
+    hsl(var(--3d-secondary-50)) 100%);
+  border: 1px solid hsl(var(--3d-primary-200));
+  box-shadow: var(--shadow-3d-lg);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.medical-knowledge-3d::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, 
+    hsl(var(--3d-primary-400)) 0%, 
+    hsl(var(--3d-secondary-400)) 33%, 
+    hsl(var(--3d-accent-400)) 66%, 
+    hsl(var(--3d-primary-400)) 100%);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.diagnostic-panel-3d {
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-accent-50)) 0%, 
+    hsl(var(--3d-accent-100)) 100%);
+  border: 1px solid hsl(var(--3d-accent-200));
+  box-shadow: var(--shadow-3d-lg);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.diagnostic-panel-3d::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    hsl(var(--3d-accent-400)) 0%, 
+    hsl(var(--3d-accent-500)) 100%);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+/* Responsive 3D Effects */
+@media (max-width: 768px) {
+  .card-3d:hover {
+    transform: translateY(-2px) translateZ(5px);
+  }
+  
+  .btn-3d-primary:hover {
+    transform: translateY(-1px);
+  }
+  
+  .modal-3d {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+}
+
+/* Dark Mode 3D Adjustments */
+.dark {
+  --shadow-3d-sm: 0 2px 4px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-3d-md: 0 4px 6px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
+  --shadow-3d-lg: 0 10px 15px rgba(0,0,0,0.3), 0 4px 6px rgba(0,0,0,0.2);
+  --shadow-3d-xl: 0 20px 25px rgba(0,0,0,0.4), 0 10px 10px rgba(0,0,0,0.2);
+  --shadow-3d-2xl: 0 25px 50px rgba(0,0,0,0.5), 0 15px 15px rgba(0,0,0,0.3);
+  
+  --highlight-3d: rgba(255,255,255,0.1);
+  --lowlight-3d: rgba(0,0,0,0.4);
+}
+
+.dark .card-3d {
+  background: linear-gradient(145deg, 
+    hsl(var(--3d-primary-700)) 0%, 
+    hsl(var(--3d-primary-800)) 100%);
+  border: 1px solid hsl(var(--3d-primary-600));
+}
+
+.dark .container-3d {
+  background: linear-gradient(145deg, 
+    hsl(var(--background)) 0%, 
+    hsl(var(--3d-primary-900)) 100%);
+}

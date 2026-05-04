@@ -1,0 +1,60 @@
+{
+  "medicines": [
+    {
+      "medicine": "Paracetamol",
+      "drug_class": "Analgesic",
+      "mechanism": "Blocks pain signals in the brain",
+      "uses": "Fever, headache, muscle pain",
+      "side_effects": "Nausea, stomach upset",
+      "avoid_in_pregnancy": "false",
+      "extra_field_not_recognized": "This will be ignored safely"
+    },
+    {
+      "name": "Amoxicillin",
+      "drugClass": "Antibiotic",
+      "mechanismOfAction": "Inhibits bacterial cell wall synthesis",
+      "clinicalUses": "Treats bacterial infections including UTI (dysuria, urgency, frequency) and respiratory infections (cough, fever)",
+      "adverseEffects": ["Nausea", "Diarrhea", "Rash"],
+      "avoid_in_pregnancy": "no",
+      "caution_in_breastfeeding": "yes",
+      "missing_essential_field": "This medicine will be processed with defaults"
+    },
+    {
+      "name": "Warfarin", 
+      "class": "Anticoagulant",
+      "action_mechanism": "Vitamin K antagonist",
+      "indications": "Prevents blood clots",
+      "contra": "Active bleeding, severe liver disease",
+      "avoid_in_pregnancy": "true",
+      "neonatal_warning": "avoid",
+      "elderly_warning": "caution",
+      "some_random_field": "This will be safely ignored"
+    },
+    {
+      "drug_name": "Albuterol",
+      "category": "Bronchodilator",
+      "moa": "Beta-2 adrenergic receptor agonist",
+      "clinical_uses": "Used for asthma treatment - helps with wheezing, shortness of breath, and cough",
+      "ae": ["Tremor", "Nervousness", "Headache"],
+      "missing_drug_class": "Will be defaulted to 'Unknown'"
+    },
+    {
+      "name": "Metformin",
+      "drugClass": "Antidiabetic",
+      "mechanismOfAction": "Decreases hepatic glucose production",
+      "clinicalUses": "Diabetes management (polyuria, polydipsia, fatigue)",
+      "contraindications": ["Severe renal impairment", "Metabolic acidosis"]
+    },
+    {
+      "incomplete_medicine": {
+        "name": "Incomplete Drug",
+        "missing_fields": "This will show warnings but still import with defaults"
+      }
+    }
+  ],
+  "import_metadata": {
+    "imported_at": "2024-01-15T10:30:00Z",
+    "source": "Enhanced intelligent import test with validation",
+    "version": "2.0"
+  }
+}

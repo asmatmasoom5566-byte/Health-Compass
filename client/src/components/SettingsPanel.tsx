@@ -1,0 +1,323 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Settings, 
+  Smartphone, 
+  Sun, 
+  Moon, 
+  Monitor,
+  Palette,
+  Type,
+  Layout,
+  RotateCcw,
+  Check
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useToast } from '@/hooks/use-toast';
+import { useSettings } from '@/contexts/SettingsContext';
+
+interface SettingsState {
+  // Mobile View
+  mobileView: boolean;
+  mobilePreviewMode: 'phone' | 'tablet' | 'desktop';
+  
+  // Theme Settings
+  theme: 'light' | 'dark' | 'auto';
+  highContrast: boolean;
+  
+  // Icon & Density
+  iconSize: 'small' | 'medium' | 'large';
+  uiDensity: 'compact' | 'comfortable';
+  
+  // Typography
+  fontSize: 'small' | 'normal' | 'large';
+  lineSpacing: boolean;
+  
+  // Diagnostic UI Controls
+  showTop5Only: boolean;
+  autoCollapseLowPriority: boolean;
+  enableFocusQuestions: boolean;
+  
+  // Advanced Features
+  enableAIChat: boolean;
+  enableVoiceInput: boolean;
+  enableOfflineMode: boolean;
+  enableDataSync: boolean;
+}
+
+export function SettingsPanel() {
+  const { toast } = useToast();
+  const { settings, updateSetting, resetSettings } = useSettings();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleReset = () => {
+    resetSettings();
+    toast({
+      title: "Settings Reset",
+      description: "All settings have been reset to default values."
+    });
+  };
+
+  const updateSettingLocal = <K extends keyof SettingsState>(key: K, value: SettingsState[K]) => {
+    updateSetting(key, value);
+  };
+
+  return (
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>
+        <Button 
+          variant="outline" 
+          size="icon"
+          className="fixed top-4 right-4 z-50 shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30"
+        >
+          <Settings className="w-5 h-5" />
+        </Button>
+      </SheetTrigger>
+      
+      <SheetContent className="w-full sm:w-[540px] bg-gradient-to-b from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 border-l border-white/30 backdrop-blur-xl">
+        <SheetHeader className="bg-gradient-to-r from-blue-50/70 to-indigo-50/70 dark:from-blue-900/30 dark:to-indigo-900/30 p-6 rounded-t-xl">
+          <SheetTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent flex items-center gap-3">
+            <Settings className="w-6 h-6" />
+            Settings
+          </SheetTitle>
+        </SheetHeader>
+        
+        <div className="overflow-y-auto h-[calc(100vh-140px)] p-6">
+          {/* Mobile View Toggle */}
+          <div className="space-y-4 p-4 rounded-2xl bg-gradient-to-r from-purple-50/50 to-violet-50/50 dark:from-purple-900/20 dark:to-violet-900/20 border border-white/30 mb-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Smartphone className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                <div>
+                  <Label className="text-lg font-semibold text-foreground">Mobile View</Label>
+                  <p className="text-sm text-muted-foreground">Preview web app in mobile-like layout</p>
+                </div>
+              </div>
+              <Switch
+                checked={settings.mobileView}
+                onCheckedChange={(checked) => updateSettingLocal('mobileView', checked)}
+                className="scale-125"
+              />
+            </div>
+                      
+            {settings.mobileView && (
+              <div className="mt-4 pt-4 border-t border-white/20">
+                <Label className="font-medium mb-2 block">Preview Mode</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  <Button
+                    variant={settings.mobilePreviewMode === 'phone' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => updateSettingLocal('mobilePreviewMode', 'phone')}
+                    className="flex flex-col items-center gap-1 h-16"
+                  >
+                    <Smartphone className="w-4 h-4" />
+                    <span className="text-xs">Phone</span>
+                  </Button>
+                  <Button
+                    variant={settings.mobilePreviewMode === 'tablet' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => updateSettingLocal('mobilePreviewMode', 'tablet')}
+                    className="flex flex-col items-center gap-1 h-16"
+                  >
+                    <Monitor className="w-4 h-4" />
+                    <span className="text-xs">Tablet</span>
+                  </Button>
+                  <Button
+                    variant={settings.mobilePreviewMode === 'desktop' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => updateSettingLocal('mobilePreviewMode', 'desktop')}
+                    className="flex flex-col items-center gap-1 h-16"
+                  >
+                    <Monitor className="w-4 h-4" />
+                    <span className="text-xs">Desktop</span>
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div className="grid grid-cols-1 gap-6">
+            {/* Theme Settings */}
+            <div className="space-y-4 p-4 rounded-2xl bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-white/30 shadow-sm">
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                <Palette className="w-5 h-5" />
+                Theme Settings
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="font-medium">Theme Mode</Label>
+                  <Select value={settings.theme} onValueChange={(value: 'light' | 'dark' | 'auto') => updateSettingLocal('theme', value)}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="auto">Auto</SelectItem>
+                      <SelectItem value="light">Light</SelectItem>
+                      <SelectItem value="dark">Dark</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="font-medium">High Contrast</Label>
+                    <p className="text-sm text-muted-foreground">Enhanced visibility mode</p>
+                  </div>
+                  <Switch
+                    checked={settings.highContrast}
+                    onCheckedChange={(checked) => updateSettingLocal('highContrast', checked)}
+                  />
+                </div>
+              </div>
+            </div>
+            
+            {/* Icon & Density Settings */}
+            <div className="space-y-4 p-4 rounded-2xl bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-900/20 dark:to-emerald-900/20 border border-white/30 shadow-sm">
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                <Layout className="w-5 h-5" />
+                Display Settings
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="font-medium">Icon Size</Label>
+                  <Select value={settings.iconSize} onValueChange={(value: 'small' | 'medium' | 'large') => updateSettingLocal('iconSize', value)}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="small">Small</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="large">Large</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <Label className="font-medium">UI Density</Label>
+                  <Select value={settings.uiDensity} onValueChange={(value: 'compact' | 'comfortable') => updateSettingLocal('uiDensity', value)}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="compact">Compact</SelectItem>
+                      <SelectItem value="comfortable">Comfortable</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+            
+            {/* Typography Settings */}
+            <div className="space-y-4 p-4 rounded-2xl bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-900/20 dark:to-orange-900/20 border border-white/30 shadow-sm">
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                <Type className="w-5 h-5" />
+                Typography
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="font-medium">Font Size</Label>
+                  <Select value={settings.fontSize} onValueChange={(value: 'small' | 'normal' | 'large') => updateSettingLocal('fontSize', value)}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="small">Small</SelectItem>
+                      <SelectItem value="normal">Normal</SelectItem>
+                      <SelectItem value="large">Large</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="font-medium">Line Spacing</Label>
+                    <p className="text-sm text-muted-foreground">Increased readability</p>
+                  </div>
+                  <Switch
+                    checked={settings.lineSpacing}
+                    onCheckedChange={(checked) => updateSettingLocal('lineSpacing', checked)}
+                  />
+                </div>
+              </div>
+            </div>
+            
+            {/* Advanced Features */}
+            <div className="space-y-4 p-4 rounded-2xl bg-gradient-to-r from-cyan-50/50 to-blue-50/50 dark:from-cyan-900/20 dark:to-blue-900/20 border border-white/30 shadow-sm">
+              <h3 className="text-lg font-semibold text-foreground">Advanced Features</h3>
+                          
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="font-medium">AI Chat Assistant</Label>
+                    <p className="text-sm text-muted-foreground">Enable AI-powered diagnostic assistance</p>
+                  </div>
+                  <Switch
+                    checked={settings.enableAIChat}
+                    onCheckedChange={(checked) => updateSettingLocal('enableAIChat', checked)}
+                  />
+                </div>
+                            
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="font-medium">Voice Input</Label>
+                    <p className="text-sm text-muted-foreground">Speech-to-text symptom entry</p>
+                  </div>
+                  <Switch
+                    checked={settings.enableVoiceInput}
+                    onCheckedChange={(checked) => updateSettingLocal('enableVoiceInput', checked)}
+                  />
+                </div>
+                            
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="font-medium">Offline Mode</Label>
+                    <p className="text-sm text-muted-foreground">Work without internet connection</p>
+                  </div>
+                  <Switch
+                    checked={settings.enableOfflineMode}
+                    onCheckedChange={(checked) => updateSettingLocal('enableOfflineMode', checked)}
+                  />
+                </div>
+                            
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="font-medium">Data Sync</Label>
+                    <p className="text-sm text-muted-foreground">Sync data automatically</p>
+                  </div>
+                  <Switch
+                    checked={settings.enableDataSync}
+                    onCheckedChange={(checked) => updateSettingLocal('enableDataSync', checked)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Reset Button */}
+          <div className="mt-8 pt-6 border-t border-white/20">
+            <Button 
+              variant="outline" 
+              onClick={handleReset}
+              className="w-full bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 dark:from-gray-800/30 dark:to-gray-900/30 shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Reset to Default Settings
+            </Button>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}

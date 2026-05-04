@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
+  --primary: 173 80% 40%;
+  --primary-foreground: 210 40% 98%;
+}
+
+body {
+  @apply bg-background text-foreground;
+}

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Edit Time Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .test-section {
+            border: 2px solid #333;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; }
+        .warning { background-color: #fff3cd; }
+        .info { background-color: #d1ecf1; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Last Edit Time Feature - Browser Test</h1>
+    
+    <div class="test-section info">
+        <h2>Instructions:</h2>
+        <ol>
+            <li><strong>IMPORTANT:</strong> First, hard refresh your browser: <code>Ctrl + Shift + R</code></li>
+            <li>Open your application in the browser</li>
+            <li>Go to Condition Database</li>
+            <li>Perform the tests below</li>
+        </ol>
+    </div>
+
+    <div class="test-section success">
+        <h2>Test 1: Manual Edit Creates Timestamp</h2>
+        <p><strong>Action:</strong> Edit any condition and save changes</p>
+        <p><strong>Expected:</strong> Shows "Last edited on: [current date/time]" with green "Permanent ✓" badge</p>
+        <p><strong>Status:</strong> <span id="test1-status">⏳ Pending</span></p>
+    </div>
+
+    <div class="test-section success">
+        <h2>Test 2: Export Includes lastEditTime</h2>
+        <p><strong>Action:</strong> Click "Export" button in Condition Database</p>
+        <p><strong>Expected:</strong> Downloaded JSON file contains "lastEditTime" field</p>
+        <p><strong>Check:</strong> Open the JSON file and search for "lastEditTime"</p>
+        <p><strong>Status:</strong> <span id="test2-status">⏳ Pending</span></p>
+    </div>
+
+    <div class="test-section warning">
+        <h2>Test 3: Import Preserves Original Timestamp</h2>
+        <p><strong>Action:</strong> Import the JSON file you just exported</p>
+        <p><strong>Expected:</strong> Shows ORIGINAL date (NOT today's date)</p>
+        <p><strong>Example:</strong> If you edited at 2:30 PM and import at 3:00 PM, should still show 2:30 PM</p>
+        <p><strong>Status:</strong> <span id="test3-status">⏳ Pending</span></p>
+    </div>
+
+    <div class="test-section warning">
+        <h2>Test 4: Import Without Timestamp Shows Nothing</h2>
+        <p><strong>Action:</strong> Create/import a JSON file WITHOUT lastEditTime field</p>
+        <pre><code>[
+  {
+    "id": "test-1",
+    "name": "Test Condition",
+    "symptoms": ["fever", "headache"]
+    // NO lastEditTime field
+  }
+]</code></pre>
+        <p><strong>Expected:</strong> Shows NOTHING for "Last edited", appears at BOTTOM of list</p>
+        <p><strong>Status:</strong> <span id="test4-status">⏳ Pending</span></p>
+    </div>
+
+    <div class="test-section success">
+        <h2>Test 5: Sorting Works Correctly</h2>
+        <p><strong>Expected Order:</strong></p>
+        <ol>
+            <li>Conditions WITH lastEditTime (sorted newest first)</li>
+            <li>Conditions WITHOUT lastEditTime (at the bottom)</li>
+        </ol>
+        <p><strong>Status:</strong> <span id="test5-status">⏳ Pending</span></p>
+    </div>
+
+    <div class="test-section info">
+        <h2>Quick Verification Checklist:</h2>
+        <ul>
+            <li><input type="checkbox" id="check1"> Hard refreshed browser (Ctrl + Shift + R)</li>
+            <li><input type="checkbox" id="check2"> Edited condition shows timestamp</li>
+            <li><input type="checkbox" id="check3"> Export includes lastEditTime field</li>
+            <li><input type="checkbox" id="check4"> Import preserves original date (not import time)</li>
+            <li><input type="checkbox" id="check5"> Conditions without timestamp at bottom</li>
+            <li><input type="checkbox" id="check6"> No auto-generation of timestamps</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>Troubleshooting:</h2>
+        <p>If tests fail:</p>
+        <ol>
+            <li><strong>Clear browser cache completely</strong></li>
+            <li>Hard refresh: <code>Ctrl + Shift + R</code></li>
+            <li>Close and reopen browser</li>
+            <li>Check browser console for errors (F12)</li>
+            <li>Verify you're running latest build</li>
+        </ol>
+        
+        <h3>Force Clear Cache:</h3>
+        <button onclick="clearCache()">Clear All Cache & Reload</button>
+        <button onclick="location.reload()">Normal Reload</button>
+        <button onclick="hardReload()">Hard Reload (Ctrl+Shift+R)</button>
+    </div>
+
+    <script>
+        function clearCache() {
+            if (confirm('This will clear all cached data and reload the page. Continue?')) {
+                // Clear service workers
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                        for(let registration of registrations) {
+                            registration.unregister();
+                        }
+                    });
+                }
+                
+                // Force hard reload
+                window.location.reload(true);
+            }
+        }
+
+        function hardReload() {
+            window.location.reload(true);
+        }
+
+        // Auto-check if page is loaded from correct location
+        console.log('Current URL:', window.location.href);
+        console.log('Make sure you hard refreshed: Ctrl + Shift + R');
+    </script>
+</body>
+</html>

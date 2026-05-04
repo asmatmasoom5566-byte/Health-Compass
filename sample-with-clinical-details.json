@@ -1,0 +1,105 @@
+{
+  "medicines": [
+    {
+      "id": "med_paracetamol_001",
+      "name": "Paracetamol",
+      "drugClass": "Analgesic/Antipyretic",
+      "mechanismOfAction": "Inhibits prostaglandin synthesis in CNS by blocking COX enzymes, reducing pain and fever",
+      "clinicalUses": [
+        "Fever reduction",
+        "Mild to moderate pain relief",
+        "Headache treatment"
+      ],
+      "adverseEffects": [
+        "Liver toxicity at high doses",
+        "Nausea",
+        "Skin rash"
+      ],
+      "contraindications": [
+        "Severe liver disease",
+        "Hypersensitivity to paracetamol"
+      ],
+      "ageRules": {
+        "min": 0,
+        "max": 150,
+        "avoidInNeonates": false,
+        "avoidInElderly": false,
+        "ruleType": "soft"
+      },
+      "sexRules": {
+        "avoidInPregnancy": false,
+        "cautionInBreastfeeding": false,
+        "sexSpecificRisks": []
+      },
+      "durationRules": "both",
+      "symptomMatchRules": {
+        "primarySymptoms": ["fever", "headache", "pain"],
+        "secondarySymptoms": ["muscle aches", "joint pain"],
+        "inappropriateSymptoms": ["severe abdominal pain"]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Fever reduction",
+          "details": "Acts centrally on hypothalamic heat-regulating center to reduce fever. Safe for all age groups including children and elderly. Minimal GI side effects make it ideal for OPD use."
+        },
+        {
+          "useName": "Mild to moderate pain relief",
+          "details": "Inhibits CNS prostaglandin synthesis without peripheral anti-inflammatory effects. Suitable for patients who cannot tolerate NSAIDs due to gastric issues or bleeding risk."
+        }
+      ],
+      "medicineAdvantage": "Effective symptom control with minimal gastric side effects. Safe for children, pregnant women (Category B), and patients with peptic ulcer history. First-line choice for fever and mild pain in OPD settings."
+    },
+    {
+      "id": "med_ibuprofen_002",
+      "name": "Ibuprofen",
+      "drugClass": "NSAID",
+      "mechanismOfAction": "Non-selective COX-1 and COX-2 inhibitor that reduces prostaglandin synthesis, providing anti-inflammatory, analgesic, and antipyretic effects",
+      "clinicalUses": [
+        "Inflammatory pain",
+        "Arthritis",
+        "Fever",
+        "Dysmenorrhea"
+      ],
+      "adverseEffects": [
+        "Gastric irritation",
+        "GI bleeding",
+        "Renal impairment"
+      ],
+      "contraindications": [
+        "Active peptic ulcer disease",
+        "Severe heart failure"
+      ],
+      "ageRules": {
+        "min": 12,
+        "max": 150,
+        "avoidInNeonates": true,
+        "avoidInElderly": false,
+        "ruleType": "soft"
+      },
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": []
+      },
+      "durationRules": "both",
+      "symptomMatchRules": {
+        "primarySymptoms": ["inflammatory pain", "joint pain", "swelling", "fever"],
+        "secondarySymptoms": ["menstrual pain", "muscle pain"],
+        "inappropriateSymptoms": ["gastric pain"]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Inflammatory pain",
+          "details": "Dual COX-1 and COX-2 inhibition provides potent anti-inflammatory action. Reduces prostaglandin-mediated inflammation at injury site. Best taken with food to minimize gastric irritation."
+        },
+        {
+          "useName": "Arthritis",
+          "details": "Effective for both osteoarthritis and rheumatoid arthritis symptom management. Provides better pain relief than paracetamol for inflammatory joint conditions."
+        }
+      ],
+      "medicineAdvantage": "Superior anti-inflammatory action compared to paracetamol. Ideal for musculoskeletal injuries, arthritis, and dysmenorrhea. Short-term use safe for most adults."
+    }
+  ],
+  "exportedAt": "2024-01-01T00:00:00.000Z",
+  "version": "1.0"
+}

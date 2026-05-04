@@ -2,13 +2,69 @@ import type { Express, Request, Response } from "express";
 import OpenAI from "openai";
 import { chatStorage } from "./storage";
 
-const openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-});
+// Lazy initialize OpenAI client
+let _openai: OpenAI | undefined;
+
+function getOpenAIClient(): OpenAI {
+  if (!_openai) {
+    if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
+      try {
+        _openai = new OpenAI({
+          apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+          baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+        });
+      } catch (error) {
+        // Mock OpenAI client for development without API key
+        _openai = {
+          chat: {
+            completions: {
+              create: async (params: any) => {
+                // Return a mock response for development
+                const mockResponse = {
+                  choices: [{
+                    message: {
+                      content: "This is a mock response. To enable AI features, please configure your OpenAI API key."
+                    }
+                  }]
+                };
+                // Simulate some delay to mimic API call
+                await new Promise(resolve => setTimeout(resolve, 500));
+                return mockResponse;
+              }
+            }
+          }
+        } as any;
+        console.warn("OpenAI API key not found. Running with mock AI responses for development.");
+      }
+    } else {
+      // Mock OpenAI client for development without API key
+      _openai = {
+        chat: {
+          completions: {
+            create: async (params: any) => {
+              // Return a mock response for development
+              const mockResponse = {
+                choices: [{
+                  message: {
+                    content: "This is a mock response. To enable AI features, please configure your OpenAI API key."
+                  }
+                }]
+              };
+              // Simulate some delay to mimic API call
+              await new Promise(resolve => setTimeout(resolve, 500));
+              return mockResponse;
+            }
+          }
+        }
+      } as any;
+      console.warn("OpenAI API key not found. Running with mock AI responses for development.");
+    }
+  }
+  return _openai!; // Assert non-null since we initialize it in the if block
+}
 
 export async function chat(messages: { role: "user" | "assistant" | "system", content: string }[]) {
-  const response = await openai.chat.completions.create({
+  const response = await getOpenAIClient().chat.completions.create({
     model: "gpt-4o",
     messages: messages as any,
   });
@@ -88,21 +144,43 @@ export function registerChatRoutes(app: Express): void {
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");
 
-      // Stream response from OpenAI
-      const stream = await openai.chat.completions.create({
-        model: "gpt-5.1",
-        messages: chatMessages,
-        stream: true,
-        max_completion_tokens: 2048,
-      });
-
       let fullResponse = "";
+      
+      // Check if we're using the mock client (which doesn't support streaming)
+      if (!process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
+        // Use the non-streaming mock method for development
+        const mockResponse = await getOpenAIClient().chat.completions.create({
+          model: "gpt-5.1",
+          messages: chatMessages,
+        });
+        
+        fullResponse = mockResponse.choices[0]?.message?.content || "";
+        
+        // Stream the response in chunks to simulate streaming
+        const chunkSize = 10;
+        for (let i = 0; i < fullResponse.length; i += chunkSize) {
+          const content = fullResponse.substring(i, i + chunkSize);
+          if (content) {
+            res.write(`data: ${JSON.stringify({ content })}\n\n`);
+            // Small delay to simulate streaming
+            await new Promise(resolve => setTimeout(resolve, 50));
+          }
+        }
+      } else {
+        // Stream response from OpenAI
+        const stream = await getOpenAIClient().chat.completions.create({
+          model: "gpt-5.1",
+          messages: chatMessages,
+          stream: true,
+          max_completion_tokens: 2048,
+        });
 
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content || "";
-        if (content) {
-          fullResponse += content;
-          res.write(`data: ${JSON.stringify({ content })}\n\n`);
+        for await (const chunk of stream) {
+          const content = chunk.choices[0]?.delta?.content || "";
+          if (content) {
+            fullResponse += content;
+            res.write(`data: ${JSON.stringify({ content })}\n\n`);
+          }
         }
       }
 
@@ -123,4 +201,3 @@ export function registerChatRoutes(app: Express): void {
     }
   });
 }
-

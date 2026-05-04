@@ -1,0 +1,47 @@
+[
+  {
+    "conditionName": "Hypertension",
+    "symptomList": ["headache", "dizziness", "blurred vision"],
+    "management": "Lifestyle changes, ACE inhibitors, calcium channel blockers",
+    "age_min": 25,
+    "age_max": 80,
+    "gender": "both",
+    "duration": "6 months"
+  },
+  {
+    "title": "Diabetes Mellitus",
+    "presentingSymptoms": ["polyuria", "polydipsia", "fatigue"],
+    "therapy": "Metformin, lifestyle changes, insulin if needed",
+    "ageRange": {
+      "min": 30,
+      "max": 70,
+      "type": "soft"
+    },
+    "sexRule": "both",
+    "duration_min": 3,
+    "duration_max": 24,
+    "durationUnit": "months"
+  },
+  {
+    "name": "Migraine",
+    "complaints": ["throbbing headache", "nausea", "photophobia"],
+    "treatment": "Triptans, NSAIDs, preventive medications",
+    "age_range": "12-55",
+    "gender_applicability": "female",
+    "timeFrame": "2-72 hours"
+  },
+  {
+    "diagnosis": "Asthma",
+    "chiefComplaints": ["wheezing", "shortness of breath", "chest tightness"],
+    "interventions": "Inhaled bronchodilators, inhaled corticosteroids",
+    "minAge": 2,
+    "maxAge": 65,
+    "sexType": "both",
+    "durationRule": {
+      "min": 1,
+      "max": 60,
+      "unit": "years",
+      "ruleType": "soft"
+    }
+  }
+]

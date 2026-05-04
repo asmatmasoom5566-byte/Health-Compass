@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Intelligent Import Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .feature { background: white; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #007acc; }
+        .example { background: #e8f4f8; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .code { background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace; }
+        .success { color: #28a745; }
+        .warning { color: #ffc107; }
+        .error { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>🏥 Intelligent Pharmacology Medicine Import System</h1>
+    
+    <div class="container">
+        <h2>✨ Key Features</h2>
+        
+        <div class="feature">
+            <h3>🔤 Field Name Auto-Correction</h3>
+            <p>Automatically maps different field names to the correct schema:</p>
+            <ul>
+                <li><code>medicine</code> → Medicine Name</li>
+                <li><code>drug_class</code> → Drug Class</li>
+                <li><code>uses</code> → Clinical Uses</li>
+                <li><code>side_effects</code> → Adverse Effects</li>
+            </ul>
+        </div>
+        
+        <div class="feature">
+            <h3>📝 Clinical Use Processing</h3>
+            <p>Converts text descriptions into structured format:</p>
+            <div class="example">
+                <strong>Input:</strong> "Treats bacterial infections including UTI (dysuria, urgency, frequency)"<br>
+                <strong>Output:</strong> <span class="success">Structured clinical use with extracted symptoms</span>
+            </div>
+        </div>
+        
+        <div class="feature">
+            <h3>🔍 Symptom Extraction</h3>
+            <p>Automatically extracts symptoms from natural language:</p>
+            <ul>
+                <li>Clinical uses text</li>
+                <li>Condition descriptions</li>
+                <li>Common medical terminology</li>
+            </ul>
+        </div>
+        
+        <div class="feature">
+            <h3>🛡️ Safety Rule Normalization</h3>
+            <p>Converts various safety rule formats:</p>
+            <div class="code">
+"avoid_in_pregnancy": "true" → avoidInPregnancy: true<br>
+"neonatal_warning": "avoid" → avoidInNeonates: true<br>
+"caution_in_breastfeeding": "yes" → cautionInBreastfeeding: true
+            </div>
+        </div>
+        
+        <div class="feature">
+            <h3>📋 Missing Field Handling</h3>
+            <p>Gracefully handles missing data:</p>
+            <ul>
+                <li>Sets appropriate defaults for optional fields</li>
+                <li>Provides warnings for missing critical fields</li>
+                <li>Never fails import due to missing optional data</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>🧪 Sample Import Data</h2>
+        <p>Try importing the sample file <code>sample-intelligent-import.json</code> to see the intelligent auto-correction in action.</p>
+        
+        <div class="example">
+            <h3>Example Input (Mixed Formats):</h3>
+            <div class="code">
+{
+  "medicine": "Paracetamol",
+  "drug_class": "Analgesic",
+  "mechanism": "Blocks pain signals",
+  "uses": "Fever, headache, muscle pain",
+  "side_effects": "Nausea, stomach upset",
+  "avoid_in_pregnancy": "false"
+}
+            </div>
+        </div>
+        
+        <div class="example">
+            <h3>Auto-Correction Results:</h3>
+            <ul>
+                <li class="success">✓ <code>medicine</code> → <code>name</code></li>
+                <li class="success">✓ <code>drug_class</code> → <code>drugClass</code></li>
+                <li class="success">✓ <code>mechanism</code> → <code>mechanismOfAction</code></li>
+                <li class="success">✓ <code>uses</code> → <code>clinicalUses</code></li>
+                <li class="success">✓ <code>side_effects</code> → <code>adverseEffects</code></li>
+                <li class="success">✓ <code>"false"</code> → <code>false</code> (boolean)</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>📊 Import Process Flow</h2>
+        <ol>
+            <li><strong>Field Normalization</strong> - Map field names to standard schema</li>
+            <li><strong>Clinical Use Processing</strong> - Convert text to structured format</li>
+            <li><strong>Symptom Extraction</strong> - Extract symptoms from text</li>
+            <li><strong>Safety Rule Normalization</strong> - Convert safety rules to standard format</li>
+            <li><strong>Validation</strong> - Check for critical missing fields</li>
+            <li><strong>Summary Generation</strong> - Create detailed import report</li>
+        </ol>
+    </div>
+    
+    <div class="container">
+        <h2>📋 Import Summary Features</h2>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+                <h3 class="success">✅ Corrections Made</h3>
+                <ul>
+                    <li>Field name corrections</li>
+                    <li>Format conversions</li>
+                    <li>Data transformations</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="warning">⚠️ Warnings</h3>
+                <ul>
+                    <li>Missing optional fields</li>
+                    <li>Data quality issues</li>
+                    <li>Non-standard formats</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="error">❌ Errors</h3>
+                <ul>
+                    <li>Critical missing fields</li>
+                    <li>Invalid data structures</li>
+                    <li>Unrecoverable issues</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3>📊 Statistics</h3>
+                <ul>
+                    <li>Successful imports</li>
+                    <li>Failed imports</li>
+                    <li>Types of corrections</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>🚀 How to Use</h2>
+        <ol>
+            <li>Go to Pharmacology Dashboard</li>
+            <li>Click "View Database"</li>
+            <li>Click "Import Medicines"</li>
+            <li>Paste JSON data or use sample file</li>
+            <li>Review import summary</li>
+            <li>Confirm import to see auto-corrections</li>
+        </ol>
+    </div>
+    
+    <p style="text-align: center; color: #666; margin-top: 30px;">
+        This intelligent import system ensures medicines can be imported successfully regardless of original format
+    </p>
+</body>
+</html>

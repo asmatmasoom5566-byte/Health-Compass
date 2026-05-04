@@ -1,0 +1,47 @@
+{
+  "medicines": [
+    {
+      "medicine": "Paracetamol",
+      "drug_class": "Analgesic",
+      "mechanism": "Blocks pain signals in the brain",
+      "uses": "Fever, headache, muscle pain",
+      "side_effects": "Nausea, stomach upset",
+      "avoid_in_pregnancy": "false"
+    },
+    {
+      "name": "Amoxicillin",
+      "drugClass": "Antibiotic",
+      "mechanismOfAction": "Inhibits bacterial cell wall synthesis",
+      "clinicalUses": "Treats bacterial infections including UTI (dysuria, urgency, frequency) and respiratory infections (cough, fever)",
+      "adverseEffects": ["Nausea", "Diarrhea", "Rash"],
+      "avoid_in_pregnancy": "no",
+      "caution_in_breastfeeding": "yes"
+    },
+    {
+      "name": "Warfarin", 
+      "class": "Anticoagulant",
+      "action_mechanism": "Vitamin K antagonist",
+      "indications": "Prevents blood clots",
+      "contra": "Active bleeding, severe liver disease",
+      "avoid_in_pregnancy": "true",
+      "neonatal_warning": "avoid",
+      "elderly_warning": "caution"
+    },
+    {
+      "drug_name": "Albuterol",
+      "category": "Bronchodilator",
+      "moa": "Beta-2 adrenergic receptor agonist",
+      "clinical_uses": "Used for asthma treatment - helps with wheezing, shortness of breath, and cough",
+      "ae": ["Tremor", "Nervousness", "Headache"]
+    },
+    {
+      "name": "Metformin",
+      "drugClass": "Antidiabetic",
+      "mechanismOfAction": "Decreases hepatic glucose production",
+      "clinicalUses": "Diabetes management (polyuria, polydipsia, fatigue)",
+      "contraindications": ["Severe renal impairment", "Metabolic acidosis"]
+    }
+  ],
+  "imported_at": "2024-01-15T10:30:00Z",
+  "source": "Sample intelligent import test"
+}

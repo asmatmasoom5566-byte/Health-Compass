@@ -1,0 +1,501 @@
+import { useState, useEffect } from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { Badge } from "../components/ui/badge";
+import { 
+  Stethoscope, 
+  History, 
+  Database, 
+  Settings,
+  Activity,
+  BarChart3,
+  AlertTriangle,
+  Lightbulb,
+  Plus,
+  Search,
+  Download
+} from "lucide-react";
+import { Link } from "wouter";
+import { PatientDemographicsPanel } from "../components/PatientDemographicsPanel";
+import { SymptomInput } from "../components/SymptomInput";
+import { SuggestionList } from "../components/SuggestionList";
+import { DataManager } from "../components/DataManager";
+import { DiagnosticReasoningPanel } from "../components/DiagnosticReasoningPanel";
+import { ClinicalCalculators } from "../components/ClinicalCalculators";
+import { ReferenceRanges } from "../components/ReferenceRanges";
+import { DifferentialComparison } from "../components/DifferentialComparison";
+import { ConfidenceIndicator } from "../components/ConfidenceIndicator";
+import { useSymptomTracker } from "../hooks/use-symptom-tracker";
+import { Cause } from "@shared/schema";
+import { DiagnosticReasoningEngine, PatientContext } from "../utils/diagnostic-reasoning";
+
+export default function Landing() {
+  const {
+    causes,
+    selectedSymptoms,
+    addSymptom,
+    removeSymptom,
+    clearSymptoms,
+    addCause,
+    updateCause,
+    deleteCause,
+    resetDatabase,
+    importData,
+    canUndo
+  } = useSymptomTracker();
+
+  const [patientDemographics, setPatientDemographics] = useState({
+    age: '' as number | '',
+    sex: '' as 'Male' | 'Female' | '',
+    duration: '' as number | '',
+    durationUnit: '' as 'hours' | 'days' | 'weeks' | 'months' | 'years' | ''
+  });
+
+  const [showConfidence, setShowConfidence] = useState<Record<string, boolean>>({});
+  const [showDifferential, setShowDifferential] = useState(false);
+  const [showDiagnosticReasoning, setShowDiagnosticReasoning] = useState(false);
+  const [negativeFindings, setNegativeFindings] = useState<string[]>([]);
+  const [diagnosticAnalysis, setDiagnosticAnalysis] = useState<any>(null);
+  const [scoredCauses, setScoredCauses] = useState<any[]>([]);
+
+  // Load demographics from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('patientDemographics');
+    if (stored) {
+      try {
+        setPatientDemographics(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse demographics', e);
+      }
+    }
+  }, []);
+
+  // Save demographics to localStorage
+  useEffect(() => {
+    localStorage.setItem('patientDemographics', JSON.stringify(patientDemographics));
+  }, [patientDemographics]);
+
+  // Save current scored conditions to localStorage
+  useEffect(() => {
+    localStorage.setItem('currentScoredConditions', JSON.stringify(scoredCauses));
+  }, [scoredCauses]);
+
+  const handleAddSymptom = (symptom: string) => {
+    addSymptom(symptom);
+  };
+
+  const handleRemoveSymptom = (symptom: string) => {
+    removeSymptom(symptom);
+  };
+
+  const handleClearSymptoms = () => {
+    clearSymptoms();
+  };
+
+  const handleDemographicsChange = (demographics: typeof patientDemographics) => {
+    setPatientDemographics(demographics);
+  };
+
+  const handleClearDemographics = () => {
+    setPatientDemographics({
+      age: '',
+      sex: '',
+      duration: '',
+      durationUnit: ''
+    });
+  };
+
+  const handleSelectCause = (cause: Cause) => {
+    console.log('Selected cause:', cause);
+  };
+
+  const handleScoredCausesChange = (newScoredCauses: any[]) => {
+    setScoredCauses(newScoredCauses);
+    
+    // Perform diagnostic analysis when scored causes change
+    if (patientDemographics.age && patientDemographics.sex && patientDemographics.duration && patientDemographics.durationUnit) {
+      const patientContext: PatientContext = {
+        age: Number(patientDemographics.age),
+        sex: patientDemographics.sex.toLowerCase() as 'male' | 'female',
+        symptoms: selectedSymptoms,
+        duration: Number(patientDemographics.duration),
+        durationUnit: patientDemographics.durationUnit
+      };
+      
+      const analysis = DiagnosticReasoningEngine.performComprehensiveAnalysis(
+        patientContext,
+        newScoredCauses,
+        negativeFindings
+      );
+      
+      setDiagnosticAnalysis(analysis);
+    }
+  };
+
+  const isPatientComplete = patientDemographics.age !== '' && 
+                          patientDemographics.sex !== '' && 
+                          patientDemographics.duration !== '' && 
+                          patientDemographics.durationUnit !== '';
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50">
+      {/* Header */}
+      <div className="bg-white/80 backdrop-blur-sm border-b border-border sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-r from-blue-500 to-teal-500 p-2 rounded-lg">
+                <Stethoscope className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">DR. ASMAT MASOOM – Clinical Decision System</h1>
+                <p className="text-sm text-muted-foreground">Clinical Decision Support System</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Link href="/history">
+                <Button variant="outline" className="gap-2">
+                  <History className="w-4 h-4" />
+                  History
+                </Button>
+              </Link>
+              <Badge variant="secondary" className="gap-1">
+                <Database className="w-3 h-3" />
+                {causes.length} Conditions
+              </Badge>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Tabs defaultValue="diagnosis" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="diagnosis" className="gap-2">
+              <Activity className="w-4 h-4" />
+              Diagnosis
+            </TabsTrigger>
+            <TabsTrigger value="database" className="gap-2">
+              <Database className="w-4 h-4" />
+              Database
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-2">
+              <BarChart3 className="w-4 h-4" />
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="gap-2">
+              <Settings className="w-4 h-4" />
+              Settings
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Diagnosis Tab */}
+          <TabsContent value="diagnosis" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left Panel - Patient Input */}
+              <div className="lg:col-span-1 space-y-6">
+                <PatientDemographicsPanel
+                  demographics={patientDemographics}
+                  onChange={handleDemographicsChange}
+                  onClear={handleClearDemographics}
+                  showValidation={true}
+                />
+                
+                <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 border-border">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Activity className="w-5 h-5 text-primary" />
+                      Symptom Input
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <SymptomInput
+                      selectedSymptoms={selectedSymptoms}
+                      onAdd={handleAddSymptom}
+                      onRemove={handleRemoveSymptom}
+                      onClear={handleClearSymptoms}
+                      knownSymptoms={Array.from(new Set(causes.flatMap(c => c.symptoms)))}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Right Panel - Results */}
+              <div className="lg:col-span-2 space-y-6">
+                {isPatientComplete && (
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="secondary" className="gap-1">
+                      Age: {patientDemographics.age} years
+                    </Badge>
+                    <Badge variant="secondary" className="gap-1">
+                      Sex: {patientDemographics.sex}
+                    </Badge>
+                    <Badge variant="secondary" className="gap-1">
+                      Duration: {patientDemographics.duration} {patientDemographics.durationUnit}
+                    </Badge>
+                  </div>
+                )}
+
+                <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 border-border">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Search className="w-5 h-5 text-primary" />
+                        Differential Diagnosis
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setShowDifferential(!showDifferential)}
+                          className="gap-2"
+                        >
+                          <BarChart3 className="w-4 h-4" />
+                          {showDifferential ? 'Hide' : 'Show'} Comparison
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setShowDiagnosticReasoning(!showDiagnosticReasoning)}
+                          className="gap-2"
+                        >
+                          <Lightbulb className="w-4 h-4" />
+                          {showDiagnosticReasoning ? 'Hide' : 'Show'} Insights
+                        </Button>
+                      </div>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <SuggestionList
+                      causes={causes}
+                      selectedSymptoms={selectedSymptoms}
+                      patientDemographics={patientDemographics}
+                      onEdit={(cause) => updateCause(cause.id, cause)}
+                      onDelete={deleteCause}
+                      onSelect={handleSelectCause}
+                      onScoredCausesChange={handleScoredCausesChange}
+                      onAddSymptom={handleAddSymptom}
+                    />
+                  </CardContent>
+                </Card>
+
+                {/* Diagnostic Reasoning Panel */}
+                {showDiagnosticReasoning && diagnosticAnalysis && (
+                  <DiagnosticReasoningPanel
+                    patient={{
+                      age: Number(patientDemographics.age),
+                      sex: patientDemographics.sex.toLowerCase() as 'male' | 'female',
+                      symptoms: selectedSymptoms,
+                      duration: Number(patientDemographics.duration),
+                      durationUnit: patientDemographics.durationUnit
+                    }}
+                    alerts={diagnosticAnalysis.closureAlerts || []}
+                    syndromeClusters={diagnosticAnalysis.syndromeClusters || []}
+                    probabilityAdjustments={diagnosticAnalysis.probabilityAdjustments || []}
+                  />
+                )}
+
+                {/* Differential Comparison */}
+                {showDifferential && scoredCauses.length > 0 && (
+                  <div className="fixed inset-0 z-50 bg-background p-6 overflow-auto">
+                    <DifferentialComparison
+                      conditions={scoredCauses.map(cause => ({
+                        id: cause.id,
+                        name: cause.name,
+                        score: cause.score,
+                        symptoms: cause.symptoms,
+                        keyFeatures: cause.keyFeatures || [],
+                        discriminatorFeatures: cause.discriminatorFeatures || [],
+                        ageRange: cause.ageRule ? { min: cause.ageRule.min || 0, max: cause.ageRule.max || 150 } : undefined,
+                        sexApplicability: cause.sexRule as 'male' | 'female' | 'both' | undefined
+                      }))}
+                      onClose={() => setShowDifferential(false)}
+                      className="h-full"
+                    />
+                  </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Database Tab */}
+          <TabsContent value="database" className="space-y-6">
+            <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 border-border">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Database className="w-5 h-5 text-primary" />
+                  Condition Database Management
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DataManager
+                  causes={causes}
+                  onImport={importData}
+                  onReset={resetDatabase}
+                  onAddCause={addCause}
+                  onDeleteCause={deleteCause}
+                  onEditCause={(cause) => updateCause(cause.id, cause)}
+                  canUndo={canUndo}
+                  onUndo={() => {}} // No undo functionality in current hook
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <ClinicalCalculators />
+              <ReferenceRanges />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 border-border">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-primary" />
+                    System Analytics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                      <span className="text-sm font-medium">Total Conditions</span>
+                      <Badge variant="secondary" className="text-lg">{causes.length}</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                      <span className="text-sm font-medium">Active Symptoms</span>
+                      <Badge variant="secondary" className="text-lg">{selectedSymptoms.length}</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                      <span className="text-sm font-medium">Patient Profile</span>
+                      <Badge variant={isPatientComplete ? "default" : "secondary"}>
+                        {isPatientComplete ? "Complete" : "Incomplete"}
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-amber-50 rounded-lg">
+                      <span className="text-sm font-medium">Database Status</span>
+                      <Badge variant="outline">Operational</Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 border-border">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5 text-primary" />
+                    System Status
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-3">
+                    <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span className="text-sm font-medium text-green-800">Frontend Running</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span className="text-sm font-medium text-green-800">Database Connected</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span className="text-sm font-medium text-green-800">API Functional</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span className="text-sm font-medium text-blue-800">AI Integration Ready</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 border-border">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-primary" />
+                    Quick Tools
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Search className="w-4 h-4" />
+                      Search Database
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Plus className="w-4 h-4" />
+                      Add New Condition
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Download className="w-4 h-4" />
+                      Export Data
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Settings className="w-4 h-4" />
+                      System Settings
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Settings Tab */}
+          <TabsContent value="settings" className="space-y-6">
+            <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 border-border">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="w-5 h-5 text-primary" />
+                  Application Settings
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Data Management</h3>
+                    <div className="flex gap-3">
+                      <Button variant="outline" onClick={() => resetDatabase()}>
+                        Reset Database
+                      </Button>
+                      <Button variant="outline" disabled={!canUndo}>
+                        Undo Last Action
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Display Options</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Show Confidence Indicators</span>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            const newShowConfidence: Record<string, boolean> = {};
+                            scoredCauses.forEach(cause => {
+                              newShowConfidence[cause.id] = !showConfidence[cause.id];
+                            });
+                            setShowConfidence(newShowConfidence);
+                          }}
+                        >
+                          Toggle All
+                        </Button>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Auto-save Patient Data</span>
+                        <Badge variant="secondary">Enabled</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+}

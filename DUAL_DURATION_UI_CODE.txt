@@ -1,0 +1,180 @@
+// DUAL DURATION UI - ADD THIS TO CauseEditModal.tsx
+// Replace lines 1510-1593 with the code below
+
+            {/* Duration Rule Section - Dual Duration Fields */}
+            <div className="space-y-6 pt-4 border-t border-border">
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold">Duration Rules</h3>
+                <p className="text-sm text-muted-foreground">Configure duration ranges for this condition</p>
+              </div>
+              
+              {/* First Duration Field - Common Duration Range */}
+              <div className="space-y-3 p-4 bg-blue-50/50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h4 className="text-base font-semibold text-blue-700 dark:text-blue-400 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                  Common Duration Range
+                </h4>
+                <p className="text-xs text-muted-foreground">Typical duration where this condition commonly occurs</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-common-duration-start" className="text-sm font-medium text-gray-700 dark:text-gray-300">Common Min Duration</Label>
+                    <Input
+                      id="edit-common-duration-start"
+                      type="number"
+                      value={formData.commonDurationCriteria.startDuration}
+                      onChange={e => setFormData({
+                        ...formData, 
+                        commonDurationCriteria: {...formData.commonDurationCriteria, startDuration: e.target.value}
+                      })}
+                      placeholder="Min duration"
+                      min="0"
+                      className="bg-white/50 dark:bg-slate-800/50 border border-white/30 shadow-sm focus:shadow-md focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-200"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-common-duration-end" className="text-sm font-medium text-gray-700 dark:text-gray-300">Common Max Duration</Label>
+                    <Input
+                      id="edit-common-duration-end"
+                      type="number"
+                      value={formData.commonDurationCriteria.endDuration}
+                      onChange={e => setFormData({
+                        ...formData, 
+                        commonDurationCriteria: {...formData.commonDurationCriteria, endDuration: e.target.value}
+                      })}
+                      placeholder="Max duration"
+                      min="0"
+                      className="bg-white/50 dark:bg-slate-800/50 border border-white/30 shadow-sm focus:shadow-md focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-200"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-common-duration-unit">Duration Unit</Label>
+                    <Select
+                      value={formData.commonDurationCriteria.unit}
+                      onValueChange={value => setFormData({
+                        ...formData, 
+                        commonDurationCriteria: {...formData.commonDurationCriteria, unit: value}
+                      })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select unit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hours">Hours</SelectItem>
+                        <SelectItem value="days">Days</SelectItem>
+                        <SelectItem value="weeks">Weeks</SelectItem>
+                        <SelectItem value="months">Months</SelectItem>
+                        <SelectItem value="years">Years</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-common-duration-rule-type">Rule Type</Label>
+                    <Select
+                      value={formData.commonDurationCriteria.ruleType}
+                      onValueChange={value => setFormData({
+                        ...formData, 
+                        commonDurationCriteria: {...formData.commonDurationCriteria, ruleType: value}
+                      })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select rule type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">None</SelectItem>
+                        <SelectItem value="soft">Soft Rule</SelectItem>
+                        <SelectItem value="hard">Hard Rule</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Second Duration Field - Final Duration Range */}
+              <div className="space-y-3 p-4 bg-green-50/50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                <h4 className="text-base font-semibold text-green-700 dark:text-green-400 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  Final Duration Range
+                </h4>
+                <p className="text-xs text-muted-foreground">Absolute duration limits (hard exclusion if outside range)</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-final-duration-start" className="text-sm font-medium text-gray-700 dark:text-gray-300">Final Min Duration</Label>
+                    <Input
+                      id="edit-final-duration-start"
+                      type="number"
+                      value={formData.finalDurationCriteria.startDuration}
+                      onChange={e => setFormData({
+                        ...formData, 
+                        finalDurationCriteria: {...formData.finalDurationCriteria, startDuration: e.target.value}
+                      })}
+                      placeholder="Min duration"
+                      min="0"
+                      className="bg-white/50 dark:bg-slate-800/50 border border-white/30 shadow-sm focus:shadow-md focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all duration-200"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-final-duration-end" className="text-sm font-medium text-gray-700 dark:text-gray-300">Final Max Duration</Label>
+                    <Input
+                      id="edit-final-duration-end"
+                      type="number"
+                      value={formData.finalDurationCriteria.endDuration}
+                      onChange={e => setFormData({
+                        ...formData, 
+                        finalDurationCriteria: {...formData.finalDurationCriteria, endDuration: e.target.value}
+                      })}
+                      placeholder="Max duration"
+                      min="0"
+                      className="bg-white/50 dark:bg-slate-800/50 border border-white/30 shadow-sm focus:shadow-md focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all duration-200"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-final-duration-unit">Duration Unit</Label>
+                    <Select
+                      value={formData.finalDurationCriteria.unit}
+                      onValueChange={value => setFormData({
+                        ...formData, 
+                        finalDurationCriteria: {...formData.finalDurationCriteria, unit: value}
+                      })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select unit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hours">Hours</SelectItem>
+                        <SelectItem value="days">Days</SelectItem>
+                        <SelectItem value="weeks">Weeks</SelectItem>
+                        <SelectItem value="months">Months</SelectItem>
+                        <SelectItem value="years">Years</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-final-duration-rule-type">Rule Type</Label>
+                    <Select
+                      value={formData.finalDurationCriteria.ruleType}
+                      onValueChange={value => setFormData({
+                        ...formData, 
+                        finalDurationCriteria: {...formData.finalDurationCriteria, ruleType: value}
+                      })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select rule type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">None</SelectItem>
+                        <SelectItem value="soft">Soft Rule</SelectItem>
+                        <SelectItem value="hard">Hard Rule</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+            </div>

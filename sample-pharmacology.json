@@ -1,0 +1,194 @@
+{
+  "medicines": [
+    {
+      "id": "med_001",
+      "name": "Paracetamol",
+      "drugClass": "Analgesic/Antipyretic",
+      "mechanismOfAction": "Inhibits prostaglandin synthesis in CNS by blocking COX enzymes, reducing pain and fever",
+      "clinicalUses": [
+        "Fever reduction",
+        "Mild to moderate pain relief",
+        "Headache treatment",
+        "Muscle aches"
+      ],
+      "adverseEffects": [
+        "Liver toxicity at high doses",
+        "Nausea",
+        "Skin rash"
+      ],
+      "contraindications": [
+        "Severe liver disease",
+        "Hypersensitivity to paracetamol"
+      ],
+      "ageRules": {
+        "min": 0,
+        "max": 150,
+        "avoidInNeonates": false,
+        "avoidInElderly": false,
+        "ruleType": "soft"
+      },
+      "sexRules": {
+        "avoidInPregnancy": false,
+        "cautionInBreastfeeding": false,
+        "sexSpecificRisks": []
+      },
+      "durationRules": "both",
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "fever",
+          "headache",
+          "pain"
+        ],
+        "secondarySymptoms": [
+          "muscle aches",
+          "joint pain",
+          "general discomfort"
+        ],
+        "inappropriateSymptoms": [
+          "severe abdominal pain",
+          "persistent vomiting"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Fever reduction",
+          "details": "Acts centrally on hypothalamic heat-regulating center to reduce fever. Safe for all age groups including children and elderly. Minimal GI side effects make it ideal for OPD use."
+        },
+        {
+          "useName": "Mild to moderate pain relief",
+          "details": "Inhibits CNS prostaglandin synthesis without peripheral anti-inflammatory effects. Suitable for patients who cannot tolerate NSAIDs due to gastric issues or bleeding risk."
+        }
+      ],
+      "medicineAdvantage": "Effective symptom control with minimal gastric side effects. Safe for children, pregnant women (Category B), and patients with peptic ulcer history. First-line choice for fever and mild pain in OPD settings.",
+      "teachingNotes": "Chosen because it provides effective analgesia and antipyresis with minimal anti-inflammatory effects, making it safer for patients with gastric sensitivity compared to NSAIDs. However, avoid in liver disease due to hepatic metabolism.",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "med_002",
+      "name": "Ibuprofen",
+      "drugClass": "NSAID",
+      "mechanismOfAction": "Non-selective COX-1 and COX-2 inhibitor that reduces prostaglandin synthesis, providing anti-inflammatory, analgesic, and antipyretic effects",
+      "clinicalUses": [
+        "Inflammatory pain",
+        "Arthritis",
+        "Fever",
+        "Dysmenorrhea"
+      ],
+      "adverseEffects": [
+        "Gastric irritation",
+        "GI bleeding",
+        "Renal impairment",
+        "Cardiovascular risk"
+      ],
+      "contraindications": [
+        "Active peptic ulcer disease",
+        "Severe heart failure",
+        "Severe renal impairment"
+      ],
+      "ageRules": {
+        "min": 12,
+        "max": 150,
+        "avoidInNeonates": true,
+        "avoidInElderly": false,
+        "ruleType": "soft"
+      },
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Increased risk of bleeding in females"
+        ]
+      },
+      "durationRules": "both",
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "inflammatory pain",
+          "joint pain",
+          "swelling",
+          "fever"
+        ],
+        "secondarySymptoms": [
+          "menstrual pain",
+          "muscle pain",
+          "headache"
+        ],
+        "inappropriateSymptoms": [
+          "gastric pain",
+          "black stools",
+          "vomiting blood"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Inflammatory pain",
+          "details": "Dual COX-1 and COX-2 inhibition provides potent anti-inflammatory action. Reduces prostaglandin-mediated inflammation at injury site. Best taken with food to minimize gastric irritation."
+        },
+        {
+          "useName": "Arthritis",
+          "details": "Effective for both osteoarthritis and rheumatoid arthritis symptom management. Provides better pain relief than paracetamol for inflammatory joint conditions. Monitor for GI bleeding with long-term use."
+        }
+      ],
+      "medicineAdvantage": "Superior anti-inflammatory action compared to paracetamol. Ideal for musculoskeletal injuries, arthritis, and dysmenorrhea. Short-term use safe for most adults. Avoid in pregnancy, peptic ulcer disease, and renal impairment.",
+      "teachingNotes": "Selected for its anti-inflammatory properties which are superior to paracetamol for inflammatory conditions. However, avoid in pregnancy (especially third trimester) and in patients with gastric issues due to COX-1 inhibition causing gastric mucosal damage.",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "med_003",
+      "name": "Amoxicillin",
+      "drugClass": "Penicillin Antibiotic",
+      "mechanismOfAction": "Bactericidal antibiotic that inhibits bacterial cell wall synthesis by binding to penicillin-binding proteins",
+      "clinicalUses": [
+        "Bacterial respiratory infections",
+        "Urinary tract infections",
+        "Skin infections",
+        "Dental infections"
+      ],
+      "adverseEffects": [
+        "Diarrhea",
+        "Nausea",
+        "Rash",
+        "Allergic reactions"
+      ],
+      "contraindications": [
+        "Penicillin allergy",
+        "Infectious mononucleosis"
+      ],
+      "ageRules": {
+        "min": 0,
+        "max": 150,
+        "avoidInNeonates": false,
+        "avoidInElderly": false,
+        "ruleType": "soft"
+      },
+      "sexRules": {
+        "avoidInPregnancy": false,
+        "cautionInBreastfeeding": false,
+        "sexSpecificRisks": []
+      },
+      "durationRules": "acute",
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "bacterial infection",
+          "fever with infection",
+          "purulent discharge"
+        ],
+        "secondarySymptoms": [
+          "cough",
+          "dysuria",
+          "wound infection"
+        ],
+        "inappropriateSymptoms": [
+          "viral symptoms",
+          "chronic symptoms"
+        ]
+      },
+      "teachingNotes": "First-line for many bacterial infections due to broad spectrum activity against gram-positive and some gram-negative bacteria. Avoid in penicillin allergy. Should not be used for viral infections as this contributes to antibiotic resistance.",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "exportedAt": "2024-01-01T00:00:00.000Z",
+  "version": "1.0"
+}

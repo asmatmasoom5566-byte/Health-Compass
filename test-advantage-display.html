@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Medicine Advantage Display</title>
+    <style>
+        .medicine-card {
+            border: 2px solid #green;
+            padding: 15px;
+            margin: 10px;
+            background: #f9f9f9;
+        }
+        .advantage-icon {
+            display: inline-block;
+            cursor: pointer;
+            padding: 8px;
+            background: #dcfce7;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .advantage-icon:hover {
+            background: #bbf7d0;
+        }
+        .tooltip {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 2px solid #86efac;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 400px;
+            z-index: 1000;
+        }
+        .show-tooltip {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Medicine Advantage Test</h1>
+    
+    <div class="medicine-card">
+        <h3>Paracetamol</h3>
+        <div style="display: flex; align-items: start; gap: 10px;">
+            <div class="advantage-icon" onclick="toggleTooltip('tooltip1')">
+                💡
+            </div>
+            <div>
+                <strong>Why This Medicine Fits:</strong>
+                <ul>
+                    <li>Fever reduction 📘</li>
+                    <li>Pain relief 📘</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="tooltip1" class="tooltip">
+            <h4>💡 Medicine Advantage</h4>
+            <p>Effective symptom control with minimal gastric side effects. Safe for children, pregnant women (Category B), and patients with peptic ulcer history.</p>
+        </div>
+    </div>
+    
+    <script>
+        function toggleTooltip(id) {
+            const tooltip = document.getElementById(id);
+            tooltip.classList.toggle('show-tooltip');
+        }
+        
+        // Test data
+        console.log('Test page loaded');
+        console.log('Expected medicineAdvantage:', 'Effective symptom control with minimal gastric side effects...');
+    </script>
+</body>
+</html>

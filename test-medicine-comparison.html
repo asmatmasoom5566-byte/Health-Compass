@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Medicine Comparison Autocomplete</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .suggestions {
+            border: 1px solid #ddd;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            position: absolute;
+            width: calc(100% - 22px);
+            z-index: 1000;
+            display: none;
+        }
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        .suggestion-item:hover {
+            background: #f0f0f0;
+        }
+        .medicine-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .medicine-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Medicine Comparison Autocomplete Test</h1>
+        <p>This page tests if the medicine database is properly loaded and accessible for the comparison feature.</p>
+
+        <div id="status"></div>
+
+        <div class="test-section">
+            <h2>1. Check LocalStorage</h2>
+            <button onclick="checkLocalStorage()">Check Storage</button>
+            <button onclick="clearStorage()">Clear Storage</button>
+            <div id="storage-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Load Sample Medicines</h2>
+            <button onclick="loadSampleMedicines()">Load 25 Sample Medicines</button>
+            <button onclick="loadAllMedicines()">Load All 100 Medicines (Generate)</button>
+            <div id="load-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. Test Autocomplete</h2>
+            <input 
+                type="text" 
+                id="medicine-input" 
+                placeholder="Start typing a medicine name (e.g., 'Para', 'Ibu', 'Amox')..."
+                oninput="testAutocomplete(this.value)"
+            />
+            <div id="suggestions" class="suggestions"></div>
+            <div id="autocomplete-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>4. View All Medicines in Database</h2>
+            <button onclick="showAllMedicines()">Show All Medicines</button>
+            <div id="all-medicines" class="medicine-list"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>5. Console Debug Info</h2>
+            <button onclick="showDebugInfo()">Show Debug Info</button>
+            <pre id="debug-info"></pre>
+        </div>
+    </div>
+
+    <script>
+        const PHARMACOLOGY_STORAGE_KEY = 'pharmacology_v1';
+
+        function checkLocalStorage() {
+            const stored = localStorage.getItem(PHARMACOLOGY_STORAGE_KEY);
+            const resultDiv = document.getElementById('storage-result');
+            const statusDiv = document.getElementById('status');
+
+            if (!stored) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = '❌ No medicines found in localStorage!';
+                resultDiv.innerHTML = '<p>No pharmacology data found. Please load sample medicines.</p>';
+                return;
+            }
+
+            try {
+                const data = JSON.parse(stored);
+                const medicineCount = data.medicines ? data.medicines.length : 0;
+                
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `✓ Found ${medicineCount} medicines in localStorage`;
+                
+                resultDiv.innerHTML = `
+                    <p><strong>Last Updated:</strong> ${data.lastUpdated || 'Unknown'}</p>
+                    <p><strong>Medicine Count:</strong> ${medicineCount}</p>
+                    ${medicineCount > 0 ? `<p><strong>First 5 medicines:</strong></p>
+                        <ul>
+                            ${data.medicines.slice(0, 5).map(m => `<li>${m.name} - ${m.drugClass}</li>`).join('')}
+                        </ul>` : ''}
+                `;
+            } catch (e) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = '❌ Error parsing stored data!';
+                resultDiv.innerHTML = `<pre>${e.message}</pre>`;
+            }
+        }
+
+        function clearStorage() {
+            localStorage.removeItem(PHARMACOLOGY_STORAGE_KEY);
+            document.getElementById('status').className = 'status info';
+            document.getElementById('status').innerHTML = 'ℹ️ Storage cleared. Please load medicines.';
+            document.getElementById('storage-result').innerHTML = '';
+            document.getElementById('all-medicines').innerHTML = '';
+        }
+
+        async function loadSampleMedicines() {
+            const resultDiv = document.getElementById('load-result');
+            const statusDiv = document.getElementById('status');
+
+            try {
+                const response = await fetch('sample-pharmacology.json');
+                const data = await response.json();
+                
+                const dataToSave = {
+                    medicines: data.medicines,
+                    lastUpdated: new Date().toISOString()
+                };
+                
+                localStorage.setItem(PHARMACOLOGY_STORAGE_KEY, JSON.stringify(dataToSave));
+                
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `✓ Successfully loaded ${data.medicines.length} sample medicines!`;
+                resultDiv.innerHTML = `<p>Loaded medicines from sample-pharmacology.json</p>`;
+                
+                checkLocalStorage();
+            } catch (e) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = '❌ Failed to load medicines!';
+                resultDiv.innerHTML = `<pre>Error: ${e.message}</pre>
+                    <p>Make sure you're running this from the project root directory.</p>`;
+            }
+        }
+
+        async function loadAllMedicines() {
+            const resultDiv = document.getElementById('load-result');
+            const statusDiv = document.getElementById('status');
+
+            statusDiv.className = 'status info';
+            statusDiv.innerHTML = '⏳ Generating 100 medicines...';
+            
+            // Simulate generating medicines by using the generate-medicines.js logic
+            // For now, we'll just load the sample
+            setTimeout(() => {
+                loadSampleMedicines();
+                resultDiv.innerHTML += '<p>Note: For full 100 medicines, run the generate-medicines.js script or import from the app.</p>';
+            }, 1000);
+        }
+
+        function testAutocomplete(value) {
+            const suggestionsDiv = document.getElementById('suggestions');
+            const resultDiv = document.getElementById('autocomplete-result');
+            
+            const stored = localStorage.getItem(PHARMACOLOGY_STORAGE_KEY);
+            if (!stored) {
+                resultDiv.innerHTML = '<p style="color: red;">Please load medicines first!</p>';
+                suggestionsDiv.style.display = 'none';
+                return;
+            }
+
+            const data = JSON.parse(stored);
+            const medicines = data.medicines || [];
+
+            if (value.trim().length === 0) {
+                suggestionsDiv.style.display = 'none';
+                resultDiv.innerHTML = '';
+                return;
+            }
+
+            const matches = medicines.filter(m => 
+                m.name.toLowerCase().includes(value.toLowerCase())
+            ).slice(0, 5);
+
+            if (matches.length > 0) {
+                suggestionsDiv.innerHTML = matches.map(m => `
+                    <div class="suggestion-item" onclick="selectMedicine('${m.name}')">
+                        <strong>${m.name}</strong><br>
+                        <small>${m.drugClass}</small>
+                    </div>
+                `).join('');
+                suggestionsDiv.style.display = 'block';
+                resultDiv.innerHTML = `<p>Found ${matches.length} match(es)</p>`;
+            } else {
+                suggestionsDiv.style.display = 'none';
+                resultDiv.innerHTML = '<p>No matches found</p>';
+            }
+        }
+
+        function selectMedicine(name) {
+            document.getElementById('medicine-input').value = name;
+            document.getElementById('suggestions').style.display = 'none';
+        }
+
+        function showAllMedicines() {
+            const stored = localStorage.getItem(PHARMACOLOGY_STORAGE_KEY);
+            const container = document.getElementById('all-medicines');
+
+            if (!stored) {
+                container.innerHTML = '<p>No medicines loaded. Please load medicines first.</p>';
+                return;
+            }
+
+            const data = JSON.parse(stored);
+            const medicines = data.medicines || [];
+
+            container.innerHTML = `
+                <p><strong>Total medicines:</strong> ${medicines.length}</p>
+                ${medicines.map(m => `
+                    <div class="medicine-item">
+                        <strong>${m.name}</strong> - ${m.drugClass}
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function showDebugInfo() {
+            const debugDiv = document.getElementById('debug-info');
+            const stored = localStorage.getItem(PHARMACOLOGY_STORAGE_KEY);
+
+            if (!stored) {
+                debugDiv.textContent = 'No data in localStorage';
+                return;
+            }
+
+            try {
+                const data = JSON.parse(stored);
+                const debugInfo = {
+                    storageKey: PHARMACOLOGY_STORAGE_KEY,
+                    hasData: true,
+                    medicineCount: data.medicines ? data.medicines.length : 0,
+                    lastUpdated: data.lastUpdated,
+                    sampleMedicines: data.medicines ? data.medicines.slice(0, 3) : [],
+                    allMedicineNames: data.medicines ? data.medicines.map(m => m.name) : []
+                };
+                debugDiv.textContent = JSON.stringify(debugInfo, null, 2);
+            } catch (e) {
+                debugDiv.textContent = `Error: ${e.message}`;
+            }
+        }
+
+        // Auto-check on load
+        window.onload = () => {
+            checkLocalStorage();
+        };
+
+        // Click outside to close suggestions
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#medicine-input')) {
+                document.getElementById('suggestions').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

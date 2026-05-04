@@ -18,6 +18,19 @@ export const errorSchemas = {
 };
 
 export const api = {
+  // Get all causes from the database
+  causes: {
+    getAll: {
+      method: 'GET' as const,
+      path: '/api/causes',
+      input: z.object({}),
+      responses: {
+        200: z.object({
+          causes: z.array(causeSchema),
+        }),
+      },
+    }
+  },
   // Placeholder for potential future sync
   sync: {
     push: {

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LocalStorage Test</title>
+</head>
+<body>
+    <h1>LocalStorage Test for Medical Knowledge Builder</h1>
+    <button onclick="testLocalStorage()">Test LocalStorage</button>
+    <button onclick="clearLocalStorage()">Clear LocalStorage</button>
+    <div id="output"></div>
+
+    <script>
+        function testLocalStorage() {
+            try {
+                // Test setting data
+                const testData = [
+                    {
+                        id: 'test-001',
+                        name: 'Test Condition',
+                        typicalSymptoms: ['test symptom 1', 'test symptom 2'],
+                        atypicalSymptoms: [],
+                        treatment: 'Test treatment',
+                        comprehensiveInfo: 'Test comprehensive info',
+                        symptomDetails: {},
+                        supportingSymptoms: [],
+                        excludingSymptoms: [],
+                        redFlags: [],
+                        teachingNotes: []
+                    }
+                ];
+                
+                localStorage.setItem('medical_knowledge_conditions', JSON.stringify(testData));
+                
+                // Test getting data
+                const savedData = localStorage.getItem('medical_knowledge_conditions');
+                const parsedData = JSON.parse(savedData);
+                
+                document.getElementById('output').innerHTML = 
+                    '<h2>Test Results:</h2>' +
+                    '<p><strong>Stored Data:</strong> ' + JSON.stringify(testData, null, 2) + '</p>' +
+                    '<p><strong>Retrieved Data:</strong> ' + JSON.stringify(parsedData, null, 2) + '</p>' +
+                    '<p><strong>Status:</strong> SUCCESS - LocalStorage is working correctly</p>';
+            } catch (error) {
+                document.getElementById('output').innerHTML = 
+                    '<h2>Test Results:</h2>' +
+                    '<p><strong>Error:</strong> ' + error.message + '</p>' +
+                    '<p><strong>Status:</strong> FAILED - LocalStorage is not working</p>';
+            }
+        }
+        
+        function clearLocalStorage() {
+            localStorage.removeItem('medical_knowledge_conditions');
+            localStorage.removeItem('medical_knowledge_notes');
+            document.getElementById('output').innerHTML = 
+                '<h2>LocalStorage Cleared</h2>' +
+                '<p>All medical knowledge builder data has been removed from localStorage.</p>';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+[build]
+  # Directory to publish (output from build)
+  publish = "dist/public"
+  
+  # Build command
+  command = "npm run build"
+  
+  # Directory with the source code
+  base = "."
+
+[build.environment]
+  # Node version
+  NODE_VERSION = "18"
+  
+  # Environment variables for build
+  NODE_ENV = "production"
+  
+  # Install dev dependencies (required for tsx, vite, and other build tools)
+  NPM_FLAGS = "--include=dev"
+
+# Serverless functions configuration
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Auth routes redirect to simple auth function (more compatible with Netlify)
+[[redirects]]
+  from = "/api/auth/*"
+  to = "/.netlify/functions/auth-simple"
+  status = 200
+  force = true
+
+# Admin routes redirect to simple admin function
+[[redirects]]
+  from = "/api/admin/*"
+  to = "/.netlify/functions/admin-simple"
+  status = 200
+  force = true
+
+# Data routes (causes, analysis) redirect to data function
+[[redirects]]
+  from = "/api/causes"
+  to = "/.netlify/functions/data"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/analysis"
+  to = "/.netlify/functions/data"
+  status = 200
+  force = true
+
+# Redirect all other routes to index.html for SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Environment variables (set these in Netlify dashboard)
+# Required environment variables:
+# - JWT_SECRET: Secret key for JWT tokens (generate a random string)
+# - DATABASE_URL: PostgreSQL connection string (if using database)
+# - SENDGRID_API_KEY: SendGrid API key for emails
+# - TWILIO_ACCOUNT_SID: Twilio account SID for SMS
+# - TWILIO_AUTH_TOKEN: Twilio auth token
+# - TWILIO_PHONE_NUMBER: Twilio phone number
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Environment variables (set these in Netlify dashboard)
+# Required environment variables:
+# - AI_INTEGRATIONS_OPENAI_API_KEY: Your OpenAI API key
+# - AI_INTEGRATIONS_OPENAI_BASE_URL: OpenAI API base URL (optional)
+# - DATABASE_URL: PostgreSQL connection string (if using database)
