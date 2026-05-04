@@ -7,43 +7,12 @@
 import { Handler, HandlerEvent } from '@netlify/functions';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { storage, initializeStorage } from './shared-storage';
+
+// Initialize storage
+initializeStorage();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
-
-// User interface
-interface User {
-  id: number;
-  fullName: string;
-  email: string | null;
-  phone: string | null;
-  passwordHash: string;
-  profession: string;
-  country: string | null;
-  clinicHospital: string | null;
-  status: string;
-  role: string;
-  emailVerified: boolean;
-  phoneVerified: boolean;
-  createdAt: string;
-}
-
-// Invite code interface
-interface InviteCode {
-  id: number;
-  code: string;
-  createdBy: number;
-  maxUses: number;
-  usedCount: number;
-  usedBy: number[];
-  isActive: boolean;
-  createdAt: string;
-}
-
-// In-memory storage
-let users: User[] = [];
-let nextUserId = 1;
-let inviteCodes: InviteCode[] = [];
-let nextInviteCodeId = 1;
 
 // CORS headers
 const corsHeaders = {
@@ -206,7 +175,7 @@ export const handler: Handler = async (event, context) => {
         headers: corsHeaders,
         body: JSON.stringify({
           message: 'Invite code updated successfully',
-          inviteCode: {
+          storage.inviteCodes
             ...inviteCodes[codeIndex],
             usedBy: undefined,
           },

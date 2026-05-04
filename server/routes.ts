@@ -445,6 +445,42 @@ export async function registerRoutes(
     }
   });
 
+  // Delete User (Admin only)
+  app.delete("/api/admin/users/:id", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const adminId = (req.user as any).id;
+
+      // Prevent admin from deleting their own account
+      if (userId === adminId) {
+        return res.status(403).json({ error: 'Cannot delete your own account' });
+      }
+
+      // Check if user exists
+      const user = await storage.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      // Delete user
+      await storage.deleteUser(userId);
+
+      console.log(`✅ User ${user.email || user.phone} (ID: ${userId}) deleted by admin ${adminId}`);
+
+      res.json({ 
+        message: 'User deleted successfully',
+        user: {
+          id: user.id,
+          fullName: user.fullName,
+          email: user.email,
+        }
+      });
+    } catch (error) {
+      console.error('Delete user error:', error);
+      res.status(500).json({ error: 'Failed to delete user' });
+    }
+  });
+
   // Get Invite Codes (Admin only)
   app.get("/api/admin/invite-codes", isAuthenticated, isAdmin, async (req, res) => {
     try {
