@@ -137,9 +137,15 @@ This action cannot be undone and will permanently remove:
     if (!confirmed) return;
 
     try {
+      // Get auth token
+      const token = localStorage.getItem('auth_token');
+      
       const response = await fetch(`/api/admin/users/${userId}`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
