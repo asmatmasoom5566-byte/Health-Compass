@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent } from '../components/ui/card';
-import { Loader2, Lock } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Loader2, Lock, Shield } from 'lucide-react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -17,6 +18,7 @@ export default function ProtectedRoute({
 }: ProtectedRouteProps) {
   const [, navigate] = useLocation();
   const { user, loading, isAuthenticated, isApproved, isVerified, hasRole } = useAuth();
+  const [showAccessDenied, setShowAccessDenied] = useState(false);
 
   React.useEffect(() => {
     if (!loading) {
@@ -38,9 +40,9 @@ export default function ProtectedRoute({
         return;
       }
 
-      // Requires admin but user is not admin
+      // Requires admin but user is not admin - show access denied
       if (requireAdmin && !hasRole(['admin'])) {
-        navigate('/');
+        setShowAccessDenied(true);
         return;
       }
     }
@@ -91,9 +93,28 @@ export default function ProtectedRoute({
     );
   }
 
-  // Not admin (when admin required)
-  if (requireAdmin && !hasRole(['admin'])) {
-    return null; // Will redirect via useEffect
+  // Not admin (when admin required) - show access denied
+  if (showAccessDenied || (requireAdmin && !hasRole(['admin']))) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 px-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="py-12 text-center space-y-4">
+            <div className="h-16 w-16 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mx-auto">
+              <Shield className="h-8 w-8 text-red-600" />
+            </div>
+            <h2 className="text-2xl font-bold">Access Denied</h2>
+            <p className="text-muted-foreground">
+              You do not have permission to access this area. Administrative privileges are required.
+            </p>
+            <div className="pt-4">
+              <Button onClick={() => navigate('/')}>
+                Return to Home
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   // All checks passed - show content
