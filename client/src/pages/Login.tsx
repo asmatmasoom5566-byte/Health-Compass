@@ -12,7 +12,7 @@ import { Link } from 'wouter';
 export default function Login() {
   const [, navigate] = useLocation();
   const { login, isAuthenticated } = useAuth();
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await login({ email, password });
+      await login({ phone, password });
       navigate('/');
     } catch (err: any) {
       setError(err.message || 'Login failed. Please check your credentials.');
@@ -63,14 +63,15 @@ export default function Login() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="phone">Phone Number</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="doctor@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="phone"
+                type="tel"
+                placeholder="+1234567890"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 required
+                autoComplete="off"
               />
             </div>
 

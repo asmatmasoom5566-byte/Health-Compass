@@ -24,23 +24,18 @@ export function configurePassport() {
   passport.use(
     new LocalStrategy(
       {
-        usernameField: 'email', // We'll handle both email and phone in the verify callback
+        usernameField: 'phone', // Phone number is now the primary identifier
         passwordField: 'password',
         passReqToCallback: true,
       },
-      async (req, identifier, password, done) => {
+      async (req, phone, password, done) => {
         try {
-          const { email, phone } = req.body;
-          const loginIdentifier = email || phone;
-
-          if (!loginIdentifier) {
-            return done(null, false, { message: 'Email or phone is required' });
+          if (!phone) {
+            return done(null, false, { message: 'Phone number is required' });
           }
 
-          // Find user by email or phone
-          let user = email 
-            ? await storage.getUserByEmail(email)
-            : await storage.getUserByPhone(phone);
+          // Find user by phone
+          const user = await storage.getUserByPhone(phone);
 
           if (!user) {
             return done(null, false, { message: 'Invalid credentials' });
@@ -65,13 +60,10 @@ export function configurePassport() {
             });
           }
 
-          // Check verification status
-          const hasVerifiedContact = 
-            (email && user.emailVerified) || (phone && user.phoneVerified);
-
-          if (!hasVerifiedContact) {
+          // Check phone verification status
+          if (!user.phoneVerified) {
             return done(null, false, { 
-              message: 'Please verify your email or phone number before logging in.' 
+              message: 'Please wait for admin approval before logging in.' 
             });
           }
 

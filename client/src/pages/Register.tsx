@@ -15,18 +15,25 @@ export default function Register() {
   const { register } = useAuth();
   const [formData, setFormData] = useState({
     fullName: '',
-    email: '',
     phone: '',
     password: '',
     confirmPassword: '',
     profession: '',
-    country: '',
     clinicHospital: '',
     inviteCode: '',
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [generatedPassword] = useState(() => {
+    // Generate a random 8-character password
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+    for (let i = 0; i < 8; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+  });
 
   const professions = [
     { value: 'doctor', label: 'Doctor' },
@@ -47,8 +54,8 @@ export default function Register() {
       return;
     }
 
-    if (!formData.email && !formData.phone) {
-      setError('Either email or phone number is required');
+    if (!formData.phone) {
+      setError('Phone number is required');
       return;
     }
 
@@ -57,20 +64,18 @@ export default function Register() {
     try {
       await register({
         fullName: formData.fullName,
-        email: formData.email || undefined,
-        phone: formData.phone || undefined,
-        password: formData.password,
+        phone: formData.phone,
+        password: generatedPassword, // Use generated password
         profession: formData.profession,
-        country: formData.country || undefined,
         clinicHospital: formData.clinicHospital || undefined,
         inviteCode: formData.inviteCode || undefined,
       });
 
-      setSuccess('Registration successful! Please check your email/phone for verification. You can login after verification and admin approval.');
+      setSuccess(`Registration successful! Your password is: ${generatedPassword}. Please save it securely. You can login after admin approval.`);
       
       setTimeout(() => {
         navigate('/login');
-      }, 3000);
+      }, 5000);
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
@@ -117,6 +122,7 @@ export default function Register() {
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                   required
+                  autoComplete="off"
                 />
               </div>
 
@@ -139,71 +145,69 @@ export default function Register() {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="doctor@example.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-                <p className="text-xs text-muted-foreground">Required if phone not provided</p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="phone">Phone Number *</Label>
                 <Input
                   id="phone"
                   type="tel"
                   placeholder="+1234567890"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  required
+                  autoComplete="off"
                 />
-                <p className="text-xs text-muted-foreground">Required if email not provided</p>
+                <p className="text-xs text-muted-foreground">This will be your login credential</p>
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="generatedPassword">Your Password (Auto-Generated)</Label>
+                <Input
+                  id="generatedPassword"
+                  type="text"
+                  value={generatedPassword}
+                  readOnly
+                  className="bg-gray-50 dark:bg-slate-800 font-mono text-lg"
+                  autoComplete="off"
+                />
+                <p className="text-xs text-muted-foreground">
+                  ⚠️ Save this password securely! It will be shown only once.
+                </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password *</Label>
+                <Label htmlFor="password">Confirm Password *</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Enter password"
+                  placeholder="Re-enter the password shown above"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
+                  autoComplete="new-password"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                <Label htmlFor="confirmPassword">Verify Password *</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
-                  placeholder="Re-enter password"
+                  placeholder="Re-enter password again"
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                   required
+                  autoComplete="new-password"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="country">Country (Optional)</Label>
-                <Input
-                  id="country"
-                  placeholder="United States"
-                  value={formData.country}
-                  onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
+              <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="clinicHospital">Clinic/Hospital (Optional)</Label>
                 <Input
                   id="clinicHospital"
                   placeholder="City General Hospital"
                   value={formData.clinicHospital}
                   onChange={(e) => setFormData({ ...formData, clinicHospital: e.target.value })}
+                  autoComplete="off"
                 />
               </div>
 
@@ -217,6 +221,7 @@ export default function Register() {
                   required
                   className="font-mono uppercase"
                   maxLength={20}
+                  autoComplete="off"
                 />
                 <p className="text-xs text-muted-foreground">
                   Invite codes are single-use and must be provided by an administrator
