@@ -25,6 +25,7 @@ interface AuthContextType {
   resendVerification: (data: { email?: string; phone?: string }) => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  refreshUser: () => Promise<void>;
   hasPermission: (permission: string) => boolean;
   hasRole: (roles: string[]) => boolean;
   isAuthenticated: boolean;
@@ -52,6 +53,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Fetch current user on mount
   useEffect(() => {
     fetchCurrentUser();
+    
+    // Poll for user updates every 30 seconds to catch role changes
+    const pollInterval = setInterval(fetchCurrentUser, 30000);
+    
+    return () => clearInterval(pollInterval);
   }, []);
 
   const getToken = () => {
@@ -216,6 +222,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const refreshUser = async () => {
+    await fetchCurrentUser();
+  };
+
   const hasPermission = (permission: string): boolean => {
     if (!user) return false;
 
@@ -253,6 +263,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         resendVerification,
         updateProfile,
         changePassword,
+        refreshUser,
         hasPermission,
         hasRole,
         isAuthenticated,

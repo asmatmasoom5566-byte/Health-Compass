@@ -49,6 +49,7 @@ import { DiagnosticQuestionsPanel } from "../components/DiagnosticQuestionsPanel
 export default function Landing() {
   const { user, isAuthenticated, isApproved, logout, hasRole } = useAuth();
   const isAdmin = hasRole(['admin']);
+  const canEdit = hasRole(['admin']); // Only admin can edit
   const noop = () => {}; // No-operation function for read-only users
   const {
     causes,
@@ -388,8 +389,8 @@ export default function Landing() {
                       causes={causes}
                       selectedSymptoms={selectedSymptoms}
                       patientDemographics={patientDemographics}
-                      onEdit={isAdmin ? (cause) => updateCause(cause.id, cause) : noop}
-                      onDelete={isAdmin ? deleteCause : noop}
+                      onEdit={canEdit ? (cause) => updateCause(cause.id, cause) : noop}
+                      onDelete={canEdit ? deleteCause : noop}
                       onSelect={handleSelectCause}
                       onScoredCausesChange={handleScoredCausesChange}
                       onAddSymptom={handleAddSymptom}
@@ -441,7 +442,7 @@ export default function Landing() {
                 <CardTitle className="flex items-center gap-2">
                   <Database className="w-5 h-5 text-primary" />
                   Condition Database Management
-                  {!isAdmin && (
+                  {!canEdit && (
                     <span className="text-sm font-normal text-muted-foreground ml-2">
                       (Read-only)
                     </span>
@@ -449,7 +450,7 @@ export default function Landing() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {isAdmin ? (
+                {canEdit ? (
                   <DataManager
                     causes={causes}
                     onImport={importData}

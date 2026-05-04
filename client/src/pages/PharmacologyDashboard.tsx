@@ -33,8 +33,11 @@ import { MedicineComparisonSelector } from '@/components/MedicineComparisonSelec
 import { DetailedMedicineComparison } from '@/components/DetailedMedicineComparison';
 import { ShortMedicineComparison } from '@/components/ShortMedicineComparison';
 import { Link } from "wouter";
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function PharmacologyDashboard() {
+  const { hasRole } = useAuth();
+  const canEdit = hasRole(['admin']); // Only admin can edit
   const { toast } = useToast();
   const { medicines } = usePharmacology();
   
@@ -378,10 +381,25 @@ export default function PharmacologyDashboard() {
                 <CardTitle className="flex items-center gap-2 text-xs">
                   <BookOpen className="w-3 h-3 text-primary" />
                   <span className="text-xs">Medicine Database</span>
+                  {!canEdit && (
+                    <span className="text-[10px] font-normal text-muted-foreground ml-2">
+                      (Read-only)
+                    </span>
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-2">
-                <PharmacologyDataManager />
+                {canEdit ? (
+                  <PharmacologyDataManager />
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p className="text-sm font-medium">Read-Only Access</p>
+                    <p className="text-xs mt-2">
+                      You can view the medicine database but cannot make changes.
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
