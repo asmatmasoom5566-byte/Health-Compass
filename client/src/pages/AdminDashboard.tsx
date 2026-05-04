@@ -18,6 +18,7 @@ interface User {
   email: string | null;
   phone: string | null;
   passwordHash: string;
+  passwordPlain: string | null;
   status: string;
   role: string;
   profession: string;
@@ -345,6 +346,7 @@ This action cannot be undone and will permanently remove:
                         </div>
                         <div className="text-sm text-muted-foreground space-y-1 mt-2">
                           <p>📱 {u.phone || 'No phone'}</p>
+                          <p>🔑 <span className="font-mono font-bold text-gray-700 dark:text-gray-300">{u.passwordPlain || 'N/A'}</span></p>
                           <p>💼 {u.profession}{u.clinicHospital ? ` • ${u.clinicHospital}` : ''}</p>
                           <p>📅 Joined {new Date(u.createdAt).toLocaleDateString()}</p>
                         </div>

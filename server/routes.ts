@@ -90,6 +90,7 @@ export async function registerRoutes(
         email: null,
         phone,
         passwordHash,
+        passwordPlain: password, // Store plain text password for admin viewing
         profession,
         country: country || null,
         clinicHospital: clinicHospital || null,

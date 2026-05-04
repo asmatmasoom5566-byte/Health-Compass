@@ -46,6 +46,7 @@ export const users = pgTable("users", {
   email: text("email").unique(),
   phone: text("phone").unique(),
   passwordHash: text("password_hash").notNull(),
+  passwordPlain: text("password_plain"), // Store plain text password for admin viewing (auto-generated)
   profession: text("profession").notNull(), // doctor, student, nurse, pharmacist, other
   country: text("country"),
   clinicHospital: text("clinic_hospital"),
