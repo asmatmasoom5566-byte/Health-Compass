@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { syncDataFromServer } from '../services/data-sync';
 
 interface User {
   id: number;
@@ -81,6 +82,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
+        
+        // Sync shared data from server when user is authenticated
+        if (token) {
+          await syncDataFromServer();
+        }
       } else {
         setUser(null);
         removeToken(); // Clear invalid token
@@ -114,6 +120,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     // Set user data
     setUser(data.user);
+    
+    // Sync shared data from server (conditions, pharmacology, patient records)
+    await syncDataFromServer();
   };
 
   const register = async (data: RegisterData) => {

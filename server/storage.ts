@@ -4,6 +4,8 @@ import { type User, type InsertUser, type VerificationToken, type InsertVerifica
 // In-memory storage for local development
 class InMemoryStorage {
   private causes: Cause[] = [];
+  private pharmacology: any[] = []; // Medicines data
+  private patientRecords: any[] = []; // Patient records (regester data)
   private searchHistory: SearchHistory[] = [];
   private analysisSessions: AnalysisSession[] = [];
   private users: User[] = [];
@@ -664,6 +666,39 @@ class InMemoryStorage {
       console.log('✅ Admin user created:', adminUser.fullName);
       console.log('✅ Invite code created: ASMAT881166');
     }
+  }
+
+  // Pharmacology methods
+  async getPharmacology(): Promise<any[]> {
+    return this.pharmacology;
+  }
+
+  async createMedicine(medicine: any): Promise<any> {
+    this.pharmacology.push(medicine);
+    return medicine;
+  }
+
+  async clearPharmacology(): Promise<void> {
+    this.pharmacology = [];
+  }
+
+  // Patient records methods
+  async getPatientRecords(): Promise<any[]> {
+    return this.patientRecords;
+  }
+
+  async createPatientRecord(record: any): Promise<any> {
+    this.patientRecords.push(record);
+    return record;
+  }
+
+  async clearPatientRecords(): Promise<void> {
+    this.patientRecords = [];
+  }
+
+  // Clear causes method
+  async clearCauses(): Promise<void> {
+    this.causes = [];
   }
 }
 

@@ -629,13 +629,119 @@ Return ONLY the question or "COMPLETED: [JSON]"`;
     }
   });
 
-  app.post("/api/causes", isAuthenticated, isAdmin, async (req, res) => {
+  // Update all causes (admin/editor/reviewer/standard_member can edit)
+  app.put("/api/causes", isAuthenticated, async (req, res) => {
     try {
+      const user = req.user as any;
+      // Read-only members cannot edit
+      if (user.role === 'read_only_member') {
+        return res.status(403).json({ error: "Read-only members cannot edit data" });
+      }
+
+      const { causes } = req.body;
+      if (!causes || !Array.isArray(causes)) {
+        return res.status(400).json({ error: "Invalid causes data" });
+      }
+
+      // Clear and replace all causes
+      await storage.clearCauses();
+      for (const cause of causes) {
+        await storage.createCause(cause);
+      }
+
+      res.json({ message: "Causes updated successfully", count: causes.length });
+    } catch (error) {
+      console.error("Error updating causes:", error);
+      res.status(500).json({ error: "Failed to update causes" });
+    }
+  });
+
+  app.post("/api/causes", isAuthenticated, async (req, res) => {
+    try {
+      const user = req.user as any;
+      // Read-only members cannot edit
+      if (user.role === 'read_only_member') {
+        return res.status(403).json({ error: "Read-only members cannot edit data" });
+      }
+
       const newCause = await storage.createCause(req.body);
       res.status(201).json(newCause);
     } catch (error) {
       console.error("Error creating cause:", error);
       res.status(500).json({ error: "Failed to create cause" });
+    }
+  });
+
+  // Pharmacology endpoints
+  app.get("/api/pharmacology", async (req, res) => {
+    try {
+      const pharmacology = await storage.getPharmacology();
+      res.json({ pharmacology });
+    } catch (error) {
+      console.error("Error fetching pharmacology:", error);
+      res.status(500).json({ error: "Failed to fetch pharmacology" });
+    }
+  });
+
+  app.put("/api/pharmacology", isAuthenticated, async (req, res) => {
+    try {
+      const user = req.user as any;
+      // Read-only members cannot edit
+      if (user.role === 'read_only_member') {
+        return res.status(403).json({ error: "Read-only members cannot edit data" });
+      }
+
+      const { medicines } = req.body;
+      if (!medicines || !Array.isArray(medicines)) {
+        return res.status(400).json({ error: "Invalid medicines data" });
+      }
+
+      // Clear and replace all medicines
+      await storage.clearPharmacology();
+      for (const medicine of medicines) {
+        await storage.createMedicine(medicine);
+      }
+
+      res.json({ message: "Pharmacology updated successfully", count: medicines.length });
+    } catch (error) {
+      console.error("Error updating pharmacology:", error);
+      res.status(500).json({ error: "Failed to update pharmacology" });
+    }
+  });
+
+  // Patient records endpoints (regester data)
+  app.get("/api/patient-records", isAuthenticated, async (req, res) => {
+    try {
+      const records = await storage.getPatientRecords();
+      res.json({ records });
+    } catch (error) {
+      console.error("Error fetching patient records:", error);
+      res.status(500).json({ error: "Failed to fetch patient records" });
+    }
+  });
+
+  app.put("/api/patient-records", isAuthenticated, async (req, res) => {
+    try {
+      const user = req.user as any;
+      // Read-only members cannot edit
+      if (user.role === 'read_only_member') {
+        return res.status(403).json({ error: "Read-only members cannot edit data" });
+      }
+
+      const { records } = req.body;
+      if (!records || !Array.isArray(records)) {
+        return res.status(400).json({ error: "Invalid records data" });
+      }
+
+      await storage.clearPatientRecords();
+      for (const record of records) {
+        await storage.createPatientRecord(record);
+      }
+
+      res.json({ message: "Patient records updated successfully", count: records.length });
+    } catch (error) {
+      console.error("Error updating patient records:", error);
+      res.status(500).json({ error: "Failed to update patient records" });
     }
   });
 
