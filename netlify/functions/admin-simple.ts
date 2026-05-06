@@ -1,16 +1,21 @@
 /**
- * Simple Admin Handler for Netlify
- * Self-contained with JWT authentication
+ * Database-Backed Admin Handler for Netlify
+ * Uses PostgreSQL for persistent, shared data storage
  * Manages users and invite codes
  */
 
 import { Handler, HandlerEvent } from '@netlify/functions';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
-import { storage, initializeStorage } from './shared-storage';
-
-// Initialize storage
-initializeStorage();
+import { 
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+  getAllInviteCodes,
+  createInviteCode,
+  deleteInviteCode,
+  getStatusAuditTrail
+} from './db-storage';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
 
@@ -22,7 +27,7 @@ const corsHeaders = {
 };
 
 // Generate random invite code
-function generateInviteCode(): string {
+function generateInviteCodeString(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let code = '';
   for (let i = 0; i < 12; i++) {
@@ -68,6 +73,142 @@ export const handler: Handler = async (event, context) => {
   const cleanPath = path.split('?')[0];
 
   try {
+    // GET /api/admin/users - List all users
+    if (event.httpMethod === 'GET' && cleanPath === '/api/admin/users') {
+      const adminCheck = verifyAdmin(event);
+      if ('status' in adminCheck) {
+        return {
+          statusCode: adminCheck.status,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: adminCheck.error }),
+        };
+      }
+
+      const { search, status, role, profession, sortBy, sortOrder, page, limit } = event.queryStringParameters || {};
+      
+      const users = await getAllUsers({
+        search,
+        status,
+        role,
+        profession,
+        sortBy,
+        sortOrder: (sortOrder as 'asc' | 'desc') || 'desc',
+        page: page ? parseInt(page) : undefined,
+        limit: limit ? parseInt(limit) : undefined,
+      });
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({ users }),
+      };
+    }
+
+    // PUT /api/admin/users/:id/status - Update user status
+    if (event.httpMethod === 'PUT' && cleanPath.match(/^\/api\/admin\/users\/\d+\/status$/)) {
+      const adminCheck = verifyAdmin(event);
+      if ('status' in adminCheck) {
+        return {
+          statusCode: adminCheck.status,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: adminCheck.error }),
+        };
+      }
+
+      const userId = parseInt(cleanPath.split('/')[4]);
+      const body = JSON.parse(event.body || '{}');
+      
+      const user = await updateUser(userId, {
+        status: body.status,
+        updatedAt: new Date(),
+      });
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({
+          message: 'User status updated successfully',
+          user,
+        }),
+      };
+    }
+
+    // PUT /api/admin/users/:id/role - Update user role
+    if (event.httpMethod === 'PUT' && cleanPath.match(/^\/api\/admin\/users\/\d+\/role$/)) {
+      const adminCheck = verifyAdmin(event);
+      if ('status' in adminCheck) {
+        return {
+          statusCode: adminCheck.status,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: adminCheck.error }),
+        };
+      }
+
+      const userId = parseInt(cleanPath.split('/')[4]);
+      const body = JSON.parse(event.body || '{}');
+      
+      const user = await updateUser(userId, {
+        role: body.role,
+        updatedAt: new Date(),
+      });
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({
+          message: 'User role updated successfully',
+          user,
+        }),
+      };
+    }
+
+    // DELETE /api/admin/users/:id - Delete user
+    if (event.httpMethod === 'DELETE' && cleanPath.match(/^\/api\/admin\/users\/\d+$/)) {
+      const adminCheck = verifyAdmin(event);
+      if ('status' in adminCheck) {
+        return {
+          statusCode: adminCheck.status,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: adminCheck.error }),
+        };
+      }
+
+      const userId = parseInt(cleanPath.split('/')[4]);
+      
+      // Prevent admin from deleting their own account
+      if (userId === adminCheck.userId) {
+        return {
+          statusCode: 403,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: 'Cannot delete your own account' }),
+        };
+      }
+
+      const user = await getUserById(userId);
+      if (!user) {
+        return {
+          statusCode: 404,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: 'User not found' }),
+        };
+      }
+
+      await deleteUser(userId);
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({
+          message: 'User deleted successfully',
+          user: {
+            id: user.id,
+            fullName: user.fullName,
+            email: user.email,
+          },
+        }),
+      };
+    }
+
     // GET /api/admin/invite-codes - List all invite codes
     if (event.httpMethod === 'GET' && cleanPath === '/api/admin/invite-codes') {
       const adminCheck = verifyAdmin(event);
@@ -78,6 +219,11 @@ export const handler: Handler = async (event, context) => {
           body: JSON.stringify({ error: adminCheck.error }),
         };
       }
+
+      const { isActive } = event.queryStringParameters || {};
+      const inviteCodes = await getAllInviteCodes({
+        isActive: isActive ? isActive === 'true' : undefined,
+      });
 
       return {
         statusCode: 200,
@@ -103,20 +249,18 @@ export const handler: Handler = async (event, context) => {
       }
 
       const body = JSON.parse(event.body || '{}');
-      const maxUses = body.maxUses || 1; // Default to single-use
+      const maxUses = body.maxUses || 1;
 
-      const newCode: InviteCode = {
-        id: nextInviteCodeId++,
-        code: generateInviteCode(),
+      const newCode = await createInviteCode({
+        code: generateInviteCodeString(),
         createdBy: adminCheck.userId,
+        email: null,
+        phone: null,
+        expiresAt: null,
         maxUses: maxUses,
         usedCount: 0,
-        usedBy: [],
         isActive: true,
-        createdAt: new Date().toISOString(),
-      };
-
-      inviteCodes.push(newCode);
+      });
 
       console.log(`✅ Invite code created: ${newCode.code} (Max uses: ${maxUses})`);
 
@@ -127,56 +271,6 @@ export const handler: Handler = async (event, context) => {
           message: 'Invite code created successfully',
           inviteCode: {
             ...newCode,
-            usedBy: undefined,
-          },
-        }),
-      };
-    }
-
-    // PUT /api/admin/invite-codes/:id - Update invite code (activate/deactivate)
-    if (event.httpMethod === 'PUT' && cleanPath.match(/^\/api\/admin\/invite-codes\/\d+$/)) {
-      const adminCheck = verifyAdmin(event);
-      if ('status' in adminCheck) {
-        return {
-          statusCode: adminCheck.status,
-          headers: corsHeaders,
-          body: JSON.stringify({ error: adminCheck.error }),
-        };
-      }
-
-      const codeId = parseInt(cleanPath.split('/').pop() || '0');
-      const body = JSON.parse(event.body || '{}');
-      
-      const codeIndex = inviteCodes.findIndex(c => c.id === codeId);
-      if (codeIndex === -1) {
-        return {
-          statusCode: 404,
-          headers: corsHeaders,
-          body: JSON.stringify({ error: 'Invite code not found' }),
-        };
-      }
-
-      // Update fields
-      if (typeof body.isActive === 'boolean') {
-        inviteCodes[codeIndex].isActive = body.isActive;
-      }
-      if (body.maxUses && body.maxUses > 0) {
-        inviteCodes[codeIndex].maxUses = body.maxUses;
-        // Reactivate if maxUses increased
-        if (inviteCodes[codeIndex].usedCount < inviteCodes[codeIndex].maxUses) {
-          inviteCodes[codeIndex].isActive = true;
-        }
-      }
-
-      console.log(`✅ Invite code ${codeId} updated`);
-
-      return {
-        statusCode: 200,
-        headers: corsHeaders,
-        body: JSON.stringify({
-          message: 'Invite code updated successfully',
-          storage.inviteCodes
-            ...inviteCodes[codeIndex],
             usedBy: undefined,
           },
         }),
@@ -194,21 +288,17 @@ export const handler: Handler = async (event, context) => {
         };
       }
 
-      const codeId = parseInt(cleanPath.split('/').pop() || '0');
-      const codeIndex = inviteCodes.findIndex(c => c.id === codeId);
+      const codeId = parseInt(cleanPath.split('/')[4]);
       
-      if (codeIndex === -1) {
+      const success = await deleteInviteCode(codeId);
+      
+      if (!success) {
         return {
           statusCode: 404,
           headers: corsHeaders,
           body: JSON.stringify({ error: 'Invite code not found' }),
         };
       }
-
-      const deletedCode = inviteCodes[codeIndex];
-      inviteCodes.splice(codeIndex, 1);
-
-      console.log(`✅ Invite code ${deletedCode.code} deleted`);
 
       return {
         statusCode: 200,
@@ -219,8 +309,8 @@ export const handler: Handler = async (event, context) => {
       };
     }
 
-    // DELETE /api/admin/users/:id - Delete user
-    if (event.httpMethod === 'DELETE' && cleanPath.match(/^\/api\/admin\/users\/\d+$/)) {
+    // GET /api/admin/audit-trail - Get audit trail
+    if (event.httpMethod === 'GET' && cleanPath === '/api/admin/audit-trail') {
       const adminCheck = verifyAdmin(event);
       if ('status' in adminCheck) {
         return {
@@ -230,43 +320,15 @@ export const handler: Handler = async (event, context) => {
         };
       }
 
-      const userId = parseInt(cleanPath.split('/').pop() || '0');
-      
-      // Prevent admin from deleting their own account
-      if (userId === adminCheck.userId) {
-        return {
-          statusCode: 403,
-          headers: corsHeaders,
-          body: JSON.stringify({ error: 'Cannot delete your own account' }),
-        };
-      }
-
-      // Find and remove user
-      const userIndex = users.findIndex(u => u.id === userId);
-      if (userIndex === -1) {
-        return {
-          statusCode: 404,
-          headers: corsHeaders,
-          body: JSON.stringify({ error: 'User not found' }),
-        };
-      }
-
-      const deletedUser = users[userIndex];
-      users.splice(userIndex, 1);
-
-      console.log(`✅ User ${deletedUser.email || deletedUser.phone} (ID: ${userId}) deleted by admin ${adminCheck.userId}`);
+      const { userId } = event.queryStringParameters || {};
+      const auditTrail = await getStatusAuditTrail(
+        userId ? parseInt(userId) : undefined
+      );
 
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({
-          message: 'User deleted successfully',
-          user: {
-            id: deletedUser.id,
-            fullName: deletedUser.fullName,
-            email: deletedUser.email,
-          },
-        }),
+        body: JSON.stringify({ auditTrail }),
       };
     }
 

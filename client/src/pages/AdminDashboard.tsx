@@ -63,9 +63,12 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     try {
       setLoading(true);
+      const token = localStorage.getItem('auth_token');
+      const headers: Record<string, string> = token ? { 'Authorization': `Bearer ${token}` } : {};
+      
       const [usersRes, codesRes] = await Promise.all([
-        fetch('/api/admin/users'),
-        fetch('/api/admin/invite-codes'),
+        fetch('/api/admin/users', { headers }),
+        fetch('/api/admin/invite-codes', { headers }),
       ]);
 
       if (usersRes.ok) {
@@ -85,9 +88,13 @@ export default function AdminDashboard() {
 
   const handleStatusChange = async (userId: number, newStatus: string) => {
     try {
+      const token = localStorage.getItem('auth_token');
       const response = await fetch(`/api/admin/users/${userId}/status`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({ status: newStatus }),
       });
 
@@ -103,9 +110,13 @@ export default function AdminDashboard() {
 
   const handleRoleChange = async (userId: number, newRole: string) => {
     try {
+      const token = localStorage.getItem('auth_token');
       const response = await fetch(`/api/admin/users/${userId}/role`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({ role: newRole }),
       });
 
@@ -175,19 +186,37 @@ This action cannot be undone and will permanently remove:
 
   const handleCreateInviteCode = async (email?: string) => {
     try {
+      console.log('🔑 Generating invite code...');
+      const token = localStorage.getItem('auth_token');
+      console.log('🔑 Token exists:', !!token);
+      
       const response = await fetch('/api/admin/invite-codes', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({ email, maxUses: 1 }),
       });
 
+      console.log('🔑 Response status:', response.status);
+
       if (response.ok) {
+        const data = await response.json();
+        console.log('✅ Invite code created:', data.inviteCode?.code);
         setSuccess('Invite code created successfully');
         fetchData();
         setTimeout(() => setSuccess(''), 3000);
+      } else {
+        const error = await response.json();
+        console.error('❌ Failed to create invite code:', error);
+        setError(error.error || 'Failed to create invite code');
+        setTimeout(() => setError(''), 5000);
       }
     } catch (err) {
-      setError('Failed to create invite code');
+      console.error('❌ Invite code creation error:', err);
+      setError('Failed to create invite code: Network error');
+      setTimeout(() => setError(''), 5000);
     }
   };
 

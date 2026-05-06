@@ -1,17 +1,24 @@
 /**
- * Simple Authentication Handler for Netlify
- * Self-contained with no external dependencies except JWT
+ * Database-Backed Authentication Handler for Netlify
+ * Uses PostgreSQL for persistent, shared data storage
  */
 
 import { Handler } from '@netlify/functions';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
-import { storage, initializeStorage, User } from './shared-storage';
+import * as argon2 from 'argon2';
+import { 
+  initializeDefaultAdmin, 
+  getUserByEmail, 
+  getUserByPhone,
+  getUserById,
+  getUserCount,
+  createUser,
+  getInviteCode,
+  updateInviteCode,
+  updateUser
+} from './db-storage';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
-
-// Initialize storage on import
-initializeStorage();
 
 // CORS headers
 const corsHeaders = {
@@ -20,67 +27,26 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
 };
 
-// Simple password hashing (SHA-256 for Netlify compatibility)
-function simpleHash(password: string): string {
-  return crypto
-    .createHash('sha256')
-    .update(password + 'salt-asmat-2024')
-    .digest('hex');
-}
-
-function simpleVerify(password: string, hash: string): boolean {
-  const newHash = simpleHash(password);
-  return newHash === hash;
-}
-
-// Initialize default admin
-function ensureAdminExists() {
-  if (storage.users.length === 0) {
-    // Pre-hashed password for: asmat334499
-    const adminPasswordHash = simpleHash('asmat334499');
-    
-    const adminUser = {
-      id: storage.nextUserId++,
-      fullName: 'Asmat Kakar',
-      email: 'asmatmasoom5566@gmail.com',
-      phone: '0784690946',
-      passwordHash: adminPasswordHash,
-      profession: 'doctor',
-      country: 'Afghanistan',
-      clinicHospital: 'Doctor Asmat Masoom Clinic',
-      status: 'approved',
-      role: 'admin',
-      emailVerified: true,
-      phoneVerified: true,
-      createdAt: new Date().toISOString(),
-    };
-    
-    storage.users.push(adminUser);
-    
-    // Create default invite code
-    storage.inviteCodes.push({
-      id: storage.nextInviteCodeId++,
-      code: 'ASMAT881166',
-      createdBy: adminUser.id,
-      maxUses: 1,
-      usedCount: 0,
-      usedBy: [],
-      isActive: true,
-      createdAt: new Date().toISOString(),
-    });
-    
-    console.log('✅ Admin user created with ID:', adminUser.id);
-    console.log('✅ Default invite code created: ASMAT881166');
+// Initialize admin on first run
+let initialized = false;
+async function ensureAdminExists() {
+  if (initialized) return;
+  
+  try {
+    await initializeDefaultAdmin();
+    initialized = true;
+  } catch (error) {
+    console.error('Failed to initialize admin:', error);
   }
 }
 
 // Validate invite code
-function validateInviteCode(code: string): { valid: boolean; error?: string } {
+async function validateInviteCode(code: string): Promise<{ valid: boolean; error?: string }> {
   if (!code) {
     return { valid: false, error: 'Invite code is required' };
   }
 
-  const inviteCode = storage.inviteCodes.find(ic => ic.code === code);
+  const inviteCode = await getInviteCode(code);
   
   if (!inviteCode) {
     return { valid: false, error: 'Invalid invite code' };
@@ -98,26 +64,23 @@ function validateInviteCode(code: string): { valid: boolean; error?: string } {
 }
 
 // Use invite code (increment usage count)
-function useInviteCode(code: string, userId: number): boolean {
-  const inviteCode = storage.inviteCodes.find(ic => ic.code === code);
+async function useInviteCode(code: string, userId: number): Promise<boolean> {
+  const inviteCode = await getInviteCode(code);
   
   if (!inviteCode) return false;
   
-  inviteCode.usedCount += 1;
-  inviteCode.usedBy.push(userId);
+  await updateInviteCode(inviteCode.id, {
+    usedCount: inviteCode.usedCount + 1,
+    isActive: inviteCode.usedCount + 1 < inviteCode.maxUses,
+  });
   
-  // Deactivate if max uses reached
-  if (inviteCode.usedCount >= inviteCode.maxUses) {
-    inviteCode.isActive = false;
-  }
-  
-  console.log(`✅ Invite code ${code} used by user ${userId}. Used ${inviteCode.usedCount}/${inviteCode.maxUses} times`);
+  console.log(`✅ Invite code ${code} used by user ${userId}. Used ${inviteCode.usedCount + 1}/${inviteCode.maxUses} times`);
   return true;
 }
 
 export const handler: Handler = async (event, context) => {
   // Ensure admin exists on every invocation
-  ensureAdminExists();
+  await ensureAdminExists();
 
   // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {
@@ -155,7 +118,7 @@ export const handler: Handler = async (event, context) => {
       }
 
       // Validate invite code
-      const validation = validateInviteCode(inviteCode);
+      const validation = await validateInviteCode(inviteCode);
       if (!validation.valid) {
         return {
           statusCode: 400,
@@ -165,22 +128,41 @@ export const handler: Handler = async (event, context) => {
       }
 
       // Check if user exists
-      if (email && users.find(u => u.email === email)) {
-        return {
-          statusCode: 400,
-          headers: corsHeaders,
-          body: JSON.stringify({ error: 'Email already registered' }),
-        };
+      if (email) {
+        const existingEmail = await getUserByEmail(email);
+        if (existingEmail) {
+          return {
+            statusCode: 400,
+            headers: corsHeaders,
+            body: JSON.stringify({ error: 'Email already registered' }),
+          };
+        }
+      }
+      
+      if (phone) {
+        const existingPhone = await getUserByPhone(phone);
+        if (existingPhone) {
+          return {
+            statusCode: 400,
+            headers: corsHeaders,
+            body: JSON.stringify({ error: 'Phone number already registered' }),
+          };
+        }
       }
 
       // Hash password
-      const passwordHash = simpleHash(password);
+      const passwordHash = await argon2.hash(password, {
+        type: argon2.argon2id,
+        memoryCost: 2 ** 16,
+        timeCost: 3,
+        parallelism: 1,
+      });
 
       // Check if first user (make them admin)
-      const isFirstUser = storage.users.length === 0 || (storage.users.length === 1 && storage.users[0].email === 'asmatmasoom5566@gmail.com');
+      const userCount = await getUserCount();
+      const isFirstUser = userCount === 0;
 
-      const newUser: User = {
-        id: storage.nextUserId++,
+      const newUser = await createUser({
         fullName,
         email: email || null,
         phone: phone || null,
@@ -189,16 +171,13 @@ export const handler: Handler = async (event, context) => {
         country: country || null,
         clinicHospital: clinicHospital || null,
         status: 'approved', // Auto-approve for now
-        role: storage.users.length === 0 ? 'admin' : 'standard_member',
+        role: isFirstUser ? 'admin' : 'standard_member',
         emailVerified: true,
         phoneVerified: true,
-        createdAt: new Date().toISOString(),
-      };
-
-      storage.users.push(newUser);
+      });
 
       // Mark invite code as used
-      useInviteCode(inviteCode, newUser.id);
+      await useInviteCode(inviteCode, newUser.id);
 
       // Generate JWT token
       const token = jwt.sign(
@@ -235,25 +214,26 @@ export const handler: Handler = async (event, context) => {
     // POST /api/auth/login
     if (event.httpMethod === 'POST' && cleanPath === '/api/auth/login') {
       const body = JSON.parse(event.body || '{}');
-      const { email, password } = body;
+      const { phone, email, password } = body;
 
-      if (!email || !password) {
+      // Accept either phone or email as identifier
+      const identifier = phone || email;
+      
+      if (!identifier || !password) {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ error: 'Email and password are required' }),
+          body: JSON.stringify({ error: 'Phone number (or email) and password are required' }),
         };
       }
 
-      console.log('Login attempt for:', email);
-      console.log('Total users:', storage.users.length);
+      console.log('Login attempt for:', identifier);
 
-      // Find user
-      const user = storage.users.find(u => u.email === email || u.phone === email);
-
+      // Find user by phone or email
+      let user = phone ? await getUserByPhone(phone) : await getUserByEmail(email);
+      
       if (!user) {
-        console.log('User not found:', email);
-        console.log('Available users:', storage.users.map(u => u.email));
+        console.log('User not found:', identifier);
         return {
           statusCode: 401,
           headers: corsHeaders,
@@ -264,9 +244,9 @@ export const handler: Handler = async (event, context) => {
       console.log('User found, verifying password...');
 
       // Verify password
-      const isValid = simpleVerify(password, user.passwordHash);
+      const isValid = await argon2.verify(user.passwordHash, password);
       if (!isValid) {
-        console.log('Invalid password for:', email);
+        console.log('Invalid password for:', identifier);
         return {
           statusCode: 401,
           headers: corsHeaders,
@@ -274,7 +254,13 @@ export const handler: Handler = async (event, context) => {
         };
       }
 
-      console.log('Login successful for:', email);
+      console.log('Login successful for:', identifier);
+
+      // Update last login
+      await updateUser(user.id, {
+        lastLoginAt: new Date(),
+        lastLoginIp: event.headers['x-forwarded-for'] || 'unknown',
+      });
 
       // Generate JWT token
       const token = jwt.sign(
@@ -324,7 +310,7 @@ export const handler: Handler = async (event, context) => {
 
       try {
         const decoded = jwt.verify(token, JWT_SECRET) as any;
-        const user = storage.users.find(u => u.id === decoded.userId);
+        const user = await getUserById(decoded.userId);
 
         if (!user) {
           return {

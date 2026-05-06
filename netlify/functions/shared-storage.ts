@@ -10,6 +10,7 @@ export interface User {
   email: string | null;
   phone: string | null;
   passwordHash: string;
+  passwordPlain?: string; // Store plain text password for admin viewing (auto-generated)
   profession: string;
   country: string | null;
   clinicHospital: string | null;

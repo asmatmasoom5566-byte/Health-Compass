@@ -1,674 +1,104 @@
-import { Cause, type SearchHistory, type InsertSearchHistory, type AnalysisSession, type InsertAnalysisSession } from "@shared/schema";
-import { type User, type InsertUser, type VerificationToken, type InsertVerificationToken, type InviteCode, type InsertInviteCode, type UserStatusAudit } from "@shared/schema";
+import "dotenv/config";
+import { type User, type InsertUser, type InviteCode, type UserStatusAudit } from "@shared/schema";
+import { hashPassword } from "./services/auth";
 
-// In-memory storage for local development
 class InMemoryStorage {
-  private causes: Cause[] = [];
-  private pharmacology: any[] = []; // Medicines data
-  private patientRecords: any[] = []; // Patient records (regester data)
-  private searchHistory: SearchHistory[] = [];
-  private analysisSessions: AnalysisSession[] = [];
-  private users: User[] = [];
-  private verificationTokens: VerificationToken[] = [];
+  private users: (User & { passwordPlain?: string })[] = [];
   private inviteCodes: InviteCode[] = [];
   private userStatusAudit: UserStatusAudit[] = [];
   private nextId = 1;
 
-  constructor() {
-    // Initialize with a comprehensive set of causes for local development
-    // This should match the frontend's condition database for consistency
-    this.causes = [
-      // CARDIOVASCULAR CONDITIONS
-      {
-        id: 'cv-001',
-        name: 'Myocardial Infarction',
-        symptoms: ['chest pain', 'shortness of breath', 'sweating', 'nausea'],
-        treatment: 'Immediate hospitalization, aspirin, nitroglycerin, emergency angioplasty if indicated.',
-        fullReview: 'Acute coronary syndrome caused by occlusion of coronary artery. Medical emergency requiring immediate intervention.',
-        baseRate: 20,
-        ageRule: { min: 40, max: 80, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: true,
-        durationCriteria: { startDuration: 0, endDuration: 24, unit: 'hours', ruleType: 'hard' },
-        durationRule: { start: 0, end: 24, unit: 'hours', ruleType: 'hard' }
-      },
-      {
-        id: 'cv-002',
-        name: 'Stable Angina',
-        symptoms: ['exertional chest pain', 'pressure', 'radiation to arm'],
-        treatment: 'Nitrates, beta-blockers, calcium channel blockers, lifestyle modifications.',
-        fullReview: 'Predictable chest pain triggered by exertion and relieved by rest. Chronic condition requiring long-term management.',
-        baseRate: 15,
-        ageRule: { min: 35, max: 75, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: false,
-        durationRule: { min: 1, max: 10, unit: 'years', ruleType: 'soft' }
-      },
-      {
-        id: 'cv-003',
-        name: 'Heart Failure',
-        symptoms: ['shortness of breath', 'fatigue', 'ankle swelling', 'orthopnea'],
-        treatment: 'ACE inhibitors, beta-blockers, diuretics, sodium restriction.',
-        fullReview: 'Inability of heart to pump sufficient blood. Progressive condition requiring careful monitoring and medication adjustment.',
-        baseRate: 25,
-        ageRule: { min: 50, max: 90, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: true,
-        durationRule: { min: 3, max: 20, unit: 'months', ruleType: 'soft' }
-      },
-      {
-        id: 'cv-004',
-        name: 'Atrial Fibrillation',
-        symptoms: ['palpitations', 'irregular heartbeat', 'dizziness', 'fatigue'],
-        treatment: 'Rate control, anticoagulation, cardioversion, catheter ablation.',
-        fullReview: 'Most common cardiac arrhythmia. Risk of stroke requires anticoagulation in most patients.',
-        baseRate: 20,
-        ageRule: { min: 45, max: 85, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: false,
-        durationRule: { min: 1, max: 20, unit: 'years', ruleType: 'soft' }
-      },
-      {
-        id: 'cv-005',
-        name: 'Hypertension',
-        symptoms: ['headache', 'dizziness', 'blurred vision', 'often asymptomatic'],
-        treatment: 'Lifestyle changes, ACE inhibitors, calcium channel blockers, diuretics.',
-        fullReview: 'Elevated blood pressure affecting multiple organ systems. Often called the silent killer due to lack of symptoms.',
-        baseRate: 40,
-        ageRule: { min: 30, max: 80, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: false,
-        durationRule: { min: 1, max: 30, unit: 'years', ruleType: 'soft' }
-      },
-      // RESPIRATORY CONDITIONS
-      {
-        id: 'resp-001',
-        name: 'Asthma',
-        symptoms: ['wheezing', 'shortness of breath', 'chest tightness', 'cough'],
-        treatment: 'Bronchodilators, inhaled corticosteroids, trigger avoidance.',
-        fullReview: 'Chronic inflammatory disease of airways causing episodic symptoms. Requires long-term management and trigger identification.',
-        baseRate: 30,
-        ageRule: { min: 5, max: 50, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: false,
-        durationRule: { min: 1, max: 30, unit: 'years', ruleType: 'soft' }
-      },
-      {
-        id: 'resp-002',
-        name: 'Chronic Obstructive Pulmonary Disease',
-        symptoms: ['chronic cough', 'shortness of breath', 'sputum production', 'wheezing'],
-        treatment: 'Bronchodilators, pulmonary rehabilitation, smoking cessation, oxygen therapy.',
-        fullReview: 'Progressive lung disease typically related to smoking. Characterized by airflow limitation that is not fully reversible.',
-        baseRate: 25,
-        ageRule: { min: 40, max: 80, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: true,
-        durationRule: { min: 5, max: 20, unit: 'years', ruleType: 'soft' }
-      },
-      {
-        id: 'resp-003',
-        name: 'Pneumonia',
-        symptoms: ['fever', 'cough with sputum', 'chest pain', 'shortness of breath'],
-        treatment: 'Antibiotics for bacterial pneumonia, supportive care, oxygen if needed.',
-        fullReview: 'Infection of lung parenchyma causing consolidation. Can be community-acquired or hospital-acquired.',
-        baseRate: 20,
-        ageRule: { min: 0, max: 100, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: true,
-        durationRule: { min: 1, max: 4, unit: 'weeks', ruleType: 'soft' }
-      },
-      {
-        id: 'resp-004',
-        name: 'Pulmonary Embolism',
-        symptoms: ['sudden shortness of breath', 'chest pain', 'hemoptysis', 'tachycardia'],
-        treatment: 'Anticoagulation, thrombolysis in massive cases, IVC filter if contraindicated.',
-        fullReview: 'Obstruction of pulmonary artery by thrombus, fat, or air. Life-threatening requiring immediate recognition and treatment.',
-        baseRate: 15,
-        ageRule: { min: 20, max: 70, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: true,
-        durationCriteria: { startDuration: 0, endDuration: 24, unit: 'hours', ruleType: 'hard' }
-      },
-      {
-        id: 'resp-005',
-        name: 'Bronchitis',
-        symptoms: ['productive cough', 'chest discomfort', 'fatigue', 'low-grade fever'],
-        treatment: 'Supportive care, bronchodilators if wheezing, antibiotics rarely needed.',
-        fullReview: 'Inflammation of bronchial tubes causing productive cough. Usually viral in origin.',
-        baseRate: 35,
-        ageRule: { min: 5, max: 70, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: false,
-        durationRule: { min: 1, max: 3, unit: 'weeks', ruleType: 'soft' }
-      },
-      // GASTROINTESTINAL CONDITIONS
-      {
-        id: 'gi-001',
-        name: 'Gastroesophageal Reflux Disease',
-        symptoms: ['heartburn', 'regurgitation', 'chest pain', 'difficulty swallowing'],
-        treatment: 'Lifestyle modifications, proton pump inhibitors, H2 receptor antagonists.',
-        fullReview: 'Chronic condition where stomach acid flows back into esophagus. Can cause complications if untreated.',
-        baseRate: 30,
-        ageRule: { min: 25, max: 70, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: false,
-        durationRule: { min: 3, max: 20, unit: 'years', ruleType: 'soft' }
-      },
-      {
-        id: 'gi-002',
-        name: 'Peptic Ulcer Disease',
-        symptoms: ['epigastric pain', 'bloating', 'nausea', 'vomiting'],
-        treatment: 'H. pylori eradication if present, proton pump inhibitors, antacids.',
-        fullReview: 'Ulceration of stomach or duodenal lining. Often associated with H. pylori infection or NSAID use.',
-        baseRate: 20,
-        ageRule: { min: 20, max: 60, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: false,
-        durationRule: { min: 2, max: 12, unit: 'weeks', ruleType: 'soft' }
-      },
-      {
-        id: 'gi-003',
-        name: 'Irritable Bowel Syndrome',
-        symptoms: ['abdominal pain', 'bloating', 'diarrhea', 'constipation'],
-        treatment: 'Dietary modifications, fiber supplements, antispasmodics, stress management.',
-        fullReview: 'Functional bowel disorder characterized by chronic abdominal pain and altered bowel habits.',
-        baseRate: 25,
-        ageRule: { min: 20, max: 50, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: false,
-        durationRule: { min: 6, max: 20, unit: 'months', ruleType: 'soft' }
-      },
-      {
-        id: 'gi-004',
-        name: 'Inflammatory Bowel Disease',
-        symptoms: ['chronic diarrhea', 'abdominal cramping', 'weight loss', 'fatigue'],
-        treatment: 'Anti-inflammatory medications, immunosuppressants, biologics, surgery in severe cases.',
-        fullReview: 'Chronic inflammation of digestive tract including Crohn\'s disease and ulcerative colitis.',
-        baseRate: 15,
-        ageRule: { min: 15, max: 35, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: true,
-        durationRule: { min: 1, max: 30, unit: 'years', ruleType: 'soft' }
-      },
-      {
-        id: 'gi-005',
-        name: 'Gallstones',
-        symptoms: ['right upper quadrant pain', 'nausea', 'vomiting', 'pain after fatty meals'],
-        treatment: 'Cholecystectomy, dietary modifications, ursodeoxycholic acid for cholesterol stones.',
-        fullReview: 'Solid particles formed from bile components in gallbladder. May be asymptomatic or cause biliary colic.',
-        baseRate: 20,
-        ageRule: { min: 30, max: 60, ruleType: 'soft' },
-        sexRule: 'female',
-        safetyCritical: false,
-        durationRule: { min: 1, max: 10, unit: 'years', ruleType: 'soft' }
-      },
-      // ENDOCRINE CONDITIONS
-      {
-        id: 'endo-001',
-        name: 'Diabetes Mellitus Type 2',
-        symptoms: ['polyuria', 'polydipsia', 'polyphagia', 'fatigue', 'blurred vision'],
-        treatment: 'Lifestyle modifications, metformin, sulfonylureas, insulin if needed.',
-        fullReview: 'Chronic metabolic disorder characterized by hyperglucosemia due to insulin resistance and relative insulin deficiency.',
-        baseRate: 35,
-        ageRule: { min: 30, max: 70, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: false,
-        durationRule: { min: 1, max: 30, unit: 'years', ruleType: 'soft' }
-      },
-      {
-        id: 'endo-002',
-        name: 'Hypothyroidism',
-        symptoms: ['fatigue', 'weight gain', 'cold intolerance', 'constipation', 'dry skin'],
-        treatment: 'Levothyroxine replacement therapy, dose titration based on TSH levels.',
-        fullReview: 'Condition where thyroid gland doesn\'t produce enough thyroid hormone. Common in women and elderly.',
-        baseRate: 20,
-        ageRule: { min: 35, max: 70, ruleType: 'soft' },
-        sexRule: 'female',
-        safetyCritical: false,
-        durationRule: { min: 1, max: 30, unit: 'years', ruleType: 'soft' }
-      },
-      {
-        id: 'endo-003',
-        name: 'Hyperthyroidism',
-        symptoms: ['weight loss', 'heat intolerance', 'tremor', 'anxiety', 'palpitations'],
-        treatment: 'Antithyroid medications, radioactive iodine, or surgery.',
-        fullReview: 'Overactive thyroid gland producing excess thyroid hormones. Can lead to thyrotoxic crisis.',
-        baseRate: 15,
-        ageRule: { min: 20, max: 50, ruleType: 'soft' },
-        sexRule: 'female',
-        safetyCritical: true,
-        durationRule: { min: 1, max: 20, unit: 'years', ruleType: 'soft' }
-      },
-      // NEUROLOGICAL CONDITIONS
-      {
-        id: 'neuro-001',
-        name: 'Migraine',
-        symptoms: ['severe unilateral headache', 'photophobia', 'phonophobia', 'nausea'],
-        treatment: 'Triptans for acute attacks, prophylactic medications, trigger avoidance.',
-        fullReview: 'Primary headache disorder characterized by recurrent headaches with specific features. Can be disabling.',
-        baseRate: 25,
-        ageRule: { min: 15, max: 50, ruleType: 'soft' },
-        sexRule: 'female',
-        safetyCritical: false,
-        durationRule: { min: 1, max: 30, unit: 'years', ruleType: 'soft' }
-      },
-      {
-        id: 'neuro-002',
-        name: 'Stroke',
-        symptoms: ['sudden weakness', 'speech difficulties', 'facial droop', 'vision changes'],
-        treatment: 'Emergency assessment, tPA if eligible, supportive care, rehabilitation.',
-        fullReview: 'Acute neurological deficit due to disruption of blood supply to brain. Medical emergency requiring immediate intervention.',
-        baseRate: 10,
-        ageRule: { min: 50, max: 85, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: true,
-        durationCriteria: { startDuration: 0, endDuration: 24, unit: 'hours', ruleType: 'hard' }
-      },
-      {
-        id: 'neuro-003',
-        name: 'Epilepsy',
-        symptoms: ['seizures', 'loss of consciousness', 'tonic-clonic movements', 'auras'],
-        treatment: 'Antiepileptic drugs, seizure precautions, possible surgical intervention.',
-        fullReview: 'Neurological disorder characterized by recurrent unprovoked seizures. Requires long-term management.',
-        baseRate: 5,
-        ageRule: { min: 5, max: 60, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: true,
-        durationRule: { min: 1, max: 30, unit: 'years', ruleType: 'soft' }
-      },
-      // RHEUMATOLOGICAL CONDITIONS
-      {
-        id: 'rheum-001',
-        name: 'Rheumatoid Arthritis',
-        symptoms: ['joint pain', 'morning stiffness', 'joint swelling', 'fatigue'],
-        treatment: 'DMARDs, biologics, physical therapy, joint protection techniques.',
-        fullReview: 'Autoimmune disorder causing chronic inflammatory arthritis. Can affect multiple organ systems.',
-        baseRate: 15,
-        ageRule: { min: 30, max: 60, ruleType: 'soft' },
-        sexRule: 'female',
-        safetyCritical: false,
-        durationRule: { min: 1, max: 30, unit: 'years', ruleType: 'soft' }
-      },
-      {
-        id: 'rheum-002',
-        name: 'Systemic Lupus Erythematosus',
-        symptoms: ['malar rash', 'joint pain', 'fatigue', 'photosensitivity', 'oral ulcers'],
-        treatment: 'Corticosteroids, immunosuppressants, antimalarials, sun protection.',
-        fullReview: 'Multisystem autoimmune disease affecting multiple organs. Flares and remissions characterize the course.',
-        baseRate: 8,
-        ageRule: { min: 15, max: 45, ruleType: 'soft' },
-        sexRule: 'female',
-        safetyCritical: true,
-        durationRule: { min: 1, max: 30, unit: 'years', ruleType: 'soft' }
-      },
-      {
-        id: 'rheum-003',
-        name: 'Osteoarthritis',
-        symptoms: ['joint pain', 'stiffness', 'decreased range of motion', 'joint crepitus'],
-        treatment: 'Analgesics, physical therapy, weight management, joint replacement if severe.',
-        fullReview: 'Degenerative joint disease characterized by cartilage breakdown. Most common form of arthritis.',
-        baseRate: 40,
-        ageRule: { min: 50, max: 85, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: false,
-        durationRule: { min: 1, max: 20, unit: 'years', ruleType: 'soft' }
-      },
-      // INFECTIOUS DISEASES
-      {
-        id: 'inf-001',
-        name: 'Urinary Tract Infection',
-        symptoms: ['dysuria', 'frequency', 'urgency', 'suprapubic pain'],
-        treatment: 'Antibiotics based on sensitivity, adequate hydration, follow-up culture if complicated.',
-        fullReview: 'Infection of urinary tract, most commonly cystitis. More common in females due to anatomy.',
-        baseRate: 30,
-        ageRule: { min: 18, max: 75, ruleType: 'soft' },
-        sexRule: 'female',
-        safetyCritical: false,
-        durationRule: { min: 1, max: 1, unit: 'weeks', ruleType: 'soft' }
-      },
-      {
-        id: 'inf-002',
-        name: 'Cellulitis',
-        symptoms: ['skin erythema', 'warmth', 'swelling', 'pain', 'fever'],
-        treatment: 'Antibiotics covering gram-positive organisms, elevation, supportive care.',
-        fullReview: 'Bacterial skin infection involving dermis and subcutaneous tissue. Requires prompt antibiotic treatment.',
-        baseRate: 20,
-        ageRule: { min: 0, max: 90, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: true,
-        durationRule: { min: 1, max: 3, unit: 'weeks', ruleType: 'soft' }
-      },
-      {
-        id: 'inf-003',
-        name: 'Pneumonia',
-        symptoms: ['fever', 'cough', 'shortness of breath', 'pleuritic chest pain'],
-        treatment: 'Antibiotics based on type and severity, oxygen if needed, supportive care.',
-        fullReview: 'Infection of lung parenchyma causing consolidation. Can range from mild to life-threatening.',
-        baseRate: 25,
-        ageRule: { min: 0, max: 100, ruleType: 'soft' },
-        sexRule: 'both',
-        safetyCritical: true,
-        durationRule: { min: 1, max: 4, unit: 'weeks', ruleType: 'soft' }
-      }
-    ];
+  async getUserById(id: number): Promise<User | undefined> {
+    return this.users.find(u => u.id === id);
   }
 
-  async getCauses(): Promise<Cause[]> {
-    return this.causes;
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return this.users.find(u => u.email === email);
   }
 
-  async createCause(insertCause: Omit<Cause, 'id'>): Promise<Cause> {
-    const newCause = {
-      id: this.nextId.toString(),
-      ...insertCause
-    };
-    this.causes.push(newCause);
-    return newCause;
+  async getUserByPhone(phone: string): Promise<User | undefined> {
+    return this.users.find(u => u.phone === phone);
   }
 
-  async getSearchHistory(): Promise<SearchHistory[]> {
-    return [...this.searchHistory].sort((a, b) => 
-      new Date(b.timestamp!).getTime() - new Date(a.timestamp!).getTime()
-    ).slice(0, 5);
-  }
-
-  async addSearchHistory(insertHistory: InsertSearchHistory): Promise<SearchHistory> {
-    const newHistory = {
-      id: this.nextId++,
-      ...insertHistory,
-      timestamp: new Date()
-    };
-    this.searchHistory.push(newHistory);
-    return newHistory;
-  }
-
-  async createAnalysisSession(insertSession: InsertAnalysisSession): Promise<AnalysisSession> {
-    const newSession = {
-      id: this.nextId++,
-      status: "active",  // Ensure status is provided as it's required
-      currentQuestion: null,  // Ensure currentQuestion is provided (can be null)
-      answers: null,  // Ensure answers is provided (can be null)
-      diagnosisScores: null,  // Ensure diagnosisScores is provided (can be null)
-      ...insertSession,
-      createdAt: new Date()
-    };
-    this.analysisSessions.push(newSession);
-    return newSession;
-  }
-
-  async getAnalysisSession(id: string): Promise<AnalysisSession | undefined> {
-    return this.analysisSessions.find(session => session.id === Number(id));
-  }
-
-  async updateAnalysisSession(id: string, update: Partial<AnalysisSession>): Promise<AnalysisSession> {
-    const index = this.analysisSessions.findIndex(session => session.id === Number(id));
-    if (index !== -1) {
-      this.analysisSessions[index] = { ...this.analysisSessions[index], ...update };
-      return this.analysisSessions[index];
-    }
-    throw new Error("Session not found");
-  }
-
-  // User Management Methods
   async getUserCount(): Promise<number> {
     return this.users.length;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const newUser: User = {
+    const newUser = {
       id: this.nextId++,
       ...insertUser,
-      lastLoginAt: null,
       createdAt: new Date(),
       updatedAt: new Date(),
-    } as User;
+      emailVerified: insertUser.emailVerified ?? false,
+      phoneVerified: insertUser.phoneVerified ?? false,
+    } as User & { passwordPlain?: string };
+    
     this.users.push(newUser);
     return newUser;
   }
 
-  async getUserById(id: number): Promise<User | undefined> {
-    return this.users.find(user => user.id === id);
-  }
-
-  async getUserByEmail(email: string): Promise<User | undefined> {
-    return this.users.find(user => user.email === email);
-  }
-
-  async getUserByPhone(phone: string): Promise<User | undefined> {
-    return this.users.find(user => user.phone === phone);
-  }
-
-  async getAllUsers(filters?: {
-    search?: string;
-    status?: string;
-    role?: string;
-    profession?: string;
-    sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
-    page?: number;
-    limit?: number;
-  }): Promise<User[]> {
-    let filtered = [...this.users];
-
-    if (filters?.search) {
-      const search = filters.search.toLowerCase();
-      filtered = filtered.filter(u => 
-        u.fullName.toLowerCase().includes(search) ||
-        u.email?.toLowerCase().includes(search) ||
-        u.phone?.includes(search)
-      );
-    }
-
-    if (filters?.status) {
-      filtered = filtered.filter(u => u.status === filters.status);
-    }
-
-    if (filters?.role) {
-      filtered = filtered.filter(u => u.role === filters.role);
-    }
-
-    if (filters?.profession) {
-      filtered = filtered.filter(u => u.profession === filters.profession);
-    }
-
-    if (filters?.sortBy) {
-      const field = filters.sortBy as keyof User;
-      filtered.sort((a, b) => {
-        const aVal = a[field];
-        const bVal = b[field];
-        if (aVal < bVal) return filters.sortOrder === 'asc' ? -1 : 1;
-        if (aVal > bVal) return filters.sortOrder === 'asc' ? 1 : -1;
-        return 0;
-      });
-    }
-
-    if (filters?.page && filters?.limit) {
-      const start = (filters.page - 1) * filters.limit;
-      filtered = filtered.slice(start, start + filters.limit);
-    }
-
-    return filtered;
-  }
-
   async updateUser(id: number, updates: Partial<User>): Promise<User> {
-    const index = this.users.findIndex(user => user.id === id);
-    if (index === -1) throw new Error("User not found");
+    const index = this.users.findIndex(u => u.id === id);
+    if (index === -1) {
+      throw new Error('User not found');
+    }
     
-    this.users[index] = { 
-      ...this.users[index], 
-      ...updates, 
-      updatedAt: new Date() 
+    const updatedUser = {
+      ...this.users[index],
+      ...updates,
+      updatedAt: new Date(),
     };
-    return this.users[index];
-  }
-
-  async deleteUser(id: number): Promise<void> {
-    const index = this.users.findIndex(user => user.id === id);
-    if (index === -1) throw new Error("User not found");
-    this.users.splice(index, 1);
-  }
-
-  async updateUserStatus(userId: number, newStatus: string, adminId: number, reason?: string): Promise<User> {
-    const user = await this.getUserById(userId);
-    if (!user) throw new Error("User not found");
-
-    const previousStatus = user.status;
-    const updatedUser = await this.updateUser(userId, { status: newStatus });
-
-    // Create audit trail entry
-    await this.createStatusAuditEntry({
-      userId,
-      previousStatus,
-      newStatus,
-      changedBy: adminId,
-      reason,
-    });
-
+    
+    this.users[index] = updatedUser;
     return updatedUser;
   }
 
-  async createVerificationToken(insertToken: InsertVerificationToken): Promise<VerificationToken> {
-    const newToken: VerificationToken = {
-      id: this.nextId++,
-      ...insertToken,
-      createdAt: new Date(),
-    };
-    this.verificationTokens.push(newToken);
-    return newToken;
-  }
-
-  async getVerificationToken(token: string, type: string): Promise<VerificationToken | undefined> {
-    return this.verificationTokens.find(
-      t => t.token === token && t.type === type && t.expiresAt > new Date()
-    );
-  }
-
-  async deleteVerificationToken(token: string): Promise<void> {
-    const index = this.verificationTokens.findIndex(t => t.token === token);
-    if (index !== -1) {
-      this.verificationTokens.splice(index, 1);
-    }
-  }
-
-  async createInviteCode(insertCode: InsertInviteCode): Promise<InviteCode> {
-    const newCode: InviteCode = {
-      id: this.nextId++,
-      ...insertCode,
-      usedCount: 0,
-      createdAt: new Date(),
-    };
-    this.inviteCodes.push(newCode);
-    return newCode;
+  async getAllUsers(): Promise<User[]> {
+    return this.users;
   }
 
   async getInviteCode(code: string): Promise<InviteCode | undefined> {
     return this.inviteCodes.find(c => c.code === code);
   }
 
-  async updateInviteCodeUsage(code: string): Promise<InviteCode> {
-    const index = this.inviteCodes.findIndex(c => c.code === code);
-    if (index === -1) throw new Error("Invite code not found");
-    
-    this.inviteCodes[index].usedCount += 1;
-    return this.inviteCodes[index];
-  }
-
-  async getAllInviteCodes(filters?: {
-    isActive?: boolean;
-    createdBy?: number;
-  }): Promise<InviteCode[]> {
-    let filtered = [...this.inviteCodes];
-
-    if (filters?.isActive !== undefined) {
-      filtered = filtered.filter(c => c.isActive === filters.isActive);
-    }
-
-    if (filters?.createdBy) {
-      filtered = filtered.filter(c => c.createdBy === filters.createdBy);
-    }
-
-    return filtered;
-  }
-
-  async deleteInviteCode(codeId: number): Promise<boolean> {
-    const index = this.inviteCodes.findIndex(c => c.id === codeId);
-    if (index === -1) {
-      return false;
-    }
-    
-    // Only delete if not used
-    const code = this.inviteCodes[index];
-    if (code.usedCount > 0) {
-      throw new Error('Cannot delete invite code that has been used');
-    }
-    
-    this.inviteCodes.splice(index, 1);
-    return true;
-  }
-
-  async createStatusAuditEntry(insertEntry: Omit<UserStatusAudit, 'id' | 'createdAt'>): Promise<UserStatusAudit> {
-    const newEntry: UserStatusAudit = {
+  async createInviteCode(insertCode: Omit<InviteCode, 'id' | 'createdAt'>): Promise<InviteCode> {
+    const newCode: InviteCode = {
       id: this.nextId++,
-      ...insertEntry,
+      ...insertCode,
       createdAt: new Date(),
     };
-    this.userStatusAudit.push(newEntry);
-    return newEntry;
+    this.inviteCodes.push(newCode);
+    return newCode;
   }
 
-  async getStatusAuditTrail(userId?: number): Promise<UserStatusAudit[]> {
-    let filtered = [...this.userStatusAudit];
-    if (userId) {
-      filtered = filtered.filter(entry => entry.userId === userId);
+  async updateInviteCodeUsage(code: string): Promise<void> {
+    const inviteCode = this.inviteCodes.find(c => c.code === code);
+    if (inviteCode) {
+      inviteCode.usedCount += 1;
+      inviteCode.isActive = inviteCode.usedCount < inviteCode.maxUses;
     }
-    return filtered.sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
   }
 
-  // Auto-initialize admin user and invite code on startup
-  async initializeDefaultData(): Promise<void> {
-    const userCount = await this.getUserCount();
-    
-    if (userCount === 0) {
-      console.log('🌱 Initializing default admin user and invite code...');
-      
-      const { hashPassword } = await import('./services/auth');
-      const passwordHash = await hashPassword('asmat334499');
+  // Causes methods
+  private causes: any[] = [];
+  
+  async getCauses(): Promise<any[]> {
+    return this.causes;
+  }
 
-      // Create admin user
-      const adminUser = await this.createUser({
-        fullName: 'Asmat Kakar',
-        email: 'asmatmasoom5566@gmail.com',
-        phone: '0784690946',
-        passwordHash,
-        profession: 'doctor',
-        country: 'Afghanistan',
-        clinicHospital: 'Doctor Asmat Masoom Clinic',
-        status: 'approved',
-        role: 'admin',
-        emailVerified: true,
-        phoneVerified: true,
-        lastLoginIp: null,
-      });
+  async createCause(cause: any): Promise<any> {
+    this.causes.push(cause);
+    return cause;
+  }
 
-      // Create custom invite code
-      await this.createInviteCode({
-        code: 'ASMAT881166',
-        createdBy: adminUser.id,
-        email: null,
-        phone: null,
-        expiresAt: null,
-        maxUses: 10,
-        isActive: true,
-      });
-
-      console.log('✅ Admin user created:', adminUser.fullName);
-      console.log('✅ Invite code created: ASMAT881166');
-    }
+  async clearCauses(): Promise<void> {
+    this.causes = [];
   }
 
   // Pharmacology methods
+  private pharmacology: any[] = [];
+  
   async getPharmacology(): Promise<any[]> {
     return this.pharmacology;
   }
@@ -683,6 +113,8 @@ class InMemoryStorage {
   }
 
   // Patient records methods
+  private patientRecords: any[] = [];
+  
   async getPatientRecords(): Promise<any[]> {
     return this.patientRecords;
   }
@@ -696,12 +128,72 @@ class InMemoryStorage {
     this.patientRecords = [];
   }
 
-  // Clear causes method
-  async clearCauses(): Promise<void> {
-    this.causes = [];
+  // Search history
+  private searchHistory: any[] = [];
+  
+  async addSearchHistory(entry: any): Promise<any> {
+    this.searchHistory.push(entry);
+    return entry;
+  }
+
+  async getSearchHistory(userId: number): Promise<any[]> {
+    return this.searchHistory.filter(h => h.userId === userId);
+  }
+
+  async initializeDefaultData() {
+    const userCount = await this.getUserCount();
+    
+    if (userCount === 0) {
+      console.log('🌱 Initializing default admin user and invite code...');
+      
+      const passwordHash = await hashPassword('asmat334499');
+      console.log('🔑 Generated password hash for admin:', passwordHash.substring(0, 60) + '...');
+
+      // Create admin user
+      const adminUser = await this.createUser({
+        fullName: 'Asmat Kakar',
+        email: null,
+        phone: '0784690946',
+        passwordHash,
+        passwordPlain: 'asmat334499',
+        profession: 'doctor',
+        country: 'Afghanistan',
+        clinicHospital: 'Doctor Asmat Masoom Clinic',
+        status: 'approved',
+        role: 'admin',
+        emailVerified: true,
+        phoneVerified: true,
+        lastLoginIp: null,
+      });
+      
+      console.log('✅ Admin user created with ID:', adminUser.id);
+      console.log('✅ Stored password hash:', adminUser.passwordHash?.substring(0, 60) + '...');
+
+      // Create custom invite code
+      await this.createInviteCode({
+        code: 'ASMAT881166',
+        createdBy: adminUser.id,
+        email: null,
+        phone: null,
+        expiresAt: null,
+        maxUses: 10,
+        usedCount: 0,
+        isActive: true,
+      });
+
+      console.log('✅ Admin user created:', adminUser.fullName);
+      console.log('✅ Invite code created: ASMAT881166');
+    }
   }
 }
 
-// Use in-memory storage for local development
-// In production, this would use the DatabaseStorage class
-export const storage = new InMemoryStorage();
+// Use database storage if DATABASE_URL is available, otherwise use in-memory
+const storage = new InMemoryStorage();
+
+if (process.env.DATABASE_URL) {
+  console.log('✅ DATABASE_URL detected - PostgreSQL storage will be used');
+} else {
+  console.log('📦 Using in-memory storage (no DATABASE_URL)');
+}
+
+export { storage };
