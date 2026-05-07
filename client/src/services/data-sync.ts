@@ -8,7 +8,10 @@ const API_BASE = '/api';
  */
 export async function fetchCausesFromServer(): Promise<any[]> {
   try {
-    const response = await fetch(`${API_BASE}/causes`);
+    const token = localStorage.getItem('auth_token');
+    const response = await fetch(`${API_BASE}/causes`, {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+    });
     if (!response.ok) throw new Error('Failed to fetch causes');
     const data = await response.json();
     return data.causes || [];
@@ -51,7 +54,10 @@ export async function saveCausesToServer(causes: any[]): Promise<boolean> {
  */
 export async function fetchPharmacologyFromServer(): Promise<any[]> {
   try {
-    const response = await fetch(`${API_BASE}/pharmacology`);
+    const token = localStorage.getItem('auth_token');
+    const response = await fetch(`${API_BASE}/pharmacology`, {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+    });
     if (!response.ok) throw new Error('Failed to fetch pharmacology');
     const data = await response.json();
     return data.pharmacology || [];

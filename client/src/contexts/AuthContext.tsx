@@ -123,6 +123,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     // Sync shared data from server (conditions, pharmacology, patient records)
     await syncDataFromServer();
+    
+    // Force reload to reinitialize all hooks with fresh database data
+    window.location.reload();
   };
 
   const register = async (data: RegisterData) => {
