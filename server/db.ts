@@ -4,25 +4,18 @@ import * as schema from "@shared/schema";
 
 const { Pool } = pg;
 
-// Only require DATABASE_URL in production
-if (!process.env.DATABASE_URL && process.env.NODE_ENV === "production") {
+// DATABASE_URL is REQUIRED for all environments
+if (!process.env.DATABASE_URL) {
   throw new Error(
-    "DATABASE_URL must be set in production. Did you forget to provision a database?",
+    "DATABASE_URL environment variable is required. Please set it in your .env file or Netlify environment variables.",
   );
 }
 
-// Create a dummy pool for development/local testing
-let pool: pg.Pool;
-if (process.env.DATABASE_URL) {
-  pool = new Pool({ connectionString: process.env.DATABASE_URL });
-} else {
-  // Create a mock pool for local development
-  pool = new Pool({
-    connectionString: "postgresql://localhost:5432/dummy",
-    // Mock the query method to prevent actual database calls
-    query: () => Promise.resolve({ rows: [], rowCount: 0 })
-  } as any);
-}
+// Create database pool with PostgreSQL connection
+const pool = new Pool({ 
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // Required for Neon/Supabase
+});
 
 export { pool };
 export const db = drizzle(pool, { schema });
