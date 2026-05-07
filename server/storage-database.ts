@@ -279,6 +279,91 @@ export class DatabaseStorage {
   async close(): Promise<void> {
     await pool.end();
   }
+
+  // Get all causes from database
+  async getCauses(): Promise<any[]> {
+    const result = await db.execute(sql`
+      SELECT id, name, base_rate, symptoms, pathognomonic_symptoms, cardinal_symptoms, 
+             start_duration, end_duration, duration_unit, duration_rule_type, full_review, treatment,
+             created_at, updated_at
+      FROM causes
+      ORDER BY name
+    `);
+    
+    return result.rows.map(row => ({
+      id: row.id,
+      name: row.name,
+      baseRate: row.base_rate,
+      symptoms: row.symptoms || [],
+      pathognomonicSymptoms: row.pathognomonic_symptoms || [],
+      cardinalSymptoms: row.cardinal_symptoms || [],
+      startDuration: row.start_duration || 0,
+      endDuration: row.end_duration || 12,
+      durationUnit: row.duration_unit || 'months',
+      durationRuleType: row.duration_rule_type || 'soft',
+      fullReview: row.full_review,
+      treatment: row.treatment,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+    }));
+  }
+
+  // Get pharmacology from database
+  async getPharmacology(): Promise<any[]> {
+    const result = await db.execute(sql`
+      SELECT data FROM pharmacology
+      ORDER BY id DESC
+      LIMIT 1
+    `);
+    
+    if (result.rows.length === 0) return [];
+    
+    const pharmaData = result.rows[0].data;
+    return pharmaData.medicines || [];
+  }
+
+  // Get patient records from database
+  async getPatientRecords(): Promise<any[]> {
+    const result = await db.execute(sql`
+      SELECT data FROM patient_records
+      ORDER BY id DESC
+      LIMIT 1
+    `);
+    
+    if (result.rows.length === 0) return [];
+    
+    const recordsData = result.rows[0].data;
+    return recordsData.records || [];
+  }
+
+  // Clear all pharmacology
+  async clearPharmacology(): Promise<void> {
+    await db.execute(sql`DELETE FROM pharmacology`);
+  }
+
+  // Create medicine entry
+  async createMedicine(medicine: any): Promise<void> {
+    // For now, we'll store medicines in the pharmacology JSONB column
+    // This is a simplified approach - in production, you'd want a separate medicines table
+    const existing = await db.execute(sql`SELECT data FROM pharmacology ORDER BY id DESC LIMIT 1`);
+    
+    if (existing.rows.length === 0) {
+      // Create new pharmacology entry
+      await db.execute(sql`
+        INSERT INTO pharmacology (data)
+        VALUES (${JSON.stringify({ medicines: [medicine] })})
+      `);
+    } else {
+      // Update existing entry
+      const currentData = existing.rows[0].data;
+      currentData.medicines.push(medicine);
+      await db.execute(sql`
+        UPDATE pharmacology
+        SET data = ${JSON.stringify(currentData)}, updated_at = CURRENT_TIMESTAMP
+        WHERE id = ${existing.rows[0].id}
+      `);
+    }
+  }
 }
 
 // Export singleton instance
