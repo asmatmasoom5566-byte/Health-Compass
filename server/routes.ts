@@ -629,15 +629,9 @@ Return ONLY the question or "COMPLETED: [JSON]"`;
     }
   });
 
-  // Update all causes (admin/editor/reviewer/standard_member can edit)
-  app.put("/api/causes", isAuthenticated, async (req, res) => {
+  // Update all causes (admin only)
+  app.put("/api/causes", isAuthenticated, isAdmin, async (req, res) => {
     try {
-      const user = req.user as any;
-      // Read-only members cannot edit
-      if (user.role === 'read_only_member') {
-        return res.status(403).json({ error: "Read-only members cannot edit data" });
-      }
-
       const { causes } = req.body;
       if (!causes || !Array.isArray(causes)) {
         return res.status(400).json({ error: "Invalid causes data" });
@@ -656,14 +650,8 @@ Return ONLY the question or "COMPLETED: [JSON]"`;
     }
   });
 
-  app.post("/api/causes", isAuthenticated, async (req, res) => {
+  app.post("/api/causes", isAuthenticated, isAdmin, async (req, res) => {
     try {
-      const user = req.user as any;
-      // Read-only members cannot edit
-      if (user.role === 'read_only_member') {
-        return res.status(403).json({ error: "Read-only members cannot edit data" });
-      }
-
       const newCause = await storage.createCause(req.body);
       res.status(201).json(newCause);
     } catch (error) {
@@ -683,14 +671,8 @@ Return ONLY the question or "COMPLETED: [JSON]"`;
     }
   });
 
-  app.put("/api/pharmacology", isAuthenticated, async (req, res) => {
+  app.put("/api/pharmacology", isAuthenticated, isAdmin, async (req, res) => {
     try {
-      const user = req.user as any;
-      // Read-only members cannot edit
-      if (user.role === 'read_only_member') {
-        return res.status(403).json({ error: "Read-only members cannot edit data" });
-      }
-
       const { medicines } = req.body;
       if (!medicines || !Array.isArray(medicines)) {
         return res.status(400).json({ error: "Invalid medicines data" });
@@ -720,14 +702,8 @@ Return ONLY the question or "COMPLETED: [JSON]"`;
     }
   });
 
-  app.put("/api/patient-records", isAuthenticated, async (req, res) => {
+  app.put("/api/patient-records", isAuthenticated, isAdmin, async (req, res) => {
     try {
-      const user = req.user as any;
-      // Read-only members cannot edit
-      if (user.role === 'read_only_member') {
-        return res.status(403).json({ error: "Read-only members cannot edit data" });
-      }
-
       const { records } = req.body;
       if (!records || !Array.isArray(records)) {
         return res.status(400).json({ error: "Invalid records data" });
