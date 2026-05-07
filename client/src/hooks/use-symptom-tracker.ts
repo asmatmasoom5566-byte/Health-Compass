@@ -49,53 +49,15 @@ export function useSymptomTracker() {
   // Initialize state from local storage or defaults
   const [causes, setCauses] = useState<Cause[]>(() => {
     try {
-      // First check for existing conditions in localStorage
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        // Handle both old and new format
-        if (Array.isArray(parsed.causes)) {
-          console.log('Loaded causes from localStorage:', parsed.causes);
-          // Check if these are the new demographic-aware conditions
-          if (parsed.causes.length > 50) { // Likely the full database
-            // First migrate to remove atypical symptoms and add pathognomonic symptoms
-            const migratedCauses = migrateConditionsToPathognomonic(parsed.causes);
-            
-            // DO NOT auto-generate timestamps - preserve as-is
-            return migratedCauses;
-          } else {
-            // Migrate existing conditions to include demographic rules
-            console.log('Migrating existing conditions to include demographic rules');
-            const demographicCauses = migrateConditionsToDemographics(parsed.causes);
-            // Then migrate to pathognomonic symptoms
-            return migrateConditionsToPathognomonic(demographicCauses);
-          }
-        } else if (Array.isArray(parsed)) {
-          // Old format without wrapper object
-          console.log('Loaded old format causes from localStorage:', parsed);
-          const demographicCauses = migrateConditionsToDemographics(parsed);
-          // Then migrate to pathognomonic symptoms
-          return migrateConditionsToPathognomonic(demographicCauses);
-        }
-      }
-      
-      // Check for conditions stored under different keys
-      const legacyConditions = localStorage.getItem('conditions') || localStorage.getItem('causes');
-      if (legacyConditions) {
-        const parsedLegacy = JSON.parse(legacyConditions);
-        if (Array.isArray(parsedLegacy)) {
-          console.log('Loaded legacy conditions, migrating to demographic format');
-          const demographicCauses = migrateConditionsToDemographics(parsedLegacy);
-          // Then migrate to pathognomonic symptoms
-          return migrateConditionsToPathognomonic(demographicCauses);
-        }
-      }
+      // DO NOT load from localStorage - always fetch from server
+      // This ensures all users see the same database data
+      console.log('⏭️  Skipping localStorage - will fetch from database');
     } catch (e) {
       console.error("Failed to load from storage", e);
     }
     
-    console.log('Using initial full condition database with 124 conditions');
-    return INITIAL_CAUSES;
+    console.log('Using empty initial state - will load from server');
+    return [];
   });
 
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>(() => {
@@ -116,6 +78,37 @@ export function useSymptomTracker() {
     }
     return [];
   });
+
+  // CRITICAL: Fetch from database on mount - ignore localStorage completely
+  useEffect(() => {
+    const fetchFromDatabase = async () => {
+      console.log('🌐 Fetching conditions from database...');
+      try {
+        const response = await fetch('/api/causes');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.causes && data.causes.length > 0) {
+            console.log(`✅ Loaded ${data.causes.length} conditions from database`);
+            setCauses(data.causes);
+            
+            // Also fetch pharmacology
+            const pharmaResponse = await fetch('/api/pharmacology');
+            if (pharmaResponse.ok) {
+              const pharmaData = await pharmaResponse.json();
+              if (pharmaData.pharmacology && pharmaData.pharmacology.length > 0) {
+                localStorage.setItem('pharmacology_v1', JSON.stringify({ medicines: pharmaData.pharmacology }));
+                console.log(`✅ Loaded ${pharmaData.pharmacology.length} medicines from database`);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('❌ Failed to fetch from database:', error);
+      }
+    };
+    
+    fetchFromDatabase();
+  }, []);
 
   // Persist to local storage whenever state changes - Enhanced for maximum reliability
   useEffect(() => {
