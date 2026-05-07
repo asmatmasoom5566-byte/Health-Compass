@@ -5,7 +5,7 @@
 
 import { Handler } from '@netlify/functions';
 import jwt from 'jsonwebtoken';
-import * as argon2 from 'argon2';
+import bcrypt from 'bcryptjs';
 import { 
   initializeDefaultAdmin, 
   getUserByEmail, 
@@ -151,12 +151,7 @@ export const handler: Handler = async (event, context) => {
       }
 
       // Hash password
-      const passwordHash = await argon2.hash(password, {
-        type: argon2.argon2id,
-        memoryCost: 2 ** 16,
-        timeCost: 3,
-        parallelism: 1,
-      });
+      const passwordHash = await bcrypt.hash(password, 10);
 
       // Check if first user (make them admin)
       const userCount = await getUserCount();
@@ -244,7 +239,7 @@ export const handler: Handler = async (event, context) => {
       console.log('User found, verifying password...');
 
       // Verify password
-      const isValid = await argon2.verify(user.passwordHash, password);
+      const isValid = await bcrypt.compare(password, user.passwordHash);
       if (!isValid) {
         console.log('Invalid password for:', identifier);
         return {

@@ -8,7 +8,7 @@ import { db, pool } from './db';
 import { users, inviteCodes, userStatusAudit, verificationTokens } from '@shared/schema';
 import { eq, like, desc, asc, and, or, sql } from 'drizzle-orm';
 import type { User, InsertUser, InviteCode as InviteCodeType, InsertInviteCode, VerificationToken, InsertVerificationToken, UserStatusAudit as UserStatusAuditType } from '@shared/schema';
-import * as argon2 from 'argon2';
+import bcrypt from 'bcryptjs';
 
 export class DatabaseStorage {
   // User methods
@@ -241,12 +241,7 @@ export class DatabaseStorage {
     if (userCount === 0) {
       console.log('🌱 Initializing default admin user and invite code...');
       
-      const passwordHash = await argon2.hash('asmat334499', {
-        type: argon2.argon2id,
-        memoryCost: 2 ** 16,
-        timeCost: 3,
-        parallelism: 1,
-      });
+      const passwordHash = await bcrypt.hash('asmat334499', 10);
 
       // Create admin user
       const adminUser = await this.createUser({
