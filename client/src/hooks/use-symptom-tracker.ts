@@ -84,7 +84,10 @@ export function useSymptomTracker() {
     const fetchFromDatabase = async () => {
       console.log('🌐 Fetching conditions from database...');
       try {
-        const response = await fetch('/api/causes');
+        const token = localStorage.getItem('auth_token');
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        
+        const response = await fetch('/api/causes', { headers });
         if (response.ok) {
           const data = await response.json();
           if (data.causes && data.causes.length > 0) {
@@ -92,7 +95,7 @@ export function useSymptomTracker() {
             setCauses(data.causes);
             
             // Also fetch pharmacology
-            const pharmaResponse = await fetch('/api/pharmacology');
+            const pharmaResponse = await fetch('/api/pharmacology', { headers });
             if (pharmaResponse.ok) {
               const pharmaData = await pharmaResponse.json();
               if (pharmaData.pharmacology && pharmaData.pharmacology.length > 0) {
@@ -101,6 +104,8 @@ export function useSymptomTracker() {
               }
             }
           }
+        } else {
+          console.log('⚠️  Not authenticated, will fetch after login');
         }
       } catch (error) {
         console.error('❌ Failed to fetch from database:', error);
