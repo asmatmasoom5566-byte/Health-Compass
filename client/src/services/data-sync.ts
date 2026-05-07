@@ -143,6 +143,15 @@ export async function savePatientRecordsToServer(records: any[]): Promise<boolea
 export async function syncDataFromServer(): Promise<void> {
   console.log('🔄 Syncing data from server...');
   
+  // CRITICAL: Clear old cached data first to prevent showing stale data
+  console.log('🗑️  Clearing old cached localStorage data...');
+  localStorage.removeItem('symptom_tracker_v1');
+  localStorage.removeItem('pharmacology_v1');
+  localStorage.removeItem('regester_data');
+  localStorage.removeItem('symptom-tracker-data');
+  localStorage.removeItem('conditions');
+  localStorage.removeItem('causes');
+  
   const [causes, pharmacology, patientRecords] = await Promise.all([
     fetchCausesFromServer(),
     fetchPharmacologyFromServer(),
@@ -163,6 +172,8 @@ export async function syncDataFromServer(): Promise<void> {
     localStorage.setItem('regester_data', JSON.stringify(patientRecords));
     console.log(`✅ Loaded ${patientRecords.length} patient records from server`);
   }
+  
+  console.log('✅ Data sync complete - all members now see the same database!');
 }
 
 /**
