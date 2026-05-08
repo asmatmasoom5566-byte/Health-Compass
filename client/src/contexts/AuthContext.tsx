@@ -26,7 +26,8 @@ interface AuthContextType {
   updateProfile: (data: Partial<User>) => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   hasPermission: (permission: string) => boolean;
-  hasRole: (roles: string[]) => boolean;
+  hasRole: (role: string) => boolean;
+  canEdit: () => boolean;
   isAuthenticated: boolean;
   isApproved: boolean;
   isVerified: boolean;
@@ -231,9 +232,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return userPermissions.includes('*') || userPermissions.includes(permission);
   };
 
-  const hasRole = (roles: string[]): boolean => {
+  const hasRole = (role: string): boolean => {
     if (!user) return false;
-    return roles.includes(user.role);
+    return user.role === role;
+  };
+
+  const canEdit = (): boolean => {
+    if (!user) return false;
+    return user.role === 'admin';
   };
 
   const isAuthenticated = !!user;
@@ -255,6 +261,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         changePassword,
         hasPermission,
         hasRole,
+        canEdit,
         isAuthenticated,
         isApproved,
         isVerified,

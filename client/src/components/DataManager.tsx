@@ -38,6 +38,7 @@ import { CauseEditModal } from '@/components/CauseEditModal';
 import DefiningSymptomsEditor from '@/components/DefiningSymptomsEditor';
 import { DefiningSymptomsManager } from '@/utils/defining-symptoms-manager';
 import { useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface DataManagerProps {
   causes: Cause[];
@@ -54,6 +55,7 @@ interface DataManagerProps {
 
 export function DataManager({ causes, onImport, onReset, onLoadYourConditions, onAddCause, onDeleteCause, onEditCause, onUpdateCauses, canUndo, onUndo }: DataManagerProps) {
   const { toast } = useToast();
+  const { canEdit } = useAuth();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [importStrategy, setImportStrategy] = useState<'merge' | 'replace'>('merge');
@@ -275,12 +277,14 @@ Total Conditions: ${causes.length}
                   <span className="mr-1">✓</span> All Edits Permanent
                 </span>
               </div>
-              <Button size="sm" onClick={() => {
-                setIsDatabaseOpen(false);
-                setIsAddOpen(true);
-              }} className="gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
-                <Plus className="w-4 h-4" /> Add New
-              </Button>
+              {canEdit() && (
+                <Button size="sm" onClick={() => {
+                  setIsDatabaseOpen(false);
+                  setIsAddOpen(true);
+                }} className="gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
+                  <Plus className="w-4 h-4" /> Add New
+                </Button>
+              )}
             </DialogTitle>
           </DialogHeader>
           
@@ -347,17 +351,21 @@ Total Conditions: ${causes.length}
                             <h4 className="font-bold text-lg truncate bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{cause.name}</h4>
                           </div>
                           <div className="col-span-3 flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary bg-white/50 hover:bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 transform hover:scale-105" onClick={() => {
-                              setEditingCause(cause);
-                              setIsEditModalOpen(true);
-                            }}>
-                              <Edit2 className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive bg-white/50 hover:bg-red-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 transform hover:scale-105" onClick={() => {
-                              if(confirm(`Delete ${cause.name}?`)) onDeleteCause(cause.id);
-                            }}>
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            {canEdit() && (
+                              <>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary bg-white/50 hover:bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 transform hover:scale-105" onClick={() => {
+                                  setEditingCause(cause);
+                                  setIsEditModalOpen(true);
+                                }}>
+                                  <Edit2 className="w-4 h-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive bg-white/50 hover:bg-red-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 transform hover:scale-105" onClick={() => {
+                                  if(confirm(`Delete ${cause.name}?`)) onDeleteCause(cause.id);
+                                }}>
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>

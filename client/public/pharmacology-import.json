@@ -1,0 +1,2517 @@
+{
+  "medicines": [
+    {
+      "name": "AZITHROMYCIN++",
+      "drugClass": "Macrolide",
+      "mechanismOfAction": "Inhibits bacterial protein synthesis, leading to bacteriostatic (and sometimes bactericidal) effect.",
+      "clinicalUses": [
+        "Community-Acquired Pneumonia (Fever, cough, sputum production, chest pain, dyspnea)",
+        "Acute Bronchitis (Cough, fever, wheezing, chest tightness)",
+        "Pharyngitis, Sinusitis, Otitis Media (Sore throat, runny nose, facial pain, ear pain, fever)",
+        "Chlamydia trachomatis (discharge, dysuria, lower abdominal pain/pelvic pain)",
+        "Gonococcal infection (Purulent discharge, Dysuria)",
+        "Chancroid (Painful genital ulcer, inguinal lymphadenopathy)",
+        "Skin and Soft Tissue Infections (erythema, edema, warmth, pain)",
+        "Typhoid fever (Fever, abdominal pain/epigastric pain, diarrhea, constipation)",
+        "Traveler’s Diarrhea (Dysentry, Watery diarrhea, abdominal pain/epigastric pain, fever)",
+        "COPD Exacerbation (Pputum production, dyspnea)"
+      ],
+      "adverseEffects": [
+        "nausea, vomiting, diarrhea, abdominal pain",
+        "QT prolongation, arrhythmia (rare but important)",
+        "headache, dizziness"
+      ],
+      "contraindications": [
+        "Hypersensitivity",
+        "History of azithromycin-induced cholestatic jaundice or severe liver injury",
+        "Known QT prolongation or history of serious arrhythmia (relative)"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": false,
+        "cautionInBreastfeeding": false,
+        "sexSpecificRisks": []
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "fever",
+          "productive cough with fever",
+          "sore throat with fever",
+          "ear pain",
+          "Nasal discharge (purulent)",
+          "Dysuria with discharge",
+          "Lower abdominal pain/pelvic pain with genital discharge",
+          "Watery diarrhea with fever",
+          "Localized skin redness and edema"
+        ],
+        "secondarySymptoms": [
+          "fatigue/weakness",
+          "Mild diarrhea",
+          "Mild chest discomfort",
+          "Headache",
+          "abdominal pain/gastric pain",
+          "Low-fever"
+        ],
+        "inappropriateSymptoms": [
+          "Runny nose alone",
+          "Isolated sneezing",
+          "Itching without redness",
+          "Non-infective chronic dry cough",
+          "Afebrile body pain alone"
+        ]
+      },
+      "teachingNotes": "Dose: 500mg on Day 1, then 250mg OD on Days 2–5\nAdministration: Take 1 hour before or 2 hours after food\nAvoid antacids (Al/Mg) within 2 hours\nCompliance: Complete full course even if symptoms improve early\nDrug interactions: Avoid unnecessary combination with other QT-prolonging agents",
+      "id": "med_1771675096174_7y05pygi7",
+      "createdAt": "2026-02-21T11:58:16.174Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "clinicalUseDetails": [
+        {
+          "useName": "Pharyngitis, Sinusitis, Otitis Media (Sore throat, nasal discharge, facial pain, ear pain, fever)",
+          "details": ""
+        },
+        {
+          "useName": "Community-Acquired Pneumonia (Fever, cough, purulent sputum, chest pain, dyspnea)",
+          "details": "Specific for atypical pneumonia\nMonotherapy (mild) or combined with β-lactam (full treatment)"
+        },
+        {
+          "useName": "Acute Bronchitis (Persistent cough, fever, wheeze, chest tightness)",
+          "details": "Adjunctive, only if bacterial suspected"
+        },
+        {
+          "useName": "Chlamydia trachomatis (discharge, dysuria, pelvic pain)",
+          "details": "First-line, single-dose full treatment"
+        },
+        {
+          "useName": "Gonococcal infection (Purulent discharge, Dysuria)",
+          "details": "Adjunctive only with ceftriaxone (not sufficient alone)"
+        },
+        {
+          "useName": "Skin and Soft Tissue Infections (erythema, swelling, warmth, pain)",
+          "details": "Alternative therapy for mild infections"
+        },
+        {
+          "useName": "Typhoid fever (Prolonged fever, abdominal pain, diarrhea, constipation)",
+          "details": "Alternative full treatment in fluoroquinolone resistance"
+        },
+        {
+          "useName": "Traveler’s Diarrhea (Dysentry, Watery diarrhea, abdominal pain, fever)",
+          "details": "Full treatment for bacterial causes"
+        },
+        {
+          "useName": "Community-Acquired Pneumonia (Fever, cough, sputum production, chest pain, dyspnea)",
+          "details": "Often first-line or alternative therapy, especially when atypical pathogens are suspected."
+        },
+        {
+          "useName": "Acute Bronchitis (Cough, fever, wheezing, chest tightness)",
+          "details": "Often first-line or alternative therapy, especially when atypical pathogens are suspected."
+        },
+        {
+          "useName": "Chlamydia trachomatis (discharge, dysuria, lower abdominal pain/pelvic pain)",
+          "details": "Single-dose therapy often used for uncomplicated infection."
+        },
+        {
+          "useName": "Typhoid fever (Fever, abdominal pain/epigastric pain, diarrhea, constipation)",
+          "details": "Used when fluoroquinolone resistance is present."
+        }
+      ],
+      "medicineAdvantage": "🔹Very long tissue half-life (major advantage)\n➥ High intracellular & tissue concentration (lungs, tonsils, skin, genital tract).\n🔹Broad respiratory coverage\n➥ Covers typical and atypical respiratory pathogens, making it a common choice for community respiratory infections.\n🔹Fewer drug interactions.",
+      "medicineDisadvantage": "🔸QT interval prolongation risk\n➥ Can cause cardiac arrhythmias in susceptible patients.\n🔸Limited activity against some bacteria\n➥ Not effective against many Gram-negative enteric bacteria and Pseudomonas.",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For severe community pneumonia\n★ Azithromycin + Ceftriaxone\n➥ Ceftriaxone covers typical bacteria while azithromycin covers atypical pathogens.\n🔹For resistant respiratory infections\n★ Azithromycin + Amoxicillin-Clavulanate\n➥ Provides broader Gram-positive and Gram-negative coverage.\n🔹For PID\n★ Azithromycin + Ceftriaxone + Metronidazole\n➥ Targets Chlamydia, Gonorrhea, and anaerobic bacteria.\n🔹For severe typhoid or enteric infections\n★ Azithromycin + Cefixime\n➥ Improves coverage for resistant Salmonella strains.\n🔹For acne or inflammatory skin infection\n★ Azithromycin + Topical Benzoyl Peroxide\n➥ Oral antibiotic reduces bacteria while topical agent prevents resistance."
+      ],
+      "comparison": "★ Azithromycin\n🔹Strength\n➥Best for atypical infections\n➥Better GI tolerance\n🔹Best Use\n➥Respiratory infections\n➥Chlamydia infection\n➥Atypical pneumonia\n🔹When Doctor Choose\n➥Need short course treatment\n➥Patient compliance concern\n🔸Weakness\n➥QT prolongation risk\n\n★ Clarithromycin\n🔹Best Use\n➥H. pylori triple therapy\n➥Respiratory infections\n🔹When Doctor Choose\n➥Peptic ulcer infection\n🔸Weakness\n➥Many drug interactions"
+    },
+    {
+      "name": "CIPROFLOXACIN++",
+      "drugClass": "Fluoroquinolone",
+      "mechanismOfAction": "Inhibits bacterial DNA gyrase, blocking DNA replication and causing bacterial cell death (bactericidal).",
+      "clinicalUses": [
+        "UTI (Dysuria, urgency, frequency, suprapubic discomfort, lower abdominal pain/pelvic pain)",
+        "Pyelonephritis (Fever, flank pain, dysuria, nausea)",
+        "Prostatitis (Anal pain, dysuria, urinary hesitancy, suprapubic discomfort)",
+        "Gastrointestinal infections (diarrhea, dysentery, fever, abdominal pain/epigastric pain)",
+        "Typhoid (fever, headache, diarrhea, constipation, abdominal pain/epigastric pain)",
+        "Respiratory tract infections (sputum production, fever, chest pain)",
+        "Skin and soft tissue infections (pain, edema, discharge)",
+        "Bone and joint infections (arthritis/joint pain, edema, fever)"
+      ],
+      "adverseEffects": [
+        "nausea, vomiting, diarrhea, abdominal pain",
+        "dizziness, headache, insomnia, confusion (more in elderly)",
+        "Tendinitis and tendon rupture (Achilles risk ↑)",
+        "QT interval prolongation",
+        "Photosensitivity"
+      ],
+      "contraindications": [
+        "Concomitant use with tizanidine",
+        "Children and adolescents (unless benefit outweighs risk)",
+        "Myasthenia gravis (may worsen muscle weakness)"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": []
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "dysuria",
+          "frequency",
+          "urgency",
+          "Flank pain",
+          "Fever",
+          "Dysentry",
+          "Skin redness/edema/pus",
+          "lower abdominal pain/pelvic pain",
+          "diarrhea",
+          "abdominal pain/gastric pain",
+          "productive cough",
+          "arthritis/joint pain"
+        ],
+        "secondarySymptoms": [
+          "Nausea",
+          "Vomiting",
+          "Headache",
+          "Fatigue/weakness",
+          "Sore throat (if bacterial)",
+          "myalgia"
+        ],
+        "inappropriateSymptoms": [
+          "Isolated sore throat",
+          "Runny nose, watery eyes, mild cough (without bacterial suspicion)",
+          "Sneezing",
+          "Dry cough without fever",
+          "Headache alone (without infection)",
+          "Generalized body pain without infection signs",
+          "Non-infectious abdominal pain (e.g., irritable bowel)"
+        ]
+      },
+      "teachingNotes": "Take 1 hour before or 2 hours after food\nSwallow with plenty of water\nDo not take with milk, yogurt, antacids, iron, or zinc within 2 hours before or 6 hours after\nStop and seek care if tendon pain, swelling, numbness, or severe diarrhea occurs",
+      "id": "med_1771675096174_ci30kgvfn",
+      "createdAt": "2026-02-21T11:58:16.174Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "clinicalUseDetails": [
+        {
+          "useName": "UTI: Dysuria, urinary urgency, increased frequency, suprapubic discomfort, lower abdominal pain",
+          "details": "First-line for complicated cases."
+        },
+        {
+          "useName": "Pyelonephritis: Fever, flank pain, dysuria, nausea",
+          "details": "First-line for complicated cases."
+        },
+        {
+          "useName": "Prostatitis: Perineal pain, dysuria, urinary hesitancy, pelvic discomfort",
+          "details": "Penetrates prostate tissue; used for full course therapy, often 4–6 weeks."
+        },
+        {
+          "useName": "Gastrointestinal infections: Watery or bloody diarrhea, abdominal pain, fever",
+          "details": "Used if bacterial cause is suspected (e.g., Shigella, Salmonella). Symptomatic relief may also require fluids."
+        },
+        {
+          "useName": "Respiratory tract infections: Productive cough, fever, pleuritic chest pain",
+          "details": "Often second-line, reserved for resistant pathogens or intolerance to first-line antibiotics."
+        },
+        {
+          "useName": "Skin and soft tissue infections: Local pain, redness, swelling, purulent discharge",
+          "details": "Usually adjunct therapy with other antibiotics for Gram-positive coverage."
+        },
+        {
+          "useName": "Bone and joint infections (osteomyelitis): Localized bone pain, swelling, fever",
+          "details": "Usually adjunct therapy with other antibiotics for Gram-positive coverage."
+        },
+        {
+          "useName": "Typhoid fever: Prolonged fever, abdominal pain, headache, diarrhea or constipation",
+          "details": "Primary treatment; effective alone in adults."
+        },
+        {
+          "useName": "UTI (Dysuria, urgency, frequency, suprapubic discomfort, lower abdominal pain/pelvic pain)",
+          "details": "First-line for complicated or resistant cases; full treatment, not symptomatic."
+        },
+        {
+          "useName": "Prostatitis (Anal pain, dysuria, urinary hesitancy, suprapubic discomfort)",
+          "details": "Drug of choice for chronic bacterial prostatitis; full treatment."
+        },
+        {
+          "useName": "Gastrointestinal infections (diarrhea, dysentery, fever, abdominal pain/epigastric pain)",
+          "details": "Often adjunct for moderate to severe bacterial gastroenteritis; full treatment."
+        },
+        {
+          "useName": "Respiratory tract infections (sputum production, fever, chest pain)",
+          "details": "Reserved for Gram-negative pneumonia or resistant pathogens; may be adjunct to beta-lactams."
+        },
+        {
+          "useName": "Bone and joint infections (arthritis/joint pain, edema, fever)",
+          "details": "Often combined with other antibiotics (e.g., rifampicin) for synergistic effect."
+        },
+        {
+          "useName": "Skin and soft tissue infections (pain, edema, discharge)",
+          "details": "Used when MRSA coverage not primary concern; usually adjunct therapy."
+        }
+      ],
+      "medicineAdvantage": "🔹Broad-spectrum coverage\n➥ Effective against multiple Gram-negative, including E. coli, Pseudomonas, Salmonella, and some Gram-positive bacteria.\n➥Some doctors prefer it over other antibiotics like beta-lactams for resistant Gram-negative infections, complicated UTIs.\n➥Effective against Pseudomonas aeruginosa, which many antibiotics cannot cover.\n🔹Excellent oral bioavailability\n➥ Can be used orally or intravenously with nearly equal absorption.\n🔹High tissue penetration\n➥ Concentrates well in urinary tract, prostate, lungs, bones, and intracellularly in phagocytes.\n🔹Renal excretion allows UTI effectiveness\n➥ High urinary concentrations make it very effective for urinary tract infections.\n🔹Rapid bactericidal action\n➥ Works faster than some other antibiotics like penicillins for susceptible bacteria.",
+      "medicineDisadvantage": "🔸Tendon toxicity risk\n➥ May cause tendinitis or tendon rupture (especially age >60, corticosteroid use).\n🔸QT interval prolongation\n➥ Can trigger arrhythmias in susceptible patients.\n🔸CNS effects\n➥ Can cause dizziness, confusion, or seizures in vulnerable populations.\n🔸Drug interactions\n➥ Avoid concurrent use with antacids, iron, or calcium supplements; reduces absorption.",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For resistant UTI\n★ Ciprofloxacin + Amoxicillin/Clavulanate\n➥ Combination improves coverage for mixed Gram-negative and Gram-positive infections.\n🔹For Pseudomonas pneumonia\n★ Ciprofloxacin + Piperacillin/Tazobactam\n➥ Enhances activity against Pseudomonas while reducing resistance risk.\n🔹For complicated intra-abdominal infections\n★ Ciprofloxacin + Metronidazole\n➥ Metronidazole covers anaerobes while ciprofloxacin targets Gram-negatives."
+      ],
+      "comparison": "★ Ciprofloxacin\n🔹Strength\n➥Best Gram-negative coverage in this class\n➥Strong activity against Pseudomonas\n➥Very effective in UTI and GI infections\n🔹Best Use\n➥Urinary tract infections\n➥Prostatitis\n➥Pseudomonas infections\n🔹When Doctor Choose\n➥Suspected Gram-negative infection\n➥UTI with resistant bacteria\n➥Pseudomonas risk\n🔸Weakness\n➥Weak against Streptococcus pneumoniae\n\n★ Levofloxacin\n🔹Strength\n➥Better respiratory coverage\n🔹Best Use\n➥Pneumonia\n➥Sinusitis\n➥Bronchitis\n🔸Weakness\n➥Less Pseudomonas activity than ciprofloxacin.\n\n★ Moxifloxacin\n🔹Strength\n➥Excellent anaerobic and respiratory coverage\n🔹Best Use\n➥Respiratory infections\n➥Intra-abdominal infections\n🔸Weakness\n➥Not useful for UTI (poor urinary concentration)."
+    },
+    {
+      "name": "DOXYCYCLINE++",
+      "drugClass": "Tetracycline",
+      "mechanismOfAction": "Inhibiting bacterial protein synthesis (bacteriostatic).",
+      "clinicalUses": [
+        "Acne (acne, inflammatory papules, pustules, nodules)",
+        "Chlamydial (discharge, dysuria, lower abdominal pain/pelvic pain)",
+        "PID (lower abdominal pain/pelvic pain, fever, discharge)",
+        "Community-atypical pneumonia (dry cough, fever, headache, myalgia/muscle pain, dyspnea)",
+        "Brucellosis (fever, sweating, arthritis/joint pain)",
+        "Rickettsial infections (fever, rash, headache)",
+        "Lyme disease (erythema, rash, fever, fatigue/weakness, arthritis/joint pain)",
+        "Cholera (diarrhea, dehydration)",
+        "Malaria (fever, chills, headache)"
+      ],
+      "adverseEffects": [
+        "Photosensitivity",
+        "Nausea, vomiting, epigastric pain",
+        "Esophagitis, esophageal ulceration (especially if taken without water)",
+        "Diarrhea, candidiasis",
+        "Tooth discoloration (children)"
+      ],
+      "contraindications": [
+        "Pregnancy",
+        "Children under 8",
+        "Severe hepatic impairment"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Tooth discoloration",
+          "Avoid in Pregnancy (Risk of fetal bone and teeth abnormalities)",
+          "Caution in Breastfeeding (Short courses generally acceptable; prolonged use discouraged)",
+          "Use sun protection",
+          "Reduced effectiveness of oral contraceptives (advise backup contraception)"
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "discharge",
+          "dysuria",
+          "lower abdominal pain/pelvic pain",
+          "acne",
+          "fever",
+          "inflammatory skin lesions",
+          "rash",
+          "headache",
+          "arthritis/joint pain",
+          "tick bite"
+        ],
+        "secondarySymptoms": [
+          "dry cough",
+          "diarrhea",
+          "fatigue/weakness",
+          "myalgia",
+          "sweating"
+        ],
+        "inappropriateSymptoms": [
+          "Severe vomiting",
+          "Severe abdominal pain with jaundice",
+          "Photosensitive skin reactions",
+          "Bone pain in children",
+          "Tooth discoloration"
+        ]
+      },
+      "teachingNotes": "Typical dosing (adult):\n100mg twice daily or 200mg on day 1, then 100mg daily (depends on indication)\nTake with a full glass of water\nDo not lie down for 30 minutes after taking\nCan be taken with food if gastric irritation occurs (avoid dairy)\nAvoid milk, antacids, iron, calcium, magnesium within 2–3 hours.\nUse sun protection due to photosensitivity.",
+      "id": "med_1771675096174_3mzzowpn5",
+      "createdAt": "2026-02-21T11:58:16.174Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "clinicalUseDetails": [
+        {
+          "useName": "Acne (acne, inflammatory papules, pustules, nodules)",
+          "details": "Doxycycline acts as anti-inflammatory and antibacterial therapy, often combined with topical agents."
+        },
+        {
+          "useName": "Chlamydial (discharge, dysuria, lower abdominal pain/pelvic pain)",
+          "details": "Considered first-line treatment."
+        },
+        {
+          "useName": "PID (lower abdominal pain/pelvic pain, fever, discharge)",
+          "details": "Used with other antibiotics because PID involves mixed organisms."
+        },
+        {
+          "useName": "Community-atypical pneumonia (dry cough, fever, headache, myalgia/muscle pain, dyspnea)",
+          "details": "Used when atypical pathogens suspected."
+        },
+        {
+          "useName": "Rickettsial infections (fever, rash, headache)",
+          "details": "Drug of choice even in severe disease."
+        },
+        {
+          "useName": "Lyme disease (erythema, rash, fever, fatigue/weakness, arthritis/joint pain)",
+          "details": "First-line therapy in early infection."
+        },
+        {
+          "useName": "Brucellosis (fever, sweating, arthritis/joint pain)",
+          "details": "Used in combination with rifampin or streptomycin."
+        },
+        {
+          "useName": "Malaria (fever, chills, headache)",
+          "details": "Used as adjunctive therapy, not monotherapy."
+        },
+        {
+          "useName": "Cholera (diarrhea, dehydration)",
+          "details": "Alternative option to reduce bacterial load and duration."
+        }
+      ],
+      "medicineAdvantage": "🔹Excellent intracellular penetration\n➥ Highly effective against intracellular pathogens such as Chlamydia, Rickettsia, Mycoplasma.\n🔹Broad antimicrobial coverage\n➥ Covers Gram-positive, Gram-negative, atypical bacteria, and some parasites.\n🔹Good tissue penetration\n➥ High concentrations in skin, lungs, prostate, and intracellular spaces.\n🔹Anti-inflammatory properties\n➥ Reduces inflammatory mediators, which is why it is widely used for acne and rosacea.\n🔹Useful in resource-limited settings\n➥ Oral, inexpensive, and effective for multiple tropical infections (important in regions like Afghanistan).\n🔹Minimal renal elimination\n➥ Safer in mild renal impairment because most elimination is fecal.",
+      "medicineDisadvantage": "🔸Photosensitivity\n➥ Can cause severe sunburn-like reactions with sun exposure.\n🔸Teeth discoloration in children\n➥ Deposits in developing teeth and bones, causing yellow-brown staining.\n🔸Gastrointestinal irritation\n➥ May cause esophagitis or esophageal ulcer, especially if taken without water.\n🔸Not bactericidal\n➥ It may be less effective in severe infections compared with bactericidal antibiotics.\n🔸Resistance increasing\n➥ Resistance seen in Staphylococcus and Streptococcus species in some regions.\n🔸Drug-food interactions\n➥ Absorption reduced by calcium, iron, magnesium, antacids, and dairy products.",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For severe pelvic infections\n★ Doxycycline + Ceftriaxone\n➥ Ceftriaxone covers gonorrhea, doxycycline covers chlamydia and atypicals.\n🔹For severe acne or resistant acne\n★ Doxycycline + Topical benzoyl peroxide\n➥ Reduces bacterial resistance and improves acne control.\n🔹For PID\n★ Doxycycline + Metronidazole\n➥ Metronidazole covers anaerobes, doxycycline covers chlamydia and atypicals.\n🔹For community pneumonia with atypical pathogens\n★ Doxycycline + Beta-lactam (e.g., Amoxicillin)\n➥ Beta-lactam treats typical bacteria, doxycycline treats atypical organisms.\n🔹For malaria combination therapy\n★ Doxycycline + Artesunate / Quinine\n➥ Doxycycline acts as slow-acting antimalarial adjunct."
+      ],
+      "comparison": "★ Doxycycline\n🔹Strength\n➥Safe in renal impairment\n🔹Best Use\n➥Atypical pneumonia\n➥Acne\n➥STIs (chlamydia)\n➥Rickettsial infections\n➥Brucellosis\n🔹When Doctor Choose\n➥Need broad coverage including atypical pathogens\n➥Patient has renal impairment\n🔸Weakness\n➥Photosensitivity\n➥Contraindicated in pregnancy and children under 8"
+    },
+    {
+      "name": "METRONIDAZOLE++",
+      "drugClass": "Nitroimidazole",
+      "mechanismOfAction": "Disrupts DNA synthesis in anaerobic bacteria and protozoa.",
+      "clinicalUses": [
+        "Amoebiasis (dysentry, abdominal pain/epigastric pain)",
+        "Giardiasis (diarrhea, bloating/flatulence)",
+        "Trichomoniasis (discharge, itching, dysuria)",
+        "Bacterial Vaginosis (discharge)",
+        "Anaerobic Infections (discharge)",
+        "C. diff (diarrhea, abdominal pain/epigastric pain)",
+        "Dental anaerobic infections (gum pain, edema)",
+        "Intra-abdominal infections (abdominal pain/epigastric pain, fever, tenderness)",
+        "PID (lower abdominal pain/pelvic pain, discharge)"
+      ],
+      "adverseEffects": [
+        "Metallic taste",
+        "Nausea, vomiting",
+        "Abdominal discomfort, diarrhea",
+        "Headache",
+        "Dark-colored urine (harmless)",
+        "Peripheral neuropathy (long-term/high dose)"
+      ],
+      "contraindications": [
+        "First trimester pregnancy",
+        "Hypersensitivity",
+        "Active severe neurological disorders"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": []
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "discharge",
+          "dysentry",
+          "diarrhea",
+          "abdominal pain/gastric pain",
+          "lower abdominal pain/pelvic pain",
+          "itching"
+        ],
+        "secondarySymptoms": [
+          "nausea",
+          "gum edema",
+          "fever",
+          "bloating/flatulence"
+        ],
+        "inappropriateSymptoms": [
+          "Cough",
+          "Runny nose",
+          "Sneezing",
+          "Viral sore throat",
+          "Dysuria without discharge"
+        ]
+      },
+      "teachingNotes": "Example regimen: 500mg on Day 1, then 250mg Days 2–5 (regimen depends on indication).\nTake 1 hour before or 2 hours after food if gastric tolerance allows.\nComplete full course even if symptoms improve.",
+      "id": "med_1771675096174_774fvr5x7",
+      "createdAt": "2026-02-21T11:58:16.174Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "clinicalUseDetails": [
+        {
+          "useName": "Bacterial Vaginosis (discharge)",
+          "details": "Full treatment; can be oral or topical; treats the cause, not just symptoms."
+        },
+        {
+          "useName": "Trichomoniasis (discharge, itching, dysuria)",
+          "details": "Single-dose therapy is often curative; partner treatment recommended."
+        },
+        {
+          "useName": "Amoebiasis (dysentry, abdominal pain/epigastric pain)",
+          "details": "Full treatment; sometimes requires adjunct luminal agents for eradication."
+        },
+        {
+          "useName": "Giardiasis (diarrhea, bloating/flatulence)",
+          "details": "Full treatment; sometimes requires adjunct luminal agents for eradication."
+        },
+        {
+          "useName": "Anaerobic Infections (discharge)",
+          "details": "Often used with beta-lactams for broad coverage."
+        },
+        {
+          "useName": "C. diff (diarrhea, abdominal pain/epigastric pain)",
+          "details": "Second-line; mostly in patients intolerant to vancomycin; may be adjunct in mild cases."
+        }
+      ],
+      "medicineAdvantage": "🔹 Broad anaerobic coverage\n➥ Effective against most anaerobic bacteria and protozoa, including Giardia, Trichomonas, and Bacteroides.\n🔹 High tissue penetration\n➥ Concentrates in abscesses, CNS, bone, and vaginal tissues, making it suitable for deep-seated infections.\n🔹 Rapid onset of action\n➥ Symptom relief often seen within 24–48 hours.",
+      "medicineDisadvantage": "🔸 Metallic taste and GI upset\n➥ Common adverse effects may reduce patient compliance.\n🔸 Drug interactions\n➥ Can potentiate warfarin effect, increasing bleeding risk.",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹 For partial response in anaerobic infections\n★ Metronidazole + Beta-lactam (e.g., Amoxicillin)\n➥ Covers mixed aerobic and anaerobic infections, e.g., intra-abdominal abscesses.\n🔹 For resistant protozoal infections\n★ Metronidazole + Tinidazole\n➥ Sequential therapy may improve eradication rates in resistant Giardia or Trichomonas.\n🔹 Adjunct in bacterial vaginosis\n★ Metronidazole + Clindamycin (topical)\n➥ Ensures higher cure rates in refractory cases."
+      ],
+      "comparison": "★ Metronidazole\n🔹Best Use\n➥Anaerobic infections\n➥Protozoal infections\n➥Dental infections\n➥Intra-abdominal infections\n\n★ Tinidazole\n🔹Strength\n➥Better tolerated (less nausea)\n🔹Best Use\n➥Protozoal infections\n➥Trichomoniasis\n\n★ Secnidazole\n🔹Strength\n➥Very long half-life\n🔹Best Use\n➥Bacterial vaginosis\n➥Protozoal infections"
+    },
+    {
+      "name": "Cefixime=",
+      "drugClass": "Third-generation Cephalosporin",
+      "mechanismOfAction": "Inhibits bacterial cell-wall synthesis by binding to penicillin-binding proteins → bactericidal.",
+      "clinicalUses": [
+        "UTI – Dysuria, urinary frequency, urgency, suprapubic pain",
+        "Acute Pharyngitis/Tonsillitis – Sore throat, painful swallowing, fever, tonsillar exudate",
+        "Acute Otitis Media – Ear pain, fever, irritability, reduced hearing",
+        "Acute Bacterial Sinusitis – Facial pain/pressure, purulent nasal discharge, fever",
+        "Acute Bronchitis (bacterial suspected) – Productive cough, fever, chest discomfort",
+        "Typhoid fever (alternative in sensitive strains) – Prolonged fever, headache, abdominal pain",
+        "Uncomplicated Gonorrhea (alternative regimen) – Urethral/vaginal discharge, dysuria"
+      ],
+      "adverseEffects": [
+        "Diarrhea, nausea, vomiting, abdominal pain",
+        "Rash, pruritus, urticaria (rare anaphylaxis)"
+      ],
+      "contraindications": [
+        "Known hypersensitivity to cephalosporins",
+        "Severe renal impairment"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": false,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": []
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "Painful urination (dysuria)",
+          "Increased urinary frequency",
+          "Urinary urgency",
+          "Sore throat",
+          "Fever",
+          "Ear pain",
+          "Facial pressure or pain",
+          "Purulent nasal discharge"
+        ],
+        "secondarySymptoms": [
+          "diarrhea",
+          "Productive cough",
+          "Chest discomfort",
+          "Abdominal discomfort",
+          "Headache"
+        ],
+        "inappropriateSymptoms": [
+          "Viral flu-like symptoms without focal bacterial signs",
+          "Runny nose with clear discharge only",
+          "Dry cough without fever",
+          "Wheezing due to asthma",
+          "Non-infectious dysuria"
+        ]
+      },
+      "teachingNotes": "Standard adult dosing: 400mg once daily or 200mg twice daily for 5–10 days (depends on infection).\nFood: Can be taken with or without food (food may reduce GI upset).\nAdherence: Complete the full course even if symptoms improve early.",
+      "id": "med_1771675096174_vii8ow27a",
+      "createdAt": "2026-02-21T11:58:16.174Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z"
+    },
+    {
+      "name": "CEFTRIAXONE++",
+      "drugClass": "Cephalosporin",
+      "mechanismOfAction": "Inhibits bacterial cell-wall synthesis by binding to penicillin-binding proteins → leading to cell lysis and death (bactericidal).",
+      "clinicalUses": [
+        "Pneumonia (Fever, productive cough, dyspnea, chest pain)",
+        "Severe UTI/pyelonephritis (Fever, flank pain, dysuria, urgency, frequency)",
+        "Sepsis/bacteremia (Fever or hypothermia, chills, tachycardia, hypotension, altered sensorium)",
+        "Meningitis (Fever, severe headache, neck stiffness/stiff neck, photophobia, altered consciousness)",
+        "Typhoid fever (Sustained high fever, abdominal pain, diarrhea or constipation)",
+        "Severe skin & soft-tissue infection (Fever, erythema, edema, pain)",
+        "Gonorrhea (Purulent discharge, dysuria)",
+        "Intra-abdominal infections (Fever, abdominal pain, tenderness, vomiting)",
+        "Severe ENT Infections (Ear pain, fever, purulent discharge)"
+      ],
+      "adverseEffects": [
+        "Diarrhea, nausea, vomiting",
+        "Rash, pruritus",
+        "Biliary sludging/pseudolithiasis (especially high doses or prolonged use)",
+        "Transient ↑ liver enzymes"
+      ],
+      "contraindications": [
+        "Penicillin allergy",
+        "Neonatal jaundice",
+        "Neonates receiving calcium-containing IV solutions (risk of precipitation)",
+        "Biliary obstruction"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": false,
+        "cautionInBreastfeeding": false,
+        "sexSpecificRisks": []
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "High fever",
+          "Chills",
+          "Severe localized pain with systemic illness",
+          "neck stiffness",
+          "Altered consciousness",
+          "Purulent discharge",
+          "Productive cough",
+          "Hypotension with infection signs"
+        ],
+        "secondarySymptoms": [
+          "Fatigue/weakness",
+          "Anorexia",
+          "Mild abdominal pain",
+          "Mild diarrhea",
+          "Headache related to infection"
+        ],
+        "inappropriateSymptoms": [
+          "Runny nose without fever",
+          "Mild sore throat without systemic signs",
+          "Simple cough with clear sputum",
+          "Viral-type body aches without focal infection"
+        ]
+      },
+      "teachingNotes": "Do not mix or co-administer with calcium-containing IV solutions, especially in neonates.\nAdjust duration based on clinical response and infection type.\nDo not use in neonates <28 days.",
+      "id": "med_1771675096174_rewr1u235",
+      "createdAt": "2026-02-21T11:58:16.174Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "clinicalUseDetails": [
+        {
+          "useName": "Pneumonia (Fever, productive cough, dyspnea, chest pain)",
+          "details": "Often empirical first-line.\nMay be combined with azithromycin (for atypical coverage)."
+        },
+        {
+          "useName": "Meningitis (Fever, severe headache, neck stiffness, photophobia, altered consciousness)",
+          "details": "Definitive therapy.\nCombined with vancomycin initially."
+        },
+        {
+          "useName": "Sepsis/bacteremia (Fever or hypothermia, chills, tachycardia, hypotension, altered sensorium)",
+          "details": "Broad-spectrum empirical therapy until cultures return."
+        },
+        {
+          "useName": "Severe UTI/pyelonephritis (Fever, flank pain, dysuria, urgency, frequency)",
+          "details": "Used when oral therapy fails or severe infection."
+        },
+        {
+          "useName": "Typhoid fever (Sustained high fever, abdominal pain, diarrhea or constipation)",
+          "details": "Full curative treatment, especially in resistant strains."
+        },
+        {
+          "useName": "Gonorrhea (Purulent discharge, dysuria)",
+          "details": "Single-dose definitive treatment."
+        },
+        {
+          "useName": "Severe skin & soft-tissue infection (Fever, erythema, swelling, pain)",
+          "details": "Monotherapy or combined if polymicrobial."
+        },
+        {
+          "useName": "Intra-abdominal infections (Fever, abdominal pain, tenderness, vomiting)",
+          "details": "Used with metronidazole (anaerobic coverage)."
+        }
+      ],
+      "medicineAdvantage": "🔹Very long half-life\n➥Half-life about 6–9 hours, allowing once-daily dosing.\n➥Highly effective against Gram-negative bacteria and many Gram-positive organisms, including Neisseria, Streptococcus, and Enterobacteriaceae.\n🔹Excellent CNS penetration\n➥Crosses the BBB, making it one of the best antibiotics for bacterial meningitis.\n🔹High tissue penetration\n➥Achieves therapeutic levels in lungs, urine, bile, bone, CSF, and soft tissues.\n🔹Dual elimination (biliary + renal)\n➥Can be used without dose adjustment in mild renal impairment, unlike many antibiotics.\n🔹Effective for severe infections\n➥Common first-line drug in sepsis, severe pneumonia, and meningitis in hospitals.",
+      "medicineDisadvantage": "🔸Cannot treat MRSA or Enterococcus\n➥Ineffective against MRSA and Enterococcus species.\n🔸Risk of biliary sludge\n➥May cause ceftriaxone-induced pseudolithiasis (gallbladder sludge), especially in children.\n🔸Calcium precipitation risk in neonates\n➥Can form insoluble ceftriaxone-calcium complexes, potentially fatal in neonates.\n🔸Possible severe allergic reactions\n➥Patients allergic to penicillin or cephalosporins may develop hypersensitivity.",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For severe sepsis or hospital infection\n★ Ceftriaxone + Vancomycin\n➥Adds MRSA coverage, commonly used in severe infections or meningitis.\n🔹For suspected anaerobic infection\n★ Ceftriaxone + Metronidazole\n➥Covers anaerobic bacteria, useful for intra-abdominal infections and brain abscess.\n🔹For severe pneumonia\n★ Ceftriaxone + Azithromycin\n➥Azithromycin covers atypical organisms (Mycoplasma, Chlamydia).\n🔹For PID\n★ Ceftriaxone + Doxycycline ± Metronidazole\n➥Covers Neisseria, Chlamydia, and anaerobes.\n🔹For typhoid fever resistant cases\n★ Ceftriaxone + Azithromycin\n➥Improves success in drug-resistant Salmonella typhi."
+      ],
+      "comparison": "★ Ceftriaxone\n🔹Strength\n➥ Strong activity against many Gram-negative bacteria\n➥ Excellent CSF penetration\n➥ Widely used for severe infections\n🔹Best Use\n➥ Meningitis\n➥ Severe pneumonia\n➥ Sepsis\n➥ Typhoid fever\n➥ Gonorrhea\n🔹When Doctor Choose\n➥ Severe infection needing IV therapy\n➥ Once-daily dosing needed\n➥ Suspected Gram-negative infection\n\n★ Cefotaxime\n🔹Strength\n➥ Very safe in neonates\n➥ Strong meningitis treatment option\n🔹Best Use\n➥ Neonatal infections\n➥ Neonatal meningitis\n🔹When Doctor Choose\n➥ Newborn patients where ceftriaxone is unsafe\n🔸Weakness\n➥ Shorter half-life → multiple daily doses\n\n★ Ceftazidime\n🔹Strength\n➥ Excellent Pseudomonas aeruginosa coverage\n🔹Best Use\n➥ Hospital infections\n➥ Pseudomonas infections\n🔸Weakness\n➥ Weak Gram-positive coverage\n\n★ Cefixime\n🔹Best Use\n➥ Mild infections treated outpatient\n🔸Weakness\n➥ Weaker than IV cephalosporins\n➥ Limited use in severe infections"
+    },
+    {
+      "name": "LEVOFLOXACIN++",
+      "drugClass": "Fluoroquinolone",
+      "mechanismOfAction": "Inhibits bacterial DNA, and replication, which leads to rapid bacterial cell death (bactericidal action).",
+      "clinicalUses": [
+        "UTI: Dysuria, frequency, urgency, suprapubic discomfort.",
+        "Pyelonephritis: Fever, flank pain, nausea, vomiting, dysuria.",
+        "Community-Pneumonia: Fever, cough, sputum production, chest pain, dyspnea.",
+        "Acute Bacterial Sinusitis: Facial pain, nasal congestion, headache.",
+        "Exacerbation of Chronic Bronchitis: cough, sputum production, dyspnea.",
+        "Prostatitis: Dysuria, lower abdominal pain/pelvic pain, frequency.",
+        "Skin and Soft Tissue Infection: edema.",
+        "Traveler’s Diarrhea: Diarrhea, abdominal pain, fever.",
+        "Intra-abdominal infection (abdominal pain/epigastric pain, fever, nausea)"
+      ],
+      "adverseEffects": [
+        "Nausea",
+        "Diarrhea",
+        "Abdominal pain",
+        "Headache",
+        "Dizziness",
+        "Insomnia",
+        "Photosensitivity"
+      ],
+      "contraindications": [
+        "Children and adolescents (usually avoided unless necessary)",
+        "Myasthenia gravis (may worsen muscle weakness)"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Avoid in children <18 years unless necessary.",
+          "Use carefully in elderly patients (higher tendon rupture risk).",
+          "Dose adjustment required in renal impairment."
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "Dysuria",
+          "urgency",
+          "frequency",
+          "Flank pain",
+          "Facial pain",
+          "Painful ejaculation",
+          "Red edema skin",
+          "productive cough",
+          "fever",
+          "lower abdominal pain/pelvic pain"
+        ],
+        "secondarySymptoms": [
+          "fever",
+          "fatigue/weakness",
+          "Headache",
+          "myalgia",
+          "abdominal pain/gastric pain"
+        ],
+        "inappropriateSymptoms": [
+          "Sneezing",
+          "Clear watery nasal discharge",
+          "Itching without infection",
+          "Viral cough without fever",
+          "Allergic rash"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "UTI: Dysuria, urinary frequency, urgency, suprapubic pain.",
+          "details": "Often used when first-line drugs fail or resistance exists.\nUsually full treatment antibiotic, not only symptomatic."
+        },
+        {
+          "useName": "Pyelonephritis: Fever, flank pain, nausea, vomiting, dysuria.",
+          "details": "Frequently used as primary therapy due to strong urinary penetration.\nConsidered for moderate to severe infections.\nCan be monotherapy in many cases."
+        },
+        {
+          "useName": "Community-Acquired Pneumonia: Fever, cough, sputum production, chest pain, dyspnea.",
+          "details": "Used when atypical pathogens suspected.\nOften single-drug therapy in moderate cases."
+        },
+        {
+          "useName": "Acute Bacterial Sinusitis: Facial pain, nasal congestion, purulent nasal discharge, headache.",
+          "details": "Usually second-line when amoxicillin or other drugs fail."
+        },
+        {
+          "useName": "Acute Exacerbation of Chronic Bronchitis: Increased cough, increased sputum, dyspnea.",
+          "details": "Used when bacterial infection suspected."
+        },
+        {
+          "useName": "Prostatitis: Dysuria, pelvic pain, urinary frequency, painful ejaculation.",
+          "details": "Preferred because excellent prostate penetration."
+        },
+        {
+          "useName": "Skin and Soft Tissue Infection: Redness, swelling, warmth, pain.",
+          "details": "Often combined with other antibiotics if polymicrobial."
+        },
+        {
+          "useName": "Traveler’s Diarrhea: Diarrhea, abdominal cramps, fever.",
+          "details": "Used for bacterial causes, short treatment course."
+        },
+        {
+          "useName": "Community-Pneumonia: Fever, cough, sputum production, chest pain, dyspnea.",
+          "details": "Often used as first-line monotherapy because it covers typical and atypical organisms."
+        },
+        {
+          "useName": "Acute Bacterial Sinusitis: Facial pain, nasal congestion, headache.",
+          "details": "Usually second-line when first-line antibiotics fail or resistance is suspected."
+        },
+        {
+          "useName": "Exacerbation of Chronic Bronchitis: cough, sputum production, dyspnea.",
+          "details": "Used when bacterial infection suspected and patient has severe symptoms."
+        },
+        {
+          "useName": "UTI: Dysuria, frequency, urgency, suprapubic discomfort.",
+          "details": "Effective full treatment, especially for complicated infections."
+        },
+        {
+          "useName": "Prostatitis: Dysuria, lower abdominal pain/pelvic pain, frequency.",
+          "details": "One of the best antibiotics because it penetrates prostate tissue well."
+        },
+        {
+          "useName": "Skin and Soft Tissue Infection: edema.",
+          "details": "Used when Gram-negative organisms suspected."
+        },
+        {
+          "useName": "Intra-abdominal infection (abdominal pain/epigastric pain, fever, nausea)",
+          "details": "Usually combined with metronidazole for anaerobic coverage."
+        }
+      ],
+      "medicineAdvantage": "🔹Broad-spectrum activity\n➥Active against Gram-positive, Gram-negative, and atypical bacteria, so one drug can cover multiple pathogens.\n\n🔹Excellent lung penetration (very important advantage)\n➥High concentration in lung tissue and respiratory secretions, making it very effective for respiratory infections.\n\n🔹High oral bioavailability (99%)\n➥Oral dose provides nearly the same blood level as IV, allowing easy switch from IV to oral therapy.\n🔹Effective against atypical pathogens\n➥Covers Mycoplasma, Chlamydia, and Legionella, which many antibiotics cannot treat.\n🔹Good tissue penetration\n➥Reaches high concentrations in lungs, prostate, urinary tract, sinuses, skin and soft tissue.\n🔹Useful in resistant infections\n➥Often used when β-lactam or macrolide resistance is suspected.\n🔹Strong Respiratory Coverage\n➥Often called a Respiratory Fluoroquinolone.\n➥Very effective against Streptococcus pneumoniae.\n🔹Good for Mixed or Unknown Infections\n➥Because of wide spectrum coverage.",
+      "teachingNotes": "Take with plenty of water.\nCan be taken with or without food.\nAvoid antacids, iron, zinc, or calcium within 2 hours before or after taking the drug.\nAvoid excess sunlight (photosensitivity risk).\nComplete the full antibiotic course even if symptoms improve.\nStop the drug and seek medical help if tendon pain or swelling occurs.\nMaintain adequate hydration during treatment.",
+      "id": "med_1772831024091_0tgow7f6y",
+      "createdAt": "2026-03-06T21:03:44.091Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "medicineDisadvantage": "🔸Tendon rupture risk\n➥Associated with Achilles tendon rupture, especially in elderly and steroid users.\n🔸Cartilage toxicity\n➥May damage growing cartilage, so generally avoided in children and adolescents.\n🔸QT interval prolongation\n➥Can increase risk of cardiac arrhythmias, especially with other QT-prolonging drugs.\n🔸Risk of serious CNS effects\n➥May cause confusion, agitation, insomnia, seizures, particularly in elderly patients.",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For severe pneumonia\n★ Levofloxacin + Ceftriaxone\n➥Provides dual coverage for Gram-positive, Gram-negative, and atypical organisms.\n🔹For resistant UTI\n★ Levofloxacin + Amikacin\n➥Used in severe or hospital-acquired infections for strong Gram-negative coverage.\n🔹For complicated intra-abdominal infection\n★ Levofloxacin + Metronidazole\n➥Metronidazole adds anaerobic coverage.\n🔹For tuberculosis resistant regimens\n★ Levofloxacin + Rifampicin + Isoniazid + Pyrazinamide\n➥Levofloxacin is used as second-line TB drug.\n🔹For prostatitis\n★ Levofloxacin + Alpha-blocker (Tamsulosin)\n➥Antibiotic treats infection while alpha-blocker reduces urinary symptoms."
+      ],
+      "comparison": "★Levofloxacin\n🔹Strength\n➥Strong respiratory infection coverage\n➥Good activity against Streptococcus pneumoniae\n➥Excellent tissue penetration\n🔹Best Use\n➥Community-pneumonia\n➥Complicated UTI\n➥Prostatitis\n🔹When Doctor Choose\n➥Respiratory infections with atypical pathogens\n➥UTI resistant to first-line drugs\n➥Hospitalized pneumonia cases\n🔸Weakness\n➥QT prolongation\n➥Not ideal for children\n\n★Ciprofloxacin\n🔹Strength\n➥Very strong Gram-negative coverage\n➥Excellent for Pseudomonas infections\n🔹Best Use\n➥Complicated UTI\n➥Gastrointestinal infections\n➥Pseudomonas infections\n🔸Weakness\n➥Weaker against Streptococcus pneumoniae\n➥Less effective for respiratory infections\n\n★Moxifloxacin\n🔹Strength\n➥Strongest respiratory pathogen coverage\n➥Excellent anaerobic activity\n🔹Best Use\n➥Severe pneumonia\n➥Respiratory infections\n🔹When Doctor Choose\n➥Respiratory infection resistant to other antibiotics\n🔸Weakness\n➥Not good for urinary infections\n➥Higher QT prolongation risk"
+    },
+    {
+      "name": "MOXIFLOXACIN++",
+      "drugClass": "Fluoroquinolone",
+      "mechanismOfAction": "Prevents bacterial DNA synthesis and causes bacterial cell death (bactericidal effect).",
+      "clinicalUses": [
+        "Community-Pneumonia (Fever, sputum production, dyspnea, chest pain)",
+        "Acute Bacterial Sinusitis (Facial pain, nasal congestion)",
+        "Exacerbation of Chronic Bronchitis (sputum production, wheezing, dyspnea)",
+        "Skin and Soft Tissue Infections (edema)",
+        "Intra-Abdominal Infection (Abdominal pain/epigastric pain, fever, nausea, vomiting)",
+        "PID (Lower abdominal pain/pelvic pain, discharge, fever)",
+        "Tuberculosis (Cough, weight loss, sweating)"
+      ],
+      "adverseEffects": [
+        "Nausea",
+        "Diarrhea",
+        "Headache",
+        "Dizziness",
+        "Abdominal pain",
+        "Insomnia",
+        "Myasthenia gravis"
+      ],
+      "contraindications": [
+        "Known QT prolongation",
+        "Severe liver dysfunction",
+        "Children and adolescents (risk to cartilage)"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Avoid in Children (<18 years) unless no alternative",
+          "Caution in elderly (higher tendon rupture risk)",
+          "Avoid in patients with arrhythmia or QT prolongation"
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "Fever",
+          "Dyspnea",
+          "Facial pain",
+          "nasal congestion",
+          "Skin edema",
+          "productive cough",
+          "abdominal pain/gastric pain",
+          "chest pain",
+          "cough"
+        ],
+        "secondarySymptoms": [
+          "fatigue/weakness",
+          "headache"
+        ],
+        "inappropriateSymptoms": [
+          "Runny nose without infection",
+          "Sneezing",
+          "Allergic itching"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Community-Acquired Pneumonia (Fever, productive cough, dyspnea, chest pain)",
+          "details": "Moxifloxacin can be used as full monotherapy because it covers both typical and atypical respiratory bacteria."
+        },
+        {
+          "useName": "Acute Bacterial Sinusitis (Facial pain, nasal congestion, purulent nasal discharge)",
+          "details": "Used when first-line drugs (amoxicillin-clavulanate) fail or resistance is suspected."
+        },
+        {
+          "useName": "Acute Exacerbation of Chronic Bronchitis (Productive cough, wheezing, dyspnea)",
+          "details": "Used as full antibacterial therapy when bacterial infection is suspected."
+        },
+        {
+          "useName": "Skin and Soft Tissue Infections (Redness, swelling, pain, warmth)",
+          "details": "May be used alone or combined with other antibiotics depending on severity."
+        },
+        {
+          "useName": "Complicated Intra-Abdominal Infection (Abdominal pain, fever, nausea, vomiting)",
+          "details": "Often used with other antibiotics (e.g., metronidazole) for broader anaerobic coverage."
+        },
+        {
+          "useName": "Pelvic Inflammatory Infection (Lower abdominal pain, vaginal discharge, fever)",
+          "details": "Usually combined with other antibiotics (e.g., doxycycline or metronidazole)."
+        },
+        {
+          "useName": "Tuberculosis (Second-line use) (Chronic cough, weight loss, night sweats)",
+          "details": "Used only as second-line drug with other anti-TB drugs in resistant TB cases."
+        },
+        {
+          "useName": "Community-Pneumonia (Fever, sputum production, dyspnea, chest pain)",
+          "details": "Often used as monotherapy, especially when atypical pathogens are suspected."
+        },
+        {
+          "useName": "Acute Bacterial Sinusitis (Facial pain, nasal congestion)",
+          "details": "Usually second-line therapy when first-line antibiotics fail."
+        },
+        {
+          "useName": "Exacerbation of Chronic Bronchitis (sputum production, wheezing, dyspnea)",
+          "details": "Used when infection likely caused by resistant bacteria."
+        },
+        {
+          "useName": "Skin and Soft Tissue Infections (edema)",
+          "details": "Often adjunctive therapy when polymicrobial infection suspected."
+        },
+        {
+          "useName": "Intra-Abdominal Infection (Abdominal pain/epigastric pain, fever, nausea, vomiting)",
+          "details": "May be used alone or combined with anaerobic coverage drugs."
+        },
+        {
+          "useName": "PID (Lower abdominal pain/pelvic pain, discharge, fever)",
+          "details": "Used when chlamydia or mixed infection suspected, usually with other antibiotics."
+        },
+        {
+          "useName": "Tuberculosis (Cough, weight loss, sweating)",
+          "details": "Used as part of combination therapy, never alone."
+        }
+      ],
+      "medicineAdvantage": "🔹Very broad spectrum (Respiratory fluoroquinolone)\n➥Strong activity against Gram-positive, Gram-negative bacteria, and atypical organisms such as Mycoplasma, Chlamydia, Legionella.\n➥Many doctors use it for community-pneumonia when the exact pathogen is unknown.\n🔹Effective in Resistant Infections\n➥It can treat infections where older antibiotics (penicillins, macrolides) may fail.\n🔹Good tissue penetration\n➥Penetrates well into lung, skin and abdominal tissues.\n➥Achieves high concentrations in lung tissue and alveolar, making it preferred  for respiratory infections.\n🔹Strong activity against Streptococcus pneumoniae\n➥Better coverage than older fluoroquinolones for drug-resistant pneumococci.\n🔹Good activity against anaerobic bacteria\n➥Unlike many fluoroquinolones, moxifloxacin covers anaerobes, making it useful in intra-abdominal infections.\n🔹No dose adjustment in renal impairment\n➥Primarily metabolized in liver; therefore renal dose adjustment usually not required, helpful in patients with kidney disease.",
+      "teachingNotes": "Take once daily at the same time.\nCan be taken with or without food.\nAvoid taking with antacids, iron, zinc, or magnesium within 4 hours because they reduce absorption.\nDrink plenty of water during therapy.\nAvoid excess sunlight (risk of photosensitivity).\nStop medicine and seek medical care if tendon pain or swelling occurs.\nComplete the full antibiotic course even if symptoms improve.",
+      "id": "med_1772832262819_v81xudnfc",
+      "createdAt": "2026-03-06T21:24:22.819Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "medicineDisadvantage": "🔸QT interval prolongation risk\n➥May cause cardiac arrhythmias especially in heart disease or those taking other QT-prolonging drugs.\n🔸Tendon rupture risk\n➥Can cause Achilles tendon rupture, particularly in elderly or those taking steroids.\n🔸Peripheral neuropathy risk\n➥Can cause long-lasting nerve damage presenting as numbness or burning pain.\n🔸Not ideal for urinary infections\n➥Lower urinary concentrations compared to other fluoroquinolones, so not preferred for UTI.\n🔸Glucose disturbances\n➥May cause hypoglycemia or hyperglycemia, particularly in diabetic patients.",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For severe community-pneumonia\n★ Moxifloxacin + Ceftriaxone\n➥Provides strong Gram-positive, Gram-negative, and atypical coverage, commonly used in hospitalized patients.\n🔹For intra-abdominal infections\n★ Moxifloxacin + Metronidazole\n➥Enhances anaerobic coverage, useful when infection source is uncertain.\n🔹For tuberculosis (drug-resistant cases)\n★ Moxifloxacin + Linezolid + Bedaquiline\n➥Used in multidrug-resistant TB regimens.\n🔹For complicated skin infections\n★ Moxifloxacin + Vancomycin\n➥Vancomycin covers MRSA, while moxifloxacin covers other pathogens."
+      ],
+      "comparison": "★ Moxifloxacin\n🔹Strength\n➥Best respiratory infection coverage\n➥Good anaerobic activity\n➥Excellent lung tissue penetration\n🔹Best Use\n➥Community-pneumonia\n➥Acute sinusitis\n➥COPD exacerbation\n➥Intra-abdominal infections\n🔹When Doctor Choose\n➥Severe respiratory infections\n➥Mixed aerobic + anaerobic infections\n🔸Weakness\n➥QT prolongation risk\n➥Not good for UTIs\n\n★ Levofloxacin\n🔹Strength\n➥Good respiratory coverage\n➥Effective for UTIs and pneumonia\n🔹Best Use\n➥Community-pneumonia\n➥UTI/pyelonephritis\n➥COPD exacerbation\n🔹When Doctor Choose\n➥When infection involves lungs + urinary tract\n🔸Weakness\n➥Less anaerobic coverage than moxifloxacin\n\n★ Ciprofloxacin\n🔹Strength\n➥Very strong gram-negative activity\n➥Excellent against Pseudomonas\n🔹Best Use\n➥UTI\n➥Gastrointestinal infections\n➥Pseudomonas infections\n🔸Weakness\n➥Weak against Streptococcus pneumoniae"
+    },
+    {
+      "name": "PREDNISOLONE++",
+      "drugClass": "Corticosteroid",
+      "mechanismOfAction": "Decreased production of pro-inflammatory cytokines.\nReduced leukocyte migration to inflamed tissues.\nInhibition of prostaglandin and leukotriene synthesis.\nOverall suppression of immune response and inflammation.",
+      "clinicalUses": [
+        "Asthma Exacerbation (Wheezing, Dyspnea, Chest Tightness)",
+        "Allergic Reaction (Rash, Itching, edema)",
+        "RA (Arthritis/Joint pain, Edema, Morning Stiffness)",
+        "SLE (Arthritis/Joint pain, Rash, Fatigue/Weakness)",
+        "IBD (Abdominal pain/Epigastric pain, Diarrhea, Dysentry)",
+        "Nephrotic Syndrome (Edema, Proteinuria, Foamy Urine)",
+        "Dermatitis/Severe Skin Allergy (Itching, edema)",
+        "Autoimmune Hemolytic Anemia (Fatigue/weakness, Pallor, Jaundice)",
+        "Acute Gout (arthritis/joint pain, Edema)",
+        "Cerebral Edema (Headache, Vomiting, dizziness, confusion/reduced awareness)",
+        "Autoimmune hepatitis (Fatigue, Jaundice, abdominal pain/epigastric pain)"
+      ],
+      "adverseEffects": [
+        "Weight gain",
+        "Increased appetite",
+        "Hyperglycemia",
+        "Hypertension",
+        "Insomnia",
+        "Mood changes",
+        "Gastric irritation",
+        "Acne",
+        "Fluid retention"
+      ],
+      "contraindications": [
+        "Systemic fungal infection",
+        "Uncontrolled infections",
+        "Uncontrolled diabetes (relative)",
+        "Peptic ulcer disease (relative)"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": false,
+        "cautionInBreastfeeding": false,
+        "sexSpecificRisks": [
+          "Possible menstrual irregularities.",
+          "Male: Possible reduced testosterone with long-term therapy.",
+          "Male: Possible muscle wasting with prolonged use."
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "Wheezing",
+          "itching",
+          "edema",
+          "stiffness"
+        ],
+        "secondarySymptoms": [
+          "Mild edema",
+          "Skin irritation",
+          "rash",
+          "Moderate inflammatory pain",
+          "fatigue/weakness",
+          "anorexia"
+        ],
+        "inappropriateSymptoms": [
+          "Simple bacterial infection without inflammation",
+          "Isolated mild headache",
+          "Uncomplicated viral cold",
+          "Mild cough without inflammation"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Asthma Exacerbation (Wheezing, Dyspnea, Chest Tightness)",
+          "details": "Used as adjunctive therapy with bronchodilators (e.g., salbutamol). It reduces airway inflammation but does not directly open airways."
+        },
+        {
+          "useName": "Allergic Reaction (Skin Rash, Itching, Swelling)",
+          "details": "Often used with antihistamines. It suppresses immune reaction and inflammation."
+        },
+        {
+          "useName": "RA (Joint Pain, Joint Swelling, Morning Stiffness)",
+          "details": "Used as short-term anti-inflammatory or bridge therapy until disease-modifying drugs start working."
+        },
+        {
+          "useName": "SLE (Joint Pain, Rash, Fatigue)",
+          "details": "Often core therapy in moderate to severe disease to suppress autoimmune activity."
+        },
+        {
+          "useName": "IBD (Abdominal Pain, Diarrhea, Dysentry)",
+          "details": "Used for acute flare control, not for long-term maintenance therapy."
+        },
+        {
+          "useName": "Nephrotic Syndrome (Edema, Proteinuria, Foamy Urine)",
+          "details": "Often first-line therapy in children to suppress immune-mediated kidney inflammation."
+        },
+        {
+          "useName": "Dermatitis/Severe Skin Allergy (Redness, Itching, Skin Swelling)",
+          "details": "Used short term to control severe inflammatory reactions."
+        },
+        {
+          "useName": "Autoimmune Hemolytic Anemia (Fatigue, Pallor, Jaundice)",
+          "details": "Often first-line treatment because it suppresses immune destruction of red blood cells."
+        },
+        {
+          "useName": "Acute Gout (Severe Joint Pain, Redness, Swelling)",
+          "details": "Alternative when NSAIDs or colchicine cannot be used."
+        },
+        {
+          "useName": "Cerebral Edema (Headache, Vomiting, Neurological Symptoms)",
+          "details": "Used as anti-inflammatory therapy to reduce swelling in the brain."
+        },
+        {
+          "useName": "Allergic Reaction (Rash, Itching, edema)",
+          "details": "Used as systemic anti-inflammatory treatment when antihistamines alone are insufficient."
+        },
+        {
+          "useName": "RA (Arthritis/Joint pain, Edema, Morning Stiffness)",
+          "details": "Often used short-term or low dose as bridge therapy while disease-modifying drugs take effect."
+        },
+        {
+          "useName": "SLE (Arthritis/Joint pain, Rash, Fatigue/Weakness)",
+          "details": "Used as primary immunosuppressive treatment during disease flares."
+        },
+        {
+          "useName": "IBD (Abdominal pain/Epigastric pain, Diarrhea, Dysentry)",
+          "details": "Used for moderate–severe flare control, not long-term maintenance."
+        },
+        {
+          "useName": "Dermatitis/Severe Skin Allergy (Itching, edema)",
+          "details": "Short courses used when topical therapy is inadequate."
+        }
+      ],
+      "medicineAdvantage": "🔹Potent anti-inflammatory effect\n➥Strongly suppresses inflammatory mediators, making it highly effective in acute inflammatory and autoimmune diseases.\n🔹Rapid onset of action\n➥Symptoms such as swelling, redness, and pain often improve within 24–48 hours.\n🔹Useful in many specialties\n➥Widely used in pulmonology, rheumatology, dermatology, neurology, gastroenterology, and allergy medicine.\n🔹Life-saving in acute allergic reactions and asthma exacerbations\n➥Rapidly decreases airway inflammation and immune reaction.\n🔹Good oral bioavailability\n➥About 70–90% absorption, making oral therapy effective.",
+      "medicineDisadvantage": "🔸Many systemic side effects with long-term use\n➥Chronic therapy can cause osteoporosis, diabetes, hypertension, and Cushingoid features.\n🔸Immunosuppression\n➥Increases risk of bacterial, viral, and fungal infections.\n🔸Adrenal suppression\n➥Long-term therapy suppresses the hypothalamic-pituitary-adrenal axis, so sudden stopping may cause adrenal crisis.\n🔸Metabolic effects\n➥Can increase blood glucose and weight gain, problematic in diabetes.\n🔸Psychiatric effects\n➥May cause mood swings, insomnia, agitation, or steroid-induced psychosis.\n🔸Bone loss\n➥Prolonged therapy increases osteoporosis and fracture risk.",
+      "teachingNotes": "Take with food to reduce stomach irritation.\nBest taken in the morning to mimic natural cortisol rhythm.\nDo not stop suddenly after long-term use; taper dose gradually.\nMonitor blood pressure, blood sugar, and weight during prolonged therapy.\nLong-term users may require calcium and vitamin D supplementation.",
+      "id": "med_1772897180078_xb231wjdl",
+      "createdAt": "2026-03-07T15:26:20.078Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For severe autoimmune inflammation\n★ Prednisolone + Methotrexate\n➥Methotrexate acts as a disease-modifying drug while prednisolone provides rapid symptom relief.\n🔹For severe asthma exacerbation\n★ Prednisolone + Salbutamol\n➥Bronchodilator relieves airway spasm while prednisolone reduces airway inflammation.\n🔹For allergic reactions\n★ Prednisolone + Cetirizine\n➥Antihistamine controls histamine symptoms while steroid suppresses immune inflammation.\n🔹For rheumatoid arthritis\n★ Prednisolone + NSAIDs (e.g., Diclofenac)\n➥NSAID reduces pain while prednisolone suppresses immune inflammation.\n🔹For prevention of steroid-induced osteoporosis\n★ Prednisolone + Calcium + Vitamin D\n➥Protects bone density during long-term steroid therapy."
+      ],
+      "comparison": "★ Prednisolone\n🔹Strength\n➥Strong anti-inflammatory effect\n🔹Best Use\n➥Autoimmune diseases\n➥Asthma exacerbations\n➥Allergic reactions\n➥Inflammatory diseases\n🔸Weakness\n➥Metabolic adverse effects\n➥Adrenal suppression with long use\n\n★ Dexamethasone\n🔹Strength\n➥Very strong anti-inflammatory potency\n➥Very long duration\n🔹Best Use\n➥Brain edema\n➥Severe COVID inflammation\n🔹When Doctor Choose\n➥Need very strong steroid effect\n🔸Weakness\n➥Higher suppression of adrenal axis\n\n★ Hydrocortisone\n🔹Strength\n➥Mild potency\n🔹Best Use\n➥Adrenal insufficiency\n➥Septic shock\n🔸Weakness\n➥Short duration of action"
+    },
+    {
+      "name": "FLUOXETINE++",
+      "drugClass": "SSRI",
+      "mechanismOfAction": "Inhibits presynaptic reuptake of serotonin (5-HT) in the CNS → increases serotonin availability in synaptic cleft → improves mood, anxiety control, and emotional regulation.",
+      "clinicalUses": [
+        "Depression (Depression/low mood, anhedonia, fatigue/weakness, poor concentration, insomnia, hypersomnia)",
+        "OCD (Recurrent intrusive thoughts, repetitive behaviors, anxiety if rituals not performed)",
+        "Panic Disorder (Sudden episodes of intense fear/worry, palpitations, dyspnea, fear of dying, chest discomfort)",
+        "GAD (Excessive fear/worry, restlessness, muscle tension)",
+        "Bulimia Nervosa (Binge eating, purging behaviors, loss of control over eating)",
+        "PMDD (Severe mood swings, irritability, anxiety, depression/low mood before menses)",
+        "PTSD (Re-experiencing trauma, hyperarousal, avoidance)"
+      ],
+      "adverseEffects": [
+        "Nausea",
+        "Insomnia or excessive sleepiness",
+        "Headache",
+        "Anxiety or agitation (especially early)",
+        "Tremor",
+        "Sexual dysfunction (↓ libido, delayed ejaculation, anorgasmia)",
+        "Sweating"
+      ],
+      "contraindications": [
+        "Concurrent use with MAO inhibitors (or within 14 days)",
+        "Use with linezolid",
+        "Bipolar disorder (risk of mania)",
+        "Severe liver disease",
+        "Epilepsy or seizure disorders"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Avoid in pregnancy if possible, especially in 3rd trimester (risk of neonatal adaptation syndrome, PPHN)",
+          "Erectile dysfunction, anorgasmia, delayed ejaculation in men.",
+          "Reduced libido and orgasm difficulties in women."
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "Persistent sadness",
+          "depression",
+          "Anxiety",
+          "Anhedonia",
+          "Excessive fear/worry",
+          "Intrusive thoughts",
+          "Repetitive urges",
+          "Panic attacks",
+          "Emotional numbness",
+          "Irritability",
+          "Low motivation",
+          "Feelings of hopelessness"
+        ],
+        "secondarySymptoms": [
+          "Fatigue/weakness",
+          "Poor concentration",
+          "Insomnia",
+          "Hypersomnia",
+          "Appetite changes",
+          "Premenstrual mood changes",
+          "Stress-related somatic complaints"
+        ],
+        "inappropriateSymptoms": [
+          "Elevated or euphoric mood",
+          "Decreased need for sleep",
+          "Grandiosity",
+          "Acute agitation with confusion",
+          "Seizures",
+          "Severe liver-related symptoms"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Depression (Persistent depression/low mood, anhedonia, fatigue/weakness, poor concentration, insomnia, hypersomnia)",
+          "details": "Primary treatment; may be used alone or with psychotherapy."
+        },
+        {
+          "useName": "OCD (Recurrent intrusive thoughts, repetitive behaviors, anxiety if rituals not performed)",
+          "details": "First-line therapy; usually requires higher doses; may need long-term maintenance."
+        },
+        {
+          "useName": "Panic Disorder (Sudden episodes of intense fear/worry, palpitations, dyspnea, fear of dying, chest discomfort)",
+          "details": "Can be monotherapy; may be combined with short-term benzodiazepines initially."
+        },
+        {
+          "useName": "PMDD (Severe mood swings, irritability, anxiety, depression/low mood before menses)",
+          "details": "Can be used continuously or during luteal phase; improves mood symptoms."
+        }
+      ],
+      "medicineAdvantage": "🔹Very long half-life (major clinical advantage)\n➥Half-life 4–6 days, metabolite norfluoxetine 7–15 days.\n➥Reduces withdrawal symptoms if a dose is missed.\n🔹Low discontinuation syndrome risk\n➥Because of the long half-life, stopping the drug causes fewer withdrawal symptoms compared with other SSRIs.\n🔹Activating antidepressant\n➥Often improves energy, motivation, and concentration, useful for patients with fatigue and hypersomnia.\n🔹Evidence-based use in multiple psychiatric disorders\n➥Effective for depression, OCD, panic disorder, bulimia nervosa, and PMDD.\n🔹Less weight gain compared with many antidepressants\n➥Weight gain risk lower than paroxetine or TCAs.\n🔹Safe in overdose compared with older antidepressants\n➥Lower cardiotoxicity than tricyclic antidepressants.\n🔹Favorable in elderly\n➥Lower risk of orthostatic hypotension than older antidepressants.\n🔹Preferred for long-term therapy\n➥Safety profile allows chronic use.",
+      "medicineDisadvantage": "🔸Delayed onset\n➥May take 2–4 weeks for full effect.\n🔸Strong CYP2D6 inhibitor\n➥Can interact with many drugs (antipsychotics, beta-blockers, tamoxifen).\n🔸Activating effect may worsen anxiety early\n➥Initial treatment may cause restlessness or nervousness.\n🔸Sexual dysfunction\n➥Common SSRI problem (decreased libido, delayed orgasm).\n🔸Sleep disturbance\n➥Insomnia and agitation may occur.\n🔸Risk of serotonin syndrome with combinations\n➥Especially with MAOIs, tramadol, linezolid, or triptans.\n🔸May worsen bipolar disorder\n➥Can trigger mania or hypomania in bipolar patients.",
+      "augmentingMedicines": "",
+      "structuredAugmentingMedicines": [
+        {
+          "partNumber": 1,
+          "therapeuticContext": "For partial response in depression",
+          "medicineCombination": "Fluoxetine + Bupropion",
+          "details": "Bupropion increases dopamine and norepinephrine\nHelps improve energy and reduce sexual side effects"
+        }
+      ],
+      "teachingNotes": "Starting dose: 20mg once daily (morning preferred)\nTitration: Increase by 10–20mg every 2–4 weeks if needed\nTypical dose range: 20–60mg/day (max 80mg/day in selected cases)\nFood: Can be taken with or without food\nOnset: Initial improvement in 1–2 weeks; full effect 4–6 weeks\nHalf-life: Very long → fewer withdrawal symptoms, but drug interactions last longer",
+      "id": "med_1772917801235_643wx3isj",
+      "createdAt": "2026-03-07T21:10:01.236Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For partial response in depression\n★ Fluoxetine + Bupropion\n➥Improves energy and motivation.\n➥Reduces SSRI-induced sexual dysfunction.\n🔹For treatment-resistant depression\n★ Fluoxetine + Atypical Antipsychotic (e.g., aripiprazole)\n➥Enhances antidepressant response through dopamine and serotonin modulation.\n🔹For severe anxiety with depression\n★ Fluoxetine + Buspirone\n➥Buspirone improves anxiety symptoms and reduces SSRI-induced sexual dysfunction.\n🔹For insomnia caused by SSRI activation\n★ Fluoxetine + Trazodone (night)\n➥Trazodone improves sleep while fluoxetine treats mood.\n🔹For resistant OCD\n★ Fluoxetine + low-dose antipsychotic (e.g., risperidone)\n➥Antipsychotic augmentation improves obsessive symptoms.\n🔹Bipolar depression, treatment resistant unipolar depression, and psychotic depression\n★ Fluoxetine + Olanzapine\n➥Fluoxetine has been specifically studied in combination with olanzapine with excellent results.\n🔹Postmenopausal women’s depression\n★ Fluoxetine + Estrogen\n➥Some postmenopausal women’s depression will respond better to fluoxetine plus estrogen augmentation than to fluoxetine alone."
+      ],
+      "comparison": "★ Fluoxetine\n🔹Strength\n➥Very long half-life\n➥Good for low energy depression\n➥Effective for OCD and bulimia\n🔹Best Use\n➥Depression with fatigue\n➥Adolescent depression\n🔹When Doctor Choose\n➥Concern about withdrawal\n➥Patient forgets doses\n➥Depression with low motivation\n🔸Weakness\n➥Insomnia\n➥Drug interactions\n\n★ Sertraline\n🔹Strength\n➥Strong antidepressant and anti-anxiety effect\n➥Good cardiovascular safety\n🔹Best Use\n➥Depression with anxiety\n➥PTSD\n➥Panic disorder\n🔹When Doctor Choose\n➥Patients with heart disease\n🔸Weakness\n➥GI upset common\n\n★ Escitalopram\n🔹Strength\n➥Very well tolerated\n➥Low drug interactions\n🔹Best Use\n➥Generalized anxiety disorder\n➥First-line depression\n🔸Weakness\n➥Less activating\n\n★ Paroxetine\n🔹Strength\n➥Very strong anxiolytic\n➥Sedating\n🔹Best Use\n➥Severe anxiety\n➥Insomnia depression\n🔹When Doctor Choose\n➥Anxious patients with poor sleep\n🔸Weakness\n➥Highest withdrawal risk\n➥Weight gain\n➥Sexual dysfunction\n\n★ Fluvoxamine\n🔹Strength\n➥Very strong OCD treatment\n🔸Weakness\n➥Drug interactions\n➥Sedation"
+    },
+    {
+      "name": "ESCITALOPRAM++",
+      "drugClass": "SSRI",
+      "mechanismOfAction": "Selectively inhibits the serotonin, increasing serotonin concentration in the synaptic cleft and enhancing serotonergic neurotransmission in the brain.",
+      "clinicalUses": [
+        "Depression (depression/low mood, anhedonia, fatigue/weakness, poor concentration)",
+        "Anxiety (anxiety, fear/worry, restlessness)",
+        "Panic Disorder (fear/worry, palpitations, tremors)"
+      ],
+      "adverseEffects": [
+        "nausea",
+        "headache",
+        "insomnia",
+        "fatigue",
+        "dizziness",
+        "dry mouth",
+        "sexual dysfunction"
+      ],
+      "contraindications": [
+        "Recent MAOI use (within 14 days)",
+        "Severe QT prolongation"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Avoid during first trimester pregnancy if possible.",
+          "Caution during breastfeeding (drug passes into breast milk).",
+          "Men: erectile dysfunction, delayed ejaculation, reduced libido.",
+          "Women: decreased libido, difficulty reaching orgasm, menstrual irregularity (rare)."
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "sadness",
+          "depression",
+          "anhedonia",
+          "fear/worry",
+          "anxiety"
+        ],
+        "secondarySymptoms": [
+          "insomnia",
+          "fatigue/weakness",
+          "poor concentration",
+          "irritability",
+          "anorexia"
+        ],
+        "inappropriateSymptoms": [
+          "High fever",
+          "Severe chest pain",
+          "Acute severe headache",
+          "Severe abdominal pain",
+          "Uncontrolled vomiting",
+          "Seizures"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Depression (depression/low mood, anhedonia, fatigue/weakness, poor concentration)",
+          "details": "First-line monotherapy for mild-to-moderate depression."
+        },
+        {
+          "useName": "Anxiety (anxiety, fear/worry, restlessness)",
+          "details": "Often used as first-line long-term treatment for chronic anxiety."
+        },
+        {
+          "useName": "Panic Disorder (fear/worry, palpitations, tremors)",
+          "details": "Used as maintenance therapy, often combined initially with short-term benzodiazepine."
+        }
+      ],
+      "medicineAdvantage": "🔹High Selectivity for Serotonin Transporter\n➥The most selective SSRI, meaning it acts almost purely on serotonin with minimal effect on dopamine, norepinephrine, or other receptors. This leads to fewer side effects than many antidepressants.\n🔹Better Tolerability\n➥Compared with many SSRIs and SNRIs, causes less nausea, agitation, and drug interactions, so many physicians prefer it as first-line therapy for depression and anxiety.\n🔹Effective for Both Depression and Anxiety\n➥One medication can treat depressive disorder, anxiety disorder, panic disorder, and social anxiety, making it useful when diagnosis overlaps.\n🔹Minimal Drug Interactions\n➥Compared with other SSRIs (especially less than fluoxetine and paroxetine).\n🔹Faster Onset Among SSRIs\n➥Some studies show symptom improvement within 1–2 weeks, slightly earlier than several other SSRIs.",
+      "medicineDisadvantage": "🔸Sexual Dysfunction\n➥Common SSRI problem including decreased libido, delayed ejaculation, and anorgasmia, leading to treatment discontinuation in some patients.\n🔸QT Interval Prolongation\n➥At higher doses (especially >20 mg/day) can prolong QT interval, increasing risk of arrhythmia in susceptible patients.\n🔸Initial Anxiety or Insomnia\n➥Some patients develop temporary restlessness, insomnia, or anxiety during the first weeks.\n🔸Withdrawal Symptoms if Abruptly Stopped\n➥Stopping suddenly may cause dizziness, irritability, sensory disturbances, and flu-like symptoms.\n🔸Delayed Full Therapeutic Effect\n➥Full antidepressant benefit usually appears after 4–6 weeks, which may frustrate some patients.",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For Partial Response in Depression\n★ Escitalopram + Bupropion\n➥Improves energy, concentration, and sexual side effects caused by SSRI.\n🔹For Treatment-Resistant Depression\n★ Escitalopram + Aripiprazole\n➥Low-dose atypical antipsychotic augmentation improves mood in resistant cases.\n🔹For Severe Anxiety or Panic\n★ Escitalopram + Clonazepam (short-term)\n➥Benzodiazepine controls acute anxiety symptoms while SSRI begins working.\n🔹For Insomnia with Depression\n★ Escitalopram + Mirtazapine\n➥Mirtazapine improves sleep and appetite, useful in depressed patients with weight loss.\n🔹For SSRI-Induced Sexual Dysfunction\n★ Escitalopram + Sildenafil (men)\n➥Improves erectile dysfunction associated with SSRI therapy."
+      ],
+      "teachingNotes": "Take once daily at the same time each day.\nMay be taken with or without food.\nClinical improvement usually appears after 2–4 weeks.\nDo not stop suddenly; taper slowly.",
+      "id": "med_1773433555192_rmvhmmbs0",
+      "createdAt": "2026-03-13T20:25:55.192Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "comparison": "★ Escitalopram\n🔹Strength\n➥Most selective SSRI, best tolerability, effective for depression and anxiety.\n🔹When Doctor Choose\n➥Patients needing high tolerability, minimal sedation, or safer elderly use.\n🔸Weakness\n➥Risk of sexual side effects.\n\n★ Sertraline\n🔹Strength\n➥Effective for depression, OCD, and PTSD; safe in cardiac patients.\n🔹Weakness\n➥More GI upset, slightly activating → may increase anxiety initially.\n\n★ Paroxetine\n🔹Strength\n➥Very sedating, good for insomnia, anxiety disorders.\n🔹Weakness\n➥Weight gain, anticholinergic side effects, withdrawal symptoms more severe.\n\n★ Fluoxetine\n🔹Strength\n➥Long half-life, activating → good for fatigue, low motivation.\n🔹Weakness\n➥Insomnia, anxiety, can take longer for full effect."
+    },
+    {
+      "name": "SERTRALINE++",
+      "drugClass": "SSRI",
+      "mechanismOfAction": "Increases serotonin levels in the synaptic cleft → improves mood, anxiety control, and emotional regulation.",
+      "clinicalUses": [
+        "Depression (depression/low mood, anhedonia, sadness, fatigue/weakness, insomnia)",
+        "Anxiety (anxiety, fear/worry, restlessness)",
+        "Panic Disorder (fear/worry, palpitations)",
+        "Post-Traumatic Stress Disorder (nightmares)"
+      ],
+      "adverseEffects": [
+        "nausea",
+        "diarrhea",
+        "headache",
+        "insomnia",
+        "fatigue",
+        "sexual dysfunction",
+        "dry mouth"
+      ],
+      "contraindications": [
+        "Recent MAOI use within 14 days."
+      ],
+      "sexRules": {
+        "avoidInPregnancy": false,
+        "cautionInBreastfeeding": false,
+        "sexSpecificRisks": [
+          "Start low dose in elderly to reduce adverse effects.",
+          "Men: delayed ejaculation and decreased libido are common.",
+          "Women: may cause menstrual irregularities or decreased libido.",
+          "Pregnancy: possible neonatal adaptation symptoms if used late in pregnancy."
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "depression",
+          "anhedonia",
+          "fear/worry",
+          "anxiety",
+          "sadness",
+          "nightmares"
+        ],
+        "secondarySymptoms": [
+          "poor concentration",
+          "fatigue/weakness"
+        ],
+        "inappropriateSymptoms": [
+          "Acute severe agitation requiring immediate sedation",
+          "Manic symptoms",
+          "Psychotic hallucinations",
+          "Severe insomnia requiring rapid sedation"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Depression (depression/low mood, anhedonia, fatigue/weakness, insomnia)",
+          "details": "Primary treatment medicine; often used as first-line therapy."
+        },
+        {
+          "useName": "Anxiety (anxiety, fear/worry, restlessness)",
+          "details": "Long-term treatment to reduce chronic anxiety symptoms."
+        },
+        {
+          "useName": "Panic Disorder (fear/worry, palpitations)",
+          "details": "Used as primary preventive therapy to reduce frequency of panic attacks."
+        },
+        {
+          "useName": "Post-Traumatic Stress Disorder (nightmares)",
+          "details": "One of the commonly recommended medications for trauma-related symptoms."
+        }
+      ],
+      "medicineAdvantage": "🔹Balanced efficacy for both depression and anxiety\n➥Sertraline is effective for depression, anxiety, panic disorder, OCD, and PTSD, so it is often chosen when symptoms overlap.\n🔹Relatively safe in cardiovascular disease\n➥Compared with many antidepressants, it has minimal cardiac conduction effects, so many clinicians prefer it for patients with heart disease.\n🔹Low drug–drug interaction compared with some SSRIs\n➥Making it safer in patients taking multiple medicines.\n🔹Effective for obsessive and intrusive thoughts\n➥One of the commonly used SSRIs for obsessive symptoms and repetitive thoughts.\n🔹Good choice for patients with depression plus anxiety\n➥Provides simultaneous antidepressant and anxiolytic effect.\n🔹Evidence-based use in PTSD\n➥Commonly used for trauma-related symptoms such as intrusive memories and hyperarousal.",
+      "medicineDisadvantage": "🔸Sexual dysfunction\n➥Reduced libido, delayed ejaculation, and anorgasmia are common reasons patients stop treatment.\n🔸Initial gastrointestinal intolerance\n➥Nausea, diarrhea, and abdominal discomfort are common in early weeks.\n🔸Activation or jitteriness early in treatment\n➥Some patients experience increased anxiety or restlessness during the first 1–2 weeks.\n🔸Delayed therapeutic effect\n➥Mood improvement usually requires 2–4 weeks and sometimes up to 6–8 weeks.\n🔸Risk of serotonin syndrome with serotonergic drugs\n➥Combining with other serotonergic agents increases risk of toxicity.\n🔸Possible emotional blunting\n➥Some patients report reduced emotional intensity or motivation.",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For partial response in depression\n★ Sertraline + Bupropion\n➥Bupropion improves energy, motivation, and can reduce SSRI-induced sexual dysfunction.\n🔹For treatment-resistant depression\n★ Sertraline + Aripiprazole\n➥Atypical antipsychotic augmentation improves response in resistant cases.\n🔹For severe anxiety or insomnia early in treatment\n★ Sertraline + short-term benzodiazepine\n➥Used briefly to control early agitation or panic until SSRI effect develops.\n🔹For obsessive symptoms not fully controlled\n★ Sertraline + low-dose antipsychotic\n➥Helps reduce persistent intrusive thoughts.\n🔹For residual fatigue and poor concentration\n★ Sertraline + Modafinil or Bupropion\n➥May improve daytime alertness and cognitive function."
+      ],
+      "teachingNotes": "Take at the same time daily.\nMay be taken with or without food, but taking with food may reduce nausea.\nImprovement usually begins after 2–4 weeks.\nDo not stop suddenly to avoid withdrawal symptoms.\nMorning dosing is often preferred if insomnia occurs.",
+      "id": "med_1773434415878_zyewckkth",
+      "createdAt": "2026-03-13T20:40:15.878Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "comparison": "★ Sertraline\n🔹Strength\n➥Effective for depression, anxiety, OCD, PTSD, PMDD.\n🔹Best Use\n➥Patients needing multiple indications coverage and low sedation.\n🔹When Doctor Choose\n➥Young adults, patients with cardiovascular risk, anxious depression.\n🔸Weakness\n➥GI upset, sexual dysfunction, slower onset.\n\n★ Fluoxetine\n🔹Strength\n➥Long half-life, good for adherence issues.\n🔹Best Use\n➥Depression, bulimia, OCD, PMDD.\n🔹Weakness\n➥More activating → insomnia or anxiety in sensitive patients.\n\n★ Paroxetine\n🔹Strength\n➥Potent SSRI, strong anxiolytic effect.\n🔹Best Use\n➥Severe anxiety, panic disorder, OCD.\n🔹Weakness\n➥Short half-life → withdrawal risk; more weight gain; sedating.\n\n★ Escitalopram\n🔹Strength\n➥Well-tolerated, minimal drug interactions.\n🔹Best Use\n➥Depression, generalized anxiety disorder."
+    },
+    {
+      "name": "BUPROPION++",
+      "drugClass": "Atypical antidepressant",
+      "mechanismOfAction": "Blocks reuptake of dopamine and norepinephrine → improves motivation, energy, reward processing, and attention.\nAlso acts as a nicotinic acetylcholine receptor antagonist, which helps reduce nicotine craving.",
+      "clinicalUses": [
+        "Depression (depression/low mood, sadness, anhedonia, fatigue/weakness, poor concentration, hypersomnia)",
+        "Seasonal Affective Disorder (depression/low mood, hypersomnia, fatigue/weakness)",
+        "Smoking Cessation (irritability)",
+        "Attention-Deficit Hyperactivity Disorder (poor concentration)",
+        "SSRI-Induced Sexual Dysfunction (libido)",
+        "Bipolar Depression (depression/low mood, fatigue/weakness)"
+      ],
+      "adverseEffects": [
+        "insomnia",
+        "dry mouth",
+        "headache",
+        "nausea",
+        "tremors",
+        "agitation",
+        "anxiety"
+      ],
+      "contraindications": [
+        "Seizure disorder",
+        "MAOI use within 14 days",
+        "Severe head trauma history",
+        "Brain tumors"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Avoid in pregnancy unless benefits outweigh risks.",
+          "Use caution in breastfeeding because small amounts pass into breast milk.",
+          "Use lower doses in liver disease."
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "fatigue/weakness",
+          "depression",
+          "anhedonia",
+          "poor concentration"
+        ],
+        "secondarySymptoms": [
+          "libido",
+          "weight gain",
+          "hypersomnia"
+        ],
+        "inappropriateSymptoms": [
+          "Seizure episodes",
+          "Severe anxiety",
+          "Panic attacks",
+          "Severe insomnia",
+          "Marked agitation",
+          "Uncontrolled hypertension"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Depression (depression/low mood, sadness, anhedonia, fatigue/weakness, poor concentration, hypersomnia)",
+          "details": "Used as first-line antidepressant, especially when fatigue and anhedonia dominate."
+        },
+        {
+          "useName": "Seasonal Affective Disorder (depression/low mood, hypersomnia, fatigue/weakness)",
+          "details": "Often preventive treatment before winter."
+        },
+        {
+          "useName": "Smoking Cessation (irritability)",
+          "details": "Approved therapy that reduces nicotine craving and withdrawal."
+        },
+        {
+          "useName": "Attention-Deficit Hyperactivity Disorder (poor concentration)",
+          "details": "Alternative for patients who cannot tolerate stimulants."
+        },
+        {
+          "useName": "SSRI-Induced Sexual Dysfunction (libido)",
+          "details": "Used adjunctively to reverse sexual side effects."
+        },
+        {
+          "useName": "Bipolar Depression (depression/low mood, fatigue/weakness)",
+          "details": "Used with mood stabilizer because it has lower mania risk than SSRIs."
+        }
+      ],
+      "medicineAdvantage": "🔹No sexual dysfunction (very important advantage)\n➥Unlike SSRIs and SNRIs, bupropion rarely causes decreased libido, erectile dysfunction, or delayed orgasm.\n🔹Weight-neutral or weight-loss effect\n➥Often causes mild weight loss, making it useful for overweight patients with depression.\n🔹Improves energy and motivation\n➥Strong dopaminergic effect helps patients with anhedonia, fatigue, low motivation, and poor concentration.\n🔹Good for smoking cessation\n➥Reduces nicotine craving through nicotinic receptor blockade.\n🔹Less sedation\n➥Unlike many antidepressants, it is activating rather than sedating.\n🔹Can reverse SSRI side effects\n➥Frequently used to treat SSRI-induced sexual dysfunction or fatigue.\n🔹Useful in ADHD symptoms\n➥Dopamine effect improves attention and executive function.\n🔹Minimal emotional blunting\n➥Patients often report better emotional range compared with SSRIs.",
+      "medicineDisadvantage": "🔸Risk of seizures (most important limitation)\n➥Dose-dependent risk, especially >450mg/day or in patients with seizure risk.\n🔸Can worsen anxiety or agitation\n➥Stimulating effect may cause nervousness, restlessness, irritability.\n🔸Insomnia\n➥Activation of norepinephrine/dopamine may interfere with sleep.\n🔸Not useful for anxiety disorders alone\n➥Less effective for pure anxiety conditions compared with SSRIs.\n🔸Increased blood pressure risk\n➥May cause hypertension, especially with nicotine patches.\n🔸Lower appetite\n➥Can cause weight loss, which may be problematic in underweight patients.",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For partial response in depression\n★ SSRI + Bupropion\n➥Combines serotonin effect (SSRI) with dopamine/norepinephrine activation, improving mood and energy.\n🔹For SSRI-induced sexual dysfunction\n★ SSRI + Bupropion\n➥Bupropion restores libido and sexual function.\n🔹For treatment-resistant depression\n★ Venlafaxine + Bupropion\n➥Targets serotonin, norepinephrine, and dopamine simultaneously.\n🔹For fatigue and apathy in depression\n★ SSRI + Bupropion\n➥Improves motivation, alertness, and concentration.\n🔹For ADHD with depression\n★ Bupropion + stimulant (e.g., methylphenidate)\n➥Enhances dopamine activity for attention and executive function."
+      ],
+      "teachingNotes": "Take in the morning to reduce insomnia.\nAvoid taking near bedtime.\nDo not exceed maximum daily dose (450mg/day).\nSwallow sustained-release tablets whole (do not crush or chew).\nIf used for smoking cessation, start 1 week before quitting smoking.",
+      "id": "med_1773435473895_2sv69pi8v",
+      "createdAt": "2026-03-13T20:57:53.895Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z"
+    },
+    {
+      "name": "ARIPIPRAZOLE++",
+      "drugClass": "Atypical Antipsychotic",
+      "mechanismOfAction": "Partial agonist at dopamine D2 receptors and serotonin 5-HT1A receptors, while antagonizing 5-HT2A receptors, stabilizing dopamine activity in the brain.",
+      "clinicalUses": [
+        "Schizophrenia (hallucinations, delusions)",
+        "Bipolar disorder (mania, irritability, decreased need for sleep)",
+        "Depression (depression/low mood, anhedonia, fatigue/weakness)"
+      ],
+      "adverseEffects": [
+        "akathisia",
+        "insomnia",
+        "anxiety",
+        "headache",
+        "nausea",
+        "restlessness",
+        "constipation",
+        "dizziness"
+      ],
+      "contraindications": [],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Avoid in pregnancy unless clearly needed.",
+          "Caution during breastfeeding (drug enters breast milk).",
+          "Use lower doses in hepatic impairment."
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "hallucinations",
+          "delusions",
+          "irritability",
+          "mania",
+          "decreased need for sleep"
+        ],
+        "secondarySymptoms": [
+          "fatigue/weakness",
+          "poor concentration",
+          "anxiety"
+        ],
+        "inappropriateSymptoms": [
+          "Severe sedation requirement",
+          "Acute severe anxiety needing rapid sedation"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Schizophrenia (hallucinations, delusions)",
+          "details": "Used as primary antipsychotic treatment."
+        },
+        {
+          "useName": "Bipolar disorder (mania, irritability, decreased need for sleep)",
+          "details": "Used for acute mania and maintenance therapy, often with mood stabilizers."
+        },
+        {
+          "useName": "Depression (depression/low mood, anhedonia, fatigue/weakness)",
+          "details": "Used as adjunct therapy with antidepressants, not monotherapy."
+        }
+      ],
+      "medicineAdvantage": "🔹Dopamine stabilizer (unique property)\n➥Unlike most antipsychotics that completely block dopamine, it partially stimulates D2 receptors, reducing both excess and deficiency of dopamine.\n🔹Very low risk of hyperprolactinemia\n➥Rarely increases prolactin; sometimes reduces prolactin elevated by other antipsychotics.\n🔹Lower metabolic risk than many antipsychotics\n➥Compared with Olanzapine and Clozapine, it causes less weight gain, diabetes, and dyslipidemia.\n🔹Minimal sedation\n➥Useful for patients who must remain alert (students, professionals).\n🔹Effective antidepressant augmentation\n➥Commonly used as add-on therapy in treatment-resistant depression.",
+      "medicineDisadvantage": "🔸Akathisia is relatively common\n➥Restlessness and inability to sit still occur more often than with many antipsychotics.\n🔸Insomnia and agitation\n➥Because it is activating rather than sedating.\n🔸Not very strong for severe psychosis\n➥Less potent than Clozapine for treatment-resistant schizophrenia.\n🔸Delayed full effect\n➥Due to long half-life, dose changes may take 1–2 weeks to show full effect.",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For treatment-resistant depression\n★ Sertraline + Aripiprazole\n➥Improves mood, motivation, and antidepressant response.\n🔹For SSRI-induced sexual dysfunction\n★ Fluoxetine + Aripiprazole\n➥Can improve antidepressant efficacy and reduce emotional blunting.\n🔹For partial response in depression with fatigue\n★ Bupropion + Aripiprazole\n➥Improves energy, concentration, and motivation.\n🔹For bipolar depression resistant to mood stabilizers\n★ Lithium + Aripiprazole\n➥Improves mood stabilization and reduces relapse.\n🔹For schizophrenia with residual symptoms\n★ Risperidone + Aripiprazole\n➥Sometimes used to reduce prolactin elevation from risperidone."
+      ],
+      "teachingNotes": "Take once daily at the same time each day.\nCan be taken with or without food.\nMorning dosing preferred if insomnia occurs.\nAvoid sudden discontinuation.\nFull effect may take 2–4 weeks.",
+      "id": "med_1773436341716_wkt7itbef",
+      "createdAt": "2026-03-13T21:12:21.716Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "comparison": "★Aripiprazole\n🔹Strength\n➥Low metabolic side effects, long half-life\n🔹Best use\n➥Schizophrenia, bipolar disorder, adjunct in depression\n🔹When Doctor Choose\n➥Patients sensitive to weight gain or sedation, partial response to other antipsychotics\n🔸Weakness\n➥Akathisia, slow onset for acute agitation\n\n★Olanzapine\n🔹Strength\n➥Strong antipsychotic effect, sedating, effective for agitation\n🔹Best use\n➥Acute psychosis, bipolar mania, agitation\n🔸Weakness\n➥High metabolic risk, sedation\n\n★Risperidone\n🔹Strength\n➥Effective for acute psychosis, some EPS at higher doses\n🔹Best use\n➥Schizophrenia, bipolar mania\n🔹When Doctor Choose\n➥Patients needing rapid symptom control\n🔸Weakness\n➥Prolactin elevation, moderate metabolic risk\n\n★Quetiapine\n🔹Strength\n➥Sedating, effective for insomnia + psychosis\n🔹Best use\n➥Psychosis with insomnia, bipolar depression\n🔹When Doctor Choose\n➥Patients needing calming effect\n🔸Weakness\n➥Weight gain, sedation\n\n★Clozapine\n🔹Strength\n➥Most effective for treatment-resistant schizophrenia\n🔹Best use\n➥TRS, suicidal risk in schizophrenia\n🔹When Doctor Choose\n➥Failed ≥2 atypicals\n🔸Weakness\n➥Agranulocytosis risk, high metabolic side effects, regular blood monitoring"
+    },
+    {
+      "name": "OLANZAPINE++",
+      "drugClass": "Atypical Antipsychotic",
+      "mechanismOfAction": "Blocks dopamine D2 receptors and serotonin 5-HT2A receptors in the brain, reducing psychotic symptoms and stabilizing mood.\nAlso blocks histamine (H1), muscarinic (M1), and alpha-1 adrenergic receptors, which contributes to sedation and some side effects.",
+      "clinicalUses": [
+        "Schizophrenia (hallucinations, delusions)",
+        "Bipolar Mania (mania, irritability, racing thoughts, decreased need for sleep)",
+        "Bipolar Depression (depression/low mood, anhedonia, fatigue/weakness, poor concentration)",
+        "Treatment-Resistant Depression (depression/low mood, anhedonia, sadness)",
+        "Psychotic Depression (depression/low mood, hallucinations, delusions)"
+      ],
+      "adverseEffects": [
+        "weight gain",
+        "sedation",
+        "increased appetite",
+        "dry mouth",
+        "constipation",
+        "dizziness",
+        "orthostatic hypotension",
+        "hyperglycemia",
+        "increased cholesterol and triglycerides"
+      ],
+      "contraindications": [
+        "Severe uncontrolled diabetes",
+        "History of severe metabolic syndrome",
+        "Dementia-related psychosis in elderly"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Avoid during pregnancy if possible unless benefits outweigh risks.",
+          "Use caution in breastfeeding because the drug passes into breast milk.",
+          "Use cautiously in liver disease."
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "hallucinations",
+          "delusions",
+          "racing thoughts",
+          "decreased need for sleep"
+        ],
+        "secondarySymptoms": [
+          "insomnia",
+          "anxiety",
+          "anorexia",
+          "irritability",
+          "restlessness"
+        ],
+        "inappropriateSymptoms": [
+          "Isolated mild sadness",
+          "Simple headache",
+          "Mild anxiety without psychosis",
+          "Common insomnia without psychiatric illness"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Schizophrenia (hallucinations, delusions)",
+          "details": "Used as primary antipsychotic treatment for controlling positive and some negative symptoms."
+        },
+        {
+          "useName": "Bipolar Mania (mania, irritability, racing thoughts, decreased need for sleep)",
+          "details": "Can be used alone or with lithium/valproate for acute mania control."
+        },
+        {
+          "useName": "Treatment-Resistant Depression (depression/low mood, anhedonia, sadness)",
+          "details": "Used as adjunct therapy with antidepressants, not usually alone."
+        },
+        {
+          "useName": "Bipolar Depression (depression/low mood, anhedonia, fatigue/weakness, poor concentration)",
+          "details": "Often used with fluoxetine because olanzapine alone is less effective for depressive symptoms."
+        },
+        {
+          "useName": "Psychotic Depression (depression/low mood, hallucinations, delusions)",
+          "details": "Used together with antidepressant for combined mood and psychotic symptom control."
+        }
+      ],
+      "medicineAdvantage": "🔹Strong antipsychotic efficacy\n➥Very effective for both positive (hallucinations, delusions) and some negative symptoms (social withdrawal, blunted affect).\n🔹Rapid calming effect\n➥Often used in acute agitation or psychosis because sedation occurs relatively quickly.\n🔹Mood-stabilizing properties\n➥Effective for bipolar mania and bipolar depression, so psychiatrists often use it when mood instability is present.\n🔹Lower risk of extrapyramidal symptoms than typical antipsychotics\n➥Compared with older drugs like haloperidol, olanzapine causes less dystonia, rigidity, and tremor.\n🔹Useful in treatment-resistant schizophrenia\n➥When first-line antipsychotics fail, doctors sometimes choose olanzapine because of strong receptor binding and broader neurotransmitter effects.\n🔹Effective for psychotic depression (with antidepressant)\n➥Combination Olanzapine + Fluoxetine is a recognized treatment for treatment-resistant depression.",
+      "medicineDisadvantage": "🔸Very high metabolic risk\n➥Causes weight gain, diabetes, dyslipidemia, and metabolic syndrome more than most other antipsychotics.\n🔸Strong sedation\n➥Histamine blockade causes daytime sleepiness and fatigue, which may impair work or study.\n🔸Anticholinergic effects\n➥May cause dry mouth, constipation, blurred vision, and cognitive slowing.\n🔸Weight gain can be severe\n➥Patients may gain 10–20 kg over months, especially young adults.\n🔸Risk of diabetes\n➥Can cause insulin resistance and hyperglycemia, even without weight gain.\n🔸Not preferred in elderly dementia\n➥Increased risk of stroke and mortality in dementia-related psychosis.",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For treatment-resistant depression\n★ Olanzapine + Fluoxetine\n➥This combination enhances serotonergic and dopaminergic activity and is approved for resistant depression.\n🔹For partial response in schizophrenia\n★ Olanzapine + Valproate\n➥Valproate improves mood stabilization and aggression control.\n🔹For metabolic side-effect control\n★ Olanzapine + Metformin\n➥Metformin can reduce weight gain and insulin resistance associated with olanzapine.\n🔹For persistent insomnia in psychiatric illness\n★ Olanzapine + SSRI antidepressant\n➥Olanzapine improves sleep while SSRI treats depression/anxiety."
+      ],
+      "teachingNotes": "Take once daily, usually at night because it causes sedation.\nCan be taken with or without food.\nMonitor weight, glucose, and lipids every 3–6 months.\nDo not stop suddenly; dose should be tapered gradually to prevent relapse.",
+      "id": "med_1773437367720_zmolii2th",
+      "createdAt": "2026-03-13T21:29:27.720Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z",
+      "comparison": "★ Olanzapine\n🔹Strength\n➥ Strong antipsychotic efficacy\n➥ Works for acute psychosis, agitation, mania\n➥ Sedating → useful for agitated patients\n🔹Best use\n➥ Severe psychosis, bipolar mania, agitation\n🔹When doctor chooses\n➥ Poor response to other atypicals\n➥ Severe insomnia or agitation\n🔸Weakness\n➥ Highest weight gain/metabolic risk, sedation\n\n★ Risperidone\n🔹Strength\n➥Good efficacy, less sedation, prolactin elevation risk\n🔹Best use\n➥Schizophrenia, mania, irritability in autism\n🔸Weakness\n➥EPS risk at high doses\n\n★ Quetiapine\n🔹Strength\n➥Sedating, good for insomnia, mood stabilization\n🔹Best use\n➥Bipolar depression, agitation\n🔸Weakness\n➥Moderate metabolic risk, less potent antipsychotic effect\n\n★ Aripiprazole\n🔹Strength\n➥Activating, low weight gain, partial agonist D2\n🔹Best use\n➥Negative symptoms, depression adjunct\n🔸Weakness\n➥Akathisia, less sedating"
+    },
+    {
+      "name": "QUETIAPINE++",
+      "drugClass": "Atypical antipsychotic",
+      "mechanismOfAction": "Antagonist at dopamine D2 and serotonin 5-HT2A receptors; also binds histamine H1 and adrenergic α1/α2 receptors, contributing to sedation and blood pressure effects.",
+      "clinicalUses": [
+        "Schizophrenia (delusions, hallucinations)",
+        "Bipolar Mania (mania, insomnia)",
+        "Bipolar Depression (depression/low mood, anhedonia, anxiety)",
+        "Adjunct in Major Depression (depression/low mood, anhedonia)"
+      ],
+      "adverseEffects": [
+        "Sedation/drowsiness",
+        "weight gain",
+        "dry mouth",
+        "orthostatic hypotension",
+        "constipation",
+        "metabolic abnormalities (glucose, lipids)"
+      ],
+      "contraindications": [
+        "Severe CNS depression"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Pregnancy: Avoid unless benefits outweigh risks.",
+          "Breastfeeding: Use caution; passes into breast milk, may affect infant.",
+          "Men: Possible gynecomastia (rare), sexual dysfunction.",
+          "Women: Menstrual irregularities, potential hyperprolactinemia (less than risperidone)"
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "hallucinations",
+          "delusions",
+          "insomnia",
+          "mania",
+          "restlessness",
+          "depression"
+        ],
+        "secondarySymptoms": [
+          "anxiety",
+          "irritability",
+          "anhedonia"
+        ],
+        "inappropriateSymptoms": [
+          "Hypertension without agitation"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Schizophrenia (delusions, hallucinations)",
+          "details": "Primary treatment for psychotic symptoms; monotherapy preferred."
+        },
+        {
+          "useName": "Bipolar Mania (mania, insomnia)",
+          "details": "Monotherapy or combined with mood stabilizers; treats acute mania and agitation."
+        },
+        {
+          "useName": "Bipolar Depression (depression/low mood, anhedonia, anxiety)",
+          "details": "Monotherapy approved at lower doses; improves depressive symptoms."
+        },
+        {
+          "useName": "Adjunct in Major Depression (depression/low mood, anhedonia)",
+          "details": "Added to SSRI/SNRI when partial response; improves mood and sleep."
+        }
+      ],
+      "medicineAdvantage": "🔹Flexible dosing and sedative properties\n➥Can be titrated from low to high doses for different indications; sedative effect helps insomnia and agitation.\n🔹Multiple indications\n➥Effective for schizophrenia, bipolar disorder, adjunct in major depression.\n🔹Low EPS (extrapyramidal symptom) risk\n➥Lower risk of tremor, rigidity, and tardive dyskinesia compared to typical antipsychotics.\n🔹Rapid initial symptom relief\n➥Low doses provide calming effects within days in acute mania or agitation.\n🔹Useful in treatment-resistant depression (adjunct)\n➥Can improve mood and anxiety when added to antidepressants.",
+      "medicineDisadvantage": "🔸Metabolic side effects\n➥Weight gain, hyperlipidemia, and increased risk of diabetes.\n🔸Sedation\n➥May impair daytime functioning, especially at higher doses.\n🔸Orthostatic hypotension\n➥Risk of dizziness, fainting, particularly in elderly or patients with cardiovascular issues.\n🔸QT prolongation\n➥Caution in patients with cardiac conduction abnormalities.",
+      "comparison": "★ Quetiapine\n🔹Strength\n➥Moderate antipsychotic effect, strong sedative and anxiolytic properties\n🔹Best use\n➥Schizophrenia (especially with agitation or insomnia)\n➥Bipolar mania and depression\n➥Adjunct in major depression\n🔹When Doctor Choose\n➥Patients with sleep problems, anxiety, or partially responsive depression\n🔸Weakness\n➥Lower potency for severe positive psychotic symptoms\n➥Metabolic risks\n\n★ Olanzapine\n🔹Strength\n➥Strong antipsychotic, effective for acute psychosis and mania\n🔹Best use\n➥Severe schizophrenia or bipolar mania\n🔹When Doctor Choose\n➥Patients needing rapid antipsychotic effect\n🔸Weakness\n➥High weight gain and metabolic syndrome risk\n\n★ Risperidone\n🔹Strength\n➥Good efficacy for positive symptoms\n🔹Best use\n➥Schizophrenia, acute mania\n🔹When Doctor Choose\n➥First-line atypical for psychosis\n🔸Weakness\n➥Higher EPS risk than quetiapine, hyperprolactinemia\n\n★ Aripiprazole\n🔹Strength\n➥Partial dopamine agonist, less sedation\n🔹Best use\n➥Schizophrenia, bipolar mania, adjunct depression\n🔹When Doctor Choose\n➥Patients needing minimal weight gain or sedation\n🔸Weakness\n➥Less sedative effect, may increase anxiety in some",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For partial response in depression\n★ Quetiapine + SSRI (e.g., Sertraline, Fluoxetine)\n➥Enhances antidepressant response, improves sleep, and reduces anxiety.\n🔹For treatment-resistant mania\n★ Quetiapine + Valproate\n➥Better control of manic symptoms without excessive sedation.\n🔹For agitation or insomnia in psychosis\n★ Quetiapine + low-dose Benzodiazepine (short-term)\n➥Reduces agitation quickly while maintaining antipsychotic coverage."
+      ],
+      "teachingNotes": "Can be taken with or without food.\nStart at low dose and titrate slowly to reduce sedation and hypotension.\nAvoid abrupt discontinuation to prevent withdrawal insomnia, nausea, or anxiety.",
+      "id": "med_1773518044868_w3pvfikae",
+      "createdAt": "2026-03-14T19:54:04.868Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z"
+    },
+    {
+      "name": "AMITRIPTYLINE++",
+      "drugClass": "TCA",
+      "mechanismOfAction": "Blocks reuptake of serotonin and norepinephrine, increasing their levels in the synaptic cleft.\nAlso blocks muscarinic, histamine H1, and alpha-1 adrenergic receptors, which causes many of its side effects and sedative properties.",
+      "clinicalUses": [
+        "Depression (depression/low mood, anhedonia, fatigue/weakness, insomnia)",
+        "Neuropathic Pain (paresthesia)",
+        "Migraine Prophylaxis (headache, nausea, photophobia/light sensitivity)",
+        "Tension Headache (headache)",
+        "Fibromyalgia (body pain, fatigue/weakness, myalgia/muscle pain)",
+        "IBS (abdominal pain/epigastric pain, diarrhea, constipation)",
+        "Nocturnal Enuresis (bedwetting)"
+      ],
+      "adverseEffects": [
+        "dry mouth",
+        "constipation",
+        "blurred vision",
+        "urinary retention",
+        "weight gain",
+        "sedation",
+        "orthostatic hypotension"
+      ],
+      "contraindications": [
+        "Recent MI",
+        "MAOI use within last 14 days",
+        "Severe liver disease",
+        "Untreated narrow-angle glaucoma"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Avoid in pregnancy if possible",
+          "Avoid in elderly patients when possible",
+          "Use cautiously in cardiovascular disease",
+          "Men: may cause erectile dysfunction and delayed ejaculation",
+          "Women: may cause menstrual irregularities and libido reduction"
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "depression",
+          "anhedonia",
+          "insomnia",
+          "nerve pain",
+          "paresthesia",
+          "headache",
+          "bedwetting"
+        ],
+        "secondarySymptoms": [
+          "anxiety",
+          "restlessness",
+          "anorexia",
+          "fatigue/weakness",
+          "abdominal pain/gastric pain",
+          "myalgia"
+        ],
+        "inappropriateSymptoms": [
+          "Severe daytime sleepiness",
+          "Palpitations",
+          "Syncope",
+          "Severe constipation",
+          "Urinary retention"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Depression (depression/low mood, anhedonia, fatigue/weakness, insomnia)",
+          "details": "Primary antidepressant treatment."
+        },
+        {
+          "useName": "Neuropathic Pain (paresthesia)",
+          "details": "Often first-line treatment for nerve pain."
+        },
+        {
+          "useName": "Migraine Prophylaxis (headache, nausea, photophobia/light sensitivity)",
+          "details": "Used as prophylactic medicine, not for acute migraine attack."
+        },
+        {
+          "useName": "Fibromyalgia (body pain, fatigue/weakness, myalgia/muscle pain)",
+          "details": "Adjunctive treatment to improve sleep and pain."
+        },
+        {
+          "useName": "IBS (abdominal pain/epigastric pain, diarrhea, constipation)",
+          "details": "Low doses used for pain modulation."
+        },
+        {
+          "useName": "Nocturnal Enuresis (bedwetting)",
+          "details": "Second-line treatment if other therapies fail."
+        }
+      ],
+      "medicineAdvantage": "🔹Strong sedative effect\n➥Very useful for depression with insomnia, or agitation.\n🔹Excellent for neuropathic pain\n➥One of the most effective antidepressants for chronic nerve pain (diabetic neuropathy).\n🔹Migraine prevention\n➥Commonly used for migraine prophylaxis, especially when migraine is associated with insomnia or anxiety.\n🔹Useful for multiple symptoms\n➥Treats depression, insomnia, anxiety, pain, and migraine simultaneously.",
+      "medicineDisadvantage": "🔸Strong anticholinergic side effects\n➥Causes dry mouth, constipation, urinary retention, blurred vision.\n🔸Cardiac toxicity risk\n➥May cause QT prolongation, arrhythmia, conduction block, especially in overdose.\n🔸Sedation and daytime drowsiness\n➥Some patients feel excessive sleepiness and fatigue.\n🔸Weight gain\n➥Common due to histamine H1 blockade.\n🔸Dangerous in overdose\n➥TCAs have high lethality in overdose compared with SSRIs.\n🔸Not ideal for elderly patients\n➥High risk of confusion, falls, and delirium.",
+      "comparison": "★ Amitriptyline\n🔹Strength\n➥Very effective antidepressant\n➥Strong sedation\n➥Very effective for neuropathic pain\n➥Good for insomnia with depression\n🔹Best Use\n➥Depression with insomnia\n➥Chronic neuropathic pain\n➥Migraine prevention\n➥Depression with chronic pain\n➥Migraine with insomnia\n🔸Weakness\n➥High anticholinergic effects\n➥Weight gain\n➥Cardiac toxicity risk\n\n★ Nortriptyline\n🔹Strength\n➥Less anticholinergic effects\n➥Better tolerated in elderly\n🔹Best Use\n➥Depression in older adults\n🔹When Doctor Choose\n➥When TCA needed but less side effects required\n🔸Weakness\n➥Less sedating\n➥Slightly weaker analgesic effect\n\n★ Imipramine\n🔹Strength\n➥Effective antidepressant\n➥Useful for nocturnal enuresis\n🔹Best Use\n➥Bed-wetting in children\n➥Depression\n🔹When Doctor Choose\n➥Depression with enuresis\n🔸Weakness\n➥Anticholinergic effects\n➥Cardiac risks\n\n★ Clomipramine\n🔹Strength\n➥Very strong anti-obsessional effect\n🔹Best Use\n➥Obsessive compulsive disorder\n🔹When Doctor Choose\n➥Severe OCD not responding to SSRIs\n🔸Weakness\n➥More side effects\n➥Seizure risk\n\n★ Doxepin\n🔹Strength\n➥Very strong sedative effect\n🔹Best Use\n➥Severe insomnia\n🔹When Doctor Choose\n➥Insomnia with depression\n🔸Weakness\n➥Daytime sedation\n➥Weight gain",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For severe depression with low energy\n★ Amitriptyline + Bupropion\n➥Bupropion improves energy, motivation, and concentration.\n🔹For insomnia with depression\n★ Amitriptyline + Mirtazapine\n➥Enhances sleep and antidepressant effect.\n🔹For neuropathic pain resistant to treatment\n★ Amitriptyline + Gabapentin\n➥Better pain control for diabetic neuropathy and neuralgia.\n🔹For migraine prevention\n★ Amitriptyline + Propranolol\n➥Improves migraine prevention through two different mechanisms."
+      ],
+      "teachingNotes": "Start with low dose and increase gradually.\nDo not stop suddenly; taper slowly.\nFull antidepressant effect may take 2–4 weeks.\nOverdose is dangerous; keep medication secure.\nRise slowly from sitting position to avoid orthostatic hypotension.",
+      "id": "med_1773604706653_njeof22rq",
+      "createdAt": "2026-03-15T19:58:26.653Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z"
+    },
+    {
+      "name": "PANTOPRAZOLE++",
+      "drugClass": "PPI",
+      "mechanismOfAction": "Pantoprazole irreversibly inhibits the H⁺/K⁺-ATPase enzyme (proton pump) in gastric parietal cells → blocks the final step of gastric acid secretion → reduces stomach acid production.",
+      "clinicalUses": [
+        "GERD (regurgitation, heartburn)",
+        "Peptic Ulcer Disease (abdominal pain/epigastric pain, nausea, bloating/flatulence)",
+        "Gastritis (abdominal pain/epigastric pain, nausea)",
+        "Helicobacter pylori (abdominal pain/epigastric pain, dyspepsia, bloating/flatulence)",
+        "Upper GI bleeding (hemoptysis, melena)"
+      ],
+      "adverseEffects": [
+        "headache",
+        "nausea",
+        "diarrhea"
+      ],
+      "contraindications": [],
+      "sexRules": {
+        "avoidInPregnancy": false,
+        "cautionInBreastfeeding": false,
+        "sexSpecificRisks": [
+          "Pregnancy: generally considered safe (Category B) but use only if necessary.",
+          "Breastfeeding: small amount enters breast milk → usually safe but use caution."
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "heartburn",
+          "regurgitation",
+          "abdominal pain/gastric pain"
+        ],
+        "secondarySymptoms": [
+          "nausea",
+          "bloating/flatulence",
+          "belching"
+        ],
+        "inappropriateSymptoms": [
+          "Severe lower abdominal pain",
+          "Bloody diarrhea",
+          "Severe colicky pain"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "GERD (regurgitation, heartburn)",
+          "details": "First-line therapy for acid suppression."
+        },
+        {
+          "useName": "Peptic Ulcer Disease (abdominal pain/epigastric pain, nausea, bloating/flatulence)",
+          "details": "Full treatment medicine for healing ulcers."
+        },
+        {
+          "useName": "Helicobacter pylori (abdominal pain/epigastric pain, dyspepsia, bloating/flatulence)",
+          "details": "Used with antibiotics (not alone)."
+        },
+        {
+          "useName": "Upper GI bleeding (hemoptysis, melena)",
+          "details": "IV pantoprazole used in hospital."
+        }
+      ],
+      "medicineAdvantage": "🔹Strong acid suppression\n➥ Inhibits the final step of acid secretion.\n🔹Long duration of effect\n➥ A single dose suppresses acid production for 24 hours.\n🔹Very useful in GERD\n➥ Reduces esophageal inflammation and heartburn effectively.\n🔹Low drug interaction compared with some PPIs\n➥ Less CYP450 inhibition than omeprazole.",
+      "medicineDisadvantage": "🔸Delayed onset\n➥ Maximum effect occurs after 3–4 days, not immediate relief.\n🔸Drug absorption problems\n➥ Reduced stomach acid may affect absorption of some drugs (ketoconazole, iron).",
+      "comparison": "★ Pantoprazole\n🔹Strength\n➥ Strong acid suppression\n➥ Lower drug interaction risk\n🔹Best Use\n➥ GERD\n➥ Peptic ulcer disease\n🔹When Doctor Choose\n➥ Patients taking multiple medications\n🔸Weakness\n➥ Slightly less potent than esomeprazole in some cases\n\n★ Omeprazole\n🔹Strength\n➥ Very effective acid suppression\n🔹Best Use\n➥ GERD\n➥ Peptic ulcer disease\n🔸Weakness\n➥ Higher drug interaction risk\n\n★ Esomeprazole\n🔹Strength\n➥ Strongest and most consistent acid suppression\n🔹Best Use\n➥ Severe GERD\n➥ Refractory reflux\n🔹When Doctor Choose\n➥ Failure of other PPIs\n\n★ Rabeprazole\n🔹Strength\n➥ Very fast onset\n🔹Best Use\n➥ Rapid acid suppression\n🔹When Doctor Choose\n➥ Patients needing faster symptom relief\n\n★ Lansoprazole\n🔹Strength\n➥ Good acid control\n🔹Best Use\n➥ GERD and ulcers",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For Helicobacter pylori eradication\n★ Pantoprazole + Amoxicillin + Clarithromycin\n➥ Standard triple therapy for H. pylori infection.\n★ Pantoprazole + Bismuth + Metronidazole + Tetracycline\n➥ Quadruple therapy for resistant cases.\n🔹For severe GERD\n★ Pantoprazole + Domperidone\n➥ Improves gastric motility and reflux control.\n★ Pantoprazole + Metoclopramide\n➥ Helps gastric emptying and reduces reflux symptoms.\n🔹For NSAID-induced ulcers\n★ Pantoprazole + Misoprostol\n➥ Protects gastric mucosa in high-risk patients."
+      ],
+      "teachingNotes": "Take 30–60 minutes before breakfast.\nWorks best when taken regularly at same time daily.\nNot for immediate relief of heartburn.",
+      "id": "med_1773606039329_0a6mcz5c4",
+      "createdAt": "2026-03-15T20:20:39.329Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z"
+    },
+    {
+      "name": "SODIUM VALPROATE++",
+      "drugClass": "Antiepileptic",
+      "mechanismOfAction": "➥ Increases GABA levels (inhibitory neurotransmitter)\n➥ Blocks voltage-gated sodium channels\n➥ Reduces neuronal excitability",
+      "clinicalUses": [
+        "Epilepsy (loss of consciousness, seizures, jerking movements)",
+        "Bipolar Mania (elevated/irritable mood, irritability, decreased need for sleep)",
+        "Migraine Prevention (recurrent headache, photophobia/light sensitivity, nausea)",
+        "Status epilepticus (prolonged seizures)",
+        "Impulse control disorders (aggression, mood swings)"
+      ],
+      "adverseEffects": [
+        "nausea",
+        "vomiting",
+        "weight gain",
+        "tremor",
+        "hair loss",
+        "sedation",
+        "thrombocytopenia"
+      ],
+      "contraindications": [
+        "Pregnancy",
+        "Active liver disease",
+        "Pancreatitis"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": []
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "Recurrent seizures",
+          "Sudden jerking movements",
+          "Loss of consciousness",
+          "Elevated/irritable mood",
+          "Irritability with agitation"
+        ],
+        "secondarySymptoms": [
+          "headache",
+          "anxiety",
+          "aggression",
+          "mood instability",
+          "insomnia"
+        ],
+        "inappropriateSymptoms": [
+          "Pure depressive mood without mania",
+          "Bradykinesia",
+          "Isolated neuropathic pain"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Epilepsy (loss of consciousness, seizures, jerking movements)",
+          "details": "First-line for generalized seizures, full treatment"
+        },
+        {
+          "useName": "Bipolar Mania (elevated/irritable mood, irritability, decreased need for sleep)",
+          "details": "First-line mood stabilizer, often combined."
+        },
+        {
+          "useName": "Migraine Prevention (recurrent headache, photophobia/light sensitivity, nausea)",
+          "details": "Preventive (not acute treatment)."
+        },
+        {
+          "useName": "Status epilepticus (prolonged seizures)",
+          "details": "IV adjunct alternative."
+        },
+        {
+          "useName": "Impulse control disorders (aggression, mood swings)",
+          "details": "Adjunct therapy, not primary."
+        }
+      ],
+      "medicineAdvantage": "🔹Broad-spectrum efficacy\n➥ Works for generalized + focal seizures (few drugs do both effectively)\n🔹Gold standard for mania\n➥ Highly effective in acute bipolar mania, especially rapid cycling\n🔹Also effective in migraine prevention\n➥ One drug can treat epilepsy + bipolar + migraine\n🔹Rapid onset in mania\n➥ Faster stabilization compared to some alternatives\n🔹Less cognitive dulling vs some AEDs\n➥ Compared to older drugs like phenytoin",
+      "medicineDisadvantage": "🔸Teratogenic (very important)\n➥ High risk of neural tube defects\n🔸Weight gain + metabolic issues\n➥ Common reason for discontinuation\n🔸Hepatotoxicity risk\n➥ Especially in children and early therapy\n🔸Thrombocytopenia\n➥ Can cause bleeding risk\n🔸Hair loss (reversible)\n➥ Common cosmetic concern\n🔸Drug interactions\n➥ Affects hepatic enzymes → interacts with many drugs",
+      "comparison": "★Sodium Valproate\n🔹Strength\n➥ Broad-spectrum (generalized + focal)\n➥ Best for mania + absence + myoclonic seizures\n➥ Useful in migraine prevention\n🔹Best Use\n➥ Bipolar mania\n➥ Mixed seizure types\n➥ Migraine prophylaxis\n🔹When Doctor Choose\n➥ Multiple seizure types\n➥ Mania with agitation\n➥ Rapid cycling bipolar\n🔸Weakness\n➥ Teratogenic\n➥ Weight gain\n➥ Liver toxicity\n\n★Lamotrigine\n🔹Strength\n➥ Best for bipolar depression\n➥ Minimal weight gain\n🔹Best Use\n➥ Maintenance therapy\n➥ Depression-predominant bipolar\n🔹When Doctor Choose\n➥ Avoid weight gain\n➥ Female patients (safer than valproate)\n🔸Weakness\n➥ Slow titration\n➥ Risk of rash (SJS)\n\n★Carbamazepine\n🔹Strength\n➥ Effective in focal seizures + mania\n🔹Best Use\n➥ Focal epilepsy\n🔹When Doctor Choose\n➥ Aggressive or irritable patients\n🔸Weakness\n➥ Drug interactions\n➥ Hyponatremia\n\n★Levetiracetam\n🔹Strength\n➥ Very safe, minimal interactions\n🔹Best Use\n➥ General epilepsy\n🔹When Doctor Choose\n➥ Polypharmacy patients\n🔸Weakness\n➥ Behavioral side effects (irritability)",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For resistant mania\n★ Valproate + Olanzapine\n➥ Rapid control of agitation + psychosis\n🔹For epilepsy resistant cases\n★ Valproate + Lamotrigine\n➥ Synergistic effect (but reduce lamotrigine dose → toxicity risk)\n🔹For migraine prevention\n★ Valproate + Propranolol\n➥ Better prophylaxis in severe cases\n🔹For agitation/impulsivity\n★ Valproate + Quetiapine\n➥ Improves sleep + mood stabilization"
+      ],
+      "teachingNotes": "➥ Take with food to reduce GI upset\n➥ Do not stop abruptly → seizure risk\n➥ Regular blood tests required\n➥ Watch for abdominal pain (pancreatitis warning)\n➥ Hair loss is reversible\n➥ Maintain adherence for mood stabilization",
+      "id": "med_1774343972259_o7xbq72vh",
+      "createdAt": "2026-03-24T09:19:32.259Z",
+      "updatedAt": "2026-03-24T10:00:03.927Z"
+    },
+    {
+      "name": "NORTRIPTYLINE + FLUPHENAZINE++",
+      "drugClass": "TCA + Typical Antipsychotic",
+      "mechanismOfAction": "Nortriptyline → Inhibits reuptake of norepinephrine > serotonin\nFluphenazine → Blocks dopamine D2 receptors in brain\n➥ Combination → treats depression + psychotic/anxiety features",
+      "clinicalUses": [
+        "Depression (depression/low mood, anhedonia, fatigue/weakness)",
+        "Anxiety (anxiety, fear/worry, restlessness)",
+        "Psychotic depression (delusions, hallucinations, depression/low mood)",
+        "Somatic depression (body pain, headache, abdominal pain/gastric pain)",
+        "Agitation (irritability)"
+      ],
+      "adverseEffects": [
+        "dry mouth",
+        "constipation",
+        "sedation",
+        "blurred vision",
+        "orthostatic hypotension",
+        "tremor, rigidity (EPS)",
+        "weight gain"
+      ],
+      "contraindications": [
+        "Recent myocardial infarction",
+        "Severe cardiac arrhythmia",
+        "Angle-closure glaucoma",
+        "Prostate enlargement (urinary retention risk)"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Avoid in elderly (risk of falls, confusion).",
+          "Male → erectile dysfunction, reduced libido.",
+          "Female → menstrual irregularity, galactorrhea (due to prolactin increase)."
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "depression",
+          "anhedonia",
+          "anxiety",
+          "restlessness",
+          "irritability",
+          "insomnia",
+          "hallucinations",
+          "delusions"
+        ],
+        "secondarySymptoms": [
+          "headache",
+          "myalgia",
+          "abdominal pain/gastric pain",
+          "anorexia"
+        ],
+        "inappropriateSymptoms": [
+          "high fever",
+          "acute severe chest pain",
+          "severe hypotension",
+          "seizures (without control)"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Depression (depression/low mood, anhedonia, fatigue/weakness)",
+          "details": "full treatment (nortriptyline main role)."
+        },
+        {
+          "useName": "Anxiety (anxiety, fear/worry, restlessness)",
+          "details": "combination is specifically useful."
+        },
+        {
+          "useName": "Psychotic depression (delusions, hallucinations, depression/low mood)",
+          "details": "adjunctive calming effect."
+        },
+        {
+          "useName": "Somatic depression (body pain, headache, abdominal pain/gastric pain)",
+          "details": "nortriptyline effective."
+        },
+        {
+          "useName": "Agitation (irritability)",
+          "details": "fluphenazine provides control."
+        }
+      ],
+      "medicineAdvantage": "🔹Dual symptom coverage (very important advantage)\n➥ Treats depression + anxiety + mild psychosis\n🔹Sedative benefit\n➥ Useful in agitated, anxious, or insomnia patients\n🔹Better for somatic depression\n➥ TCAs like nortriptyline help in pain, headache, IBS-like symptoms",
+      "medicineDisadvantage": "🔸High side-effect burden\n➥ Anticholinergic + extrapyramidal symptoms (EPS)\n🔸Cardiac risk (very important)\n➥ TCAs → arrhythmia, QT prolongation\n🔸Extrapyramidal symptoms\n➥ Fluphenazine → rigidity, tremor, akathisia\n🔸Not first-line in modern psychiatry\n➥ SSRIs + atypical antipsychotics safer",
+      "comparison": "",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For EPS side effects\n★ Add Propranolol\n➥ Controls tremor, rigidity"
+      ],
+      "teachingNotes": "Take preferably at night (sedation effect)\nStart with low dose and titrate slowly\nAvoid sudden discontinuation\nMonitor for movement disorders (EPS)\nReport palpitations or syncope immediately",
+      "id": "med_1774449951878_8fxexoc2y",
+      "createdAt": "2026-03-25T14:45:51.878Z",
+      "updatedAt": "2026-03-25T14:45:51.878Z"
+    },
+    {
+      "name": "BROMAZEPAM++",
+      "drugClass": "Benzodiazepine",
+      "mechanismOfAction": "→ Enhances GABA-A receptor activity.\n→ Anxiolytic, sedative, muscle relaxant effects.",
+      "clinicalUses": [
+        "Anxiety (restlessness, anxiety, fear/worry)",
+        "Panic symptoms (palpitations, fear/worry, sweating)",
+        "Muscle tension (myalgia/muscle pain, stiffness)",
+        "Psychosomatic disorders (abdominal pain/gastric pain, headache)"
+      ],
+      "adverseEffects": [
+        "drowsiness",
+        "dizziness",
+        "fatigue",
+        "memory impairment"
+      ],
+      "contraindications": [
+        "Severe respiratory insufficiency",
+        "Sleep apnea",
+        "Myasthenia gravis"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": []
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "fear/worry",
+          "anxiety",
+          "restlessness",
+          "palpitations",
+          "insomnia"
+        ],
+        "secondarySymptoms": [
+          "tenderness",
+          "headache",
+          "irritability"
+        ],
+        "inappropriateSymptoms": [
+          "Chronic depression without anxiety",
+          "Hallucinations, delusions)",
+          "Severe respiratory distress",
+          "Long-term insomnia alone"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Anxiety (restlessness, anxiety, fear/worry)",
+          "details": "Primary symptomatic treatment (short-term)."
+        },
+        {
+          "useName": "Panic symptoms (palpitations, fear/worry, sweating)",
+          "details": "Rapid relief, but not long-term monotherapy."
+        },
+        {
+          "useName": "Muscle tension (myalgia/muscle pain, stiffness)",
+          "details": "Adjunctive symptomatic relief."
+        },
+        {
+          "useName": "Psychosomatic disorders (abdominal pain/gastric pain, headache)",
+          "details": "Symptom control, not curative."
+        }
+      ],
+      "medicineAdvantage": "🔹Strong anxiolytic effect\n➥Very effective for acute anxiety and tension\n🔹Less excessive sedation than diazepam (in moderate doses)\n➥Better daytime tolerability\n🔹Good muscle relaxant\n➥Useful when anxiety + somatic tension coexist\n🔹Flexible dosing\n➥Can be used once daily or divided dosing",
+      "medicineDisadvantage": "🔸Dependence and addiction risk\n➥High risk with prolonged use (>2–4 weeks)\n🔸Cognitive impairment\n➥Memory issues, reduced concentration\n🔸Sedation and psychomotor slowing\n➥Risk of falls, accidents\n🔸Withdrawal symptoms\n➥Anxiety, tremor, insomnia, seizures (if abrupt stop)",
+      "comparison": "★ Bromazepam\n➥Balanced anxiolytic + moderate sedation\n➥Less accumulation than long-acting agents\n🔹Best use\n➥General anxiety with somatic symptoms\n🔹When Doctor Choose\n➥Need moderate duration without excessive sedation\n🔸Weakness\n➥Not ideal for sleep-only problems\n\n★ Diazepam\n➥Strong muscle relaxant\n➥Useful in withdrawal states\n🔹Best use\n➥Muscle spasm\n🔹When Doctor Choose\n➥Need prolonged effect\n🔸Weakness\n➥Accumulation, daytime sedation\n\n★ Alprazolam\n➥Very rapid onset\n➥Effective for panic attacks\n🔹Best use\n➥Panic disorder\n🔹When Doctor Choose\n➥Sudden severe anxiety\n🔸Weakness\n➥High dependence, rebound anxiety",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For partial anxiety control\n★ Bromazepam + Sertraline\n➥SSRI for long-term control + benzodiazepine for rapid relief\n🔹For severe agitation\n★ Bromazepam + Olanzapine\n➥Combines anxiolytic + antipsychotic calming effect\n🔹For insomnia with anxiety\n★ Bromazepam + Melatonin\n➥Improves sleep without increasing benzodiazepine dose"
+      ],
+      "teachingNotes": "Take preferably at night if causing sedation\nDo not stop suddenly → taper gradually\nShort-term use (2–4 weeks ideal)",
+      "id": "med_1774463647741_hhoqaaza8",
+      "createdAt": "2026-03-25T18:34:07.741Z",
+      "updatedAt": "2026-03-25T18:34:07.741Z"
+    },
+    {
+      "name": "MIRTAZAPINE++",
+      "drugClass": "NaSSA",
+      "mechanismOfAction": "Blocks central α2 receptors → ↑ norepinephrine & serotonin, and blocks 5-HT2 & 5-HT3 receptors → improves mood + reduces side effects, also strong H1 antihistamine → sedation",
+      "clinicalUses": [
+        "Depression (depression/low mood, insomnia, weight loss)",
+        "Anxiety (restlessness, fear/worry)",
+        "PTSD (nightmares)",
+        "Functional GI disorders (nausea, anorexia)"
+      ],
+      "adverseEffects": [
+        "Sedation",
+        "Weight gain",
+        "Dry mouth",
+        "Constipation",
+        "Dizziness"
+      ],
+      "contraindications": [
+        "Concomitant MAO inhibitors"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Male → minimal sexual dysfunction (advantage)",
+          "Female → weight gain may affect adherence",
+          "Pregnancy → possible neonatal sedation"
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "insomnia",
+          "anorexia",
+          "weight loss",
+          "depression",
+          "early morning awakening"
+        ],
+        "secondarySymptoms": [
+          "nausea",
+          "vomiting",
+          "headache",
+          "nightmares"
+        ],
+        "inappropriateSymptoms": [
+          "Excessive daytime sleepiness",
+          "Obesity",
+          "Hypersomnia",
+          "Metabolic syndrome"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Depression (depression/low mood, insomnia, weight loss)",
+          "details": "Primary monotherapy (especially atypical depression)."
+        },
+        {
+          "useName": "Anxiety (restlessness, fear/worry)",
+          "details": "Adjunct or monotherapy."
+        },
+        {
+          "useName": "PTSD (nightmares)",
+          "details": "Adjunctive (for sleep + mood)."
+        },
+        {
+          "useName": "Functional GI disorders (nausea, anorexia)",
+          "details": "Symptomatic (anti-nausea effect)."
+        }
+      ],
+      "medicineAdvantage": "🔹Strong sleep induction (very important)\n➥ Potent H1 blockade → best antidepressant for insomnia\n🔹Appetite stimulation & weight gain\n➥ Useful in underweight, cancer, TB, chronic illness patients\n🔹Low sexual side effects\n➥ Unlike SSRIs → minimal sexual dysfunction\n🔹Rapid onset of action\n➥ Sleep and appetite improve within days\n🔹Anti-nausea effect\n➥ 5-HT3 blockade → helpful in GI upset patients\n🔹Safe in elderly (with caution)\n➥ Less anticholinergic than TCAs\n🔹Useful in depression + anxiety + insomnia combination\n➥ One drug covers multiple symptoms",
+      "medicineDisadvantage": "🔸Weight gain (major limitation)\n➥ Significant ↑ appetite → obesity risk\n🔸Sedation (dose dependent)\n➥ Low dose = more sedation → daytime drowsiness\n🔸Less activating\n➥ Not ideal for fatigued or hypersomnia depression",
+      "comparison": "",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For partial response depression\n★ Mirtazapine + Sertraline\n➥ “California rocket fuel” → strong serotonergic + noradrenergic effect\n\n🔹For treatment-resistant depression\n★ Mirtazapine + Venlafaxine\n➥ Powerful dual + NaSSA synergy\n\n🔹For insomnia + depression\n★ Mirtazapine + Melatonin\n➥ Improves circadian rhythm\n\n🔹For severe anxiety\n★ Mirtazapine + Buspirone\n➥ Better anxiety control without sedation overload\n\n🔹For poor appetite\n★ Mirtazapine + nutritional support\n➥ Enhances weight gain effect"
+      ],
+      "teachingNotes": "Take at night (due to sedation)\nStart low dose (e.g. 7.5–15mg)\nLower dose = more sedation\nHigher dose = less sedation, more activation\nDo not stop abruptly\nEffect on sleep seen in 2–3 days, mood in 2–4 weeks",
+      "id": "med_1774535388334_1a95f4bvi",
+      "createdAt": "2026-03-26T14:29:48.334Z",
+      "updatedAt": "2026-03-26T14:29:48.334Z"
+    },
+    {
+      "name": "LEVOSULPIRIDE++",
+      "drugClass": "Atypical antipsychotic + Prokinetic",
+      "mechanismOfAction": "Selective dopamine D2 receptor antagonist\n➥ Central: improves mood, reduces psychotic symptoms\n➥ Peripheral (gut): enhances gastric motility and emptying",
+      "clinicalUses": [
+        "Functional dyspepsia (bloating/flatulence, early satiety, abdominal pain/gastric pain)",
+        "GERD (heartburn, regurgitation)",
+        "IBS (abdominal pain/gastric pain, altered bowel habits)",
+        "Depression (depression/low mood, fatigue/weakness)",
+        "Anxiety (restlessness, abdominal pain/gastric pain, headache)"
+      ],
+      "adverseEffects": [
+        "Hyperprolactinemia",
+        "Galactorrhea",
+        "Amenorrhea",
+        "Gynecomastia",
+        "Weight gain",
+        "Sedation (mild)",
+        "Extrapyramidal symptoms (tremor, rigidity)"
+      ],
+      "contraindications": [
+        "Prolactin-dependent tumors",
+        "Parkinsonism",
+        "Epilepsy (relative)",
+        "Severe cardiac arrhythmia",
+        "Pheochromocytoma"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Females: ➥ Amenorrhea, galactorrhea, infertility",
+          "Males: ➥ Gynecomastia, decreased libido"
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "early satiety",
+          "bloating/flatulence",
+          "abdominal pain/gastric pain",
+          "nausea",
+          "anorexia"
+        ],
+        "secondarySymptoms": [
+          "fatigue/weakness",
+          "depression",
+          "anxiety",
+          "poor concentration"
+        ],
+        "inappropriateSymptoms": [
+          "Severe hallucinations",
+          "Violent agitation",
+          "Severe mania",
+          "Acute severe vomiting (better alternatives)",
+          "Severe neurological rigidity"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Functional dyspepsia (bloating/flatulence, early satiety, abdominal pain/gastric pain)",
+          "details": "Primary drug (prokinetic effect)."
+        },
+        {
+          "useName": "GERD (heartburn, regurgitation)",
+          "details": "Adjunct with PPI."
+        },
+        {
+          "useName": "IBS (abdominal pain/gastric pain, altered bowel habits)",
+          "details": "Adjunct (not primary)."
+        },
+        {
+          "useName": "Depression (depression/low mood, fatigue/weakness)",
+          "details": "Adjunct (mild cases)."
+        },
+        {
+          "useName": "Anxiety (restlessness, abdominal pain/gastric pain, headache)",
+          "details": "Symptomatic relief."
+        }
+      ],
+      "medicineAdvantage": "🔹Dual action (very important advantage)\n➥ Works on brain + gut → treats both psychiatric + GI disorders\n🔹Strong prokinetic effect\n➥ Improves gastric emptying → very useful in dyspepsia, GERD\n🔹Less sedation than many antipsychotics\n➥ Better tolerated in daytime use\n🔹Useful in somatic symptom disorders\n➥ Especially when anxiety + GI symptoms coexist\n🔹Low anticholinergic effects\n➥ Minimal dry mouth, constipation compared to others\n🔹Improves depressive symptoms\n➥ Mild antidepressant effect due to dopamine modulation",
+      "medicineDisadvantage": "🔸High prolactin elevation (very important)\n➥ Causes galactorrhea, menstrual issues, sexual dysfunction\n🔸Extrapyramidal symptoms (EPS) risk\n➥ Especially at higher doses\n🔸Not strong antipsychotic\n➥ Limited use in severe psychosis\n🔸QT prolongation risk\n➥ Cardiac caution needed\n🔸Weight gain (mild–moderate)\n➥ Less than olanzapine but still relevant",
+      "comparison": "★ Levosulpiride\n➥ Best for GI + psychiatric overlap\n➥ Strong prokinetic action\n➥ Mild antidepressant effect\n🔹Best Use\n➥ Functional dyspepsia with anxiety\n➥ Somatic symptom disorders\n➥ Mild depression with GI complaints\n🔹When Doctor Choose\n➥ Patient with gastric symptoms + anxiety\n➥ Poor appetite, bloating, early satiety\n🔸Weakness\n➥ Prolactin elevation\n➥ Not for severe psychosis\n\n★ Itopride\n➥ Pure peripheral action → no CNS side effects\n➥ Very safe (minimal prolactin effect)\n➥ No extrapyramidal symptoms\n➥ Enhances acetylcholine → strong physiological motility improvement\n➥ Good for long-term use\n🔹Best Use\n➥ Functional dyspepsia (pure GI)\n➥ Postprandial fullness\n➥ Early satiety\n➥ Chronic bloating without anxiety\n🔹When Doctor Choose\n➥ Patient has only GI symptoms (no anxiety/depression)\n➥ Elderly patients (safer profile)\n➥ Need long-term therapy\n➥ Concern about hormonal side effects\n🔸Weakness\n➥ No effect on anxiety or depression\n➥ Weaker in stress-related dyspepsia\n➥ No central benefit\n➥ Less useful in somatic symptom disorders\n\n★ Metoclopramide\n➥ Strong antiemetic\n➥ Rapid gastric emptying\n🔹Best Use\n➥ Acute vomiting\n🔸Weakness\n➥ High EPS risk\n➥ Not for long-term use\n\n★ Domperidone\n➥ Peripheral action only\n➥ Minimal CNS side effects\n🔹Best Use\n➥ Nausea, vomiting\n🔸Weakness\n➥ No psychiatric benefit\n➥ QT prolongation risk",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For functional dyspepsia + anxiety\n★ Levosulpiride + Esomeprazole\n➥ Acid control + motility improvement → best combination\n\n🔹For IBS with anxiety\n★ Levosulpiride + Mebeverine\n➥ Reduces pain + improves motility\n\n🔹For depression with somatic symptoms\n★ Levosulpiride + Sertraline\n➥ Serotonin + dopamine balance → better response\n\n🔹For resistant dyspepsia\n★ Levosulpiride + Domperidone\n➥ Strong prokinetic synergy (use cautiously)"
+      ],
+      "teachingNotes": "Take before meals (15–30 min) for best prokinetic effect\nMonitor for menstrual or sexual changes\nDo not use long-term without review\nStart low dose → titrate gradually",
+      "id": "med_1774536456786_2o651i8qv",
+      "createdAt": "2026-03-26T14:47:36.786Z",
+      "updatedAt": "2026-03-26T14:47:36.786Z"
+    },
+    {
+      "name": "AMLODIPINE++",
+      "drugClass": "Calcium Channel Blocker",
+      "mechanismOfAction": "Blocks L-type calcium channels in vascular smooth muscle → vasodilation → ↓ peripheral resistance → ↓ BP",
+      "clinicalUses": [
+        "Hypertension (hypertension, dizziness, blurred vision, headache)",
+        "Stable angina (chest pain, exertional chest discomfort)",
+        "Coronary artery disease (chest tightness, exertional dyspnea)"
+      ],
+      "adverseEffects": [
+        "Peripheral edema",
+        "Headache",
+        "Flushing",
+        "Dizziness",
+        "Fatigue",
+        "Palpitations"
+      ],
+      "contraindications": [
+        "Cardiogenic shock"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": false,
+        "cautionInBreastfeeding": false,
+        "sexSpecificRisks": [
+          "Females: More risk of edema.",
+          "Males: Rare erectile dysfunction improvement (sometimes beneficial due to vasodilation)."
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "hypertension",
+          "chest pain",
+          "chest tightness",
+          "headache"
+        ],
+        "secondarySymptoms": [
+          "dyspnea",
+          "fatigue/weakness",
+          "cold extremities"
+        ],
+        "inappropriateSymptoms": [
+          "Acute severe chest pain (MI type)",
+          "Severe tachycardia"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Hypertension (hypertension, dizziness, blurred vision, headache)",
+          "details": "First-line drug → full treatment."
+        },
+        {
+          "useName": "Stable angina (chest pain, exertional chest discomfort)",
+          "details": "Symptomatic relief + adjunct."
+        },
+        {
+          "useName": "Coronary artery disease (chest tightness, exertional dyspnea)",
+          "details": "Adjunct to reduce cardiac workload."
+        }
+      ],
+      "medicineAdvantage": "🔹Long half-life (very important advantage)\n➥ Half-life ~30–50 hours → once daily dosing → excellent compliance\n🔹Strong peripheral vasodilator\n➥ Very effective in reducing systolic hypertension (common in elderly)\n🔹Safe in asthma & COPD\n➥ Unlike beta-blockers, no bronchoconstriction\n🔹No effect on electrolytes\n➥ Unlike diuretics → no hypokalemia\n🔹Stable BP control\n➥ No rebound hypertension\n🔹Good in elderly\n➥ Works well in low-renin hypertension\n🔹Useful in angina\n➥ Reduces afterload → decreases myocardial oxygen demand",
+      "medicineDisadvantage": "🔸Peripheral edema (very common)\n➥ Due to arteriolar dilation → capillary leakage\n🔸Reflex tachycardia (mild)\n➥ Especially at higher doses\n🔸Slow onset\n🔸Flushing & headache\n➥ Due to vasodilation",
+      "comparison": "",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For resistant hypertension\n★ Amlodipine + Losartan\n➥ Reduces edema + better BP control\n\n🔹For edema side effect\n★ Amlodipine + ACE inhibitor (e.g., Enalapril)\n➥ Venodilation reduces capillary pressure → ↓ edema\n\n🔹For angina\n★ Amlodipine + Atenolol\n➥ Controls heart rate + improves ischemia\n\n🔹For severe hypertension\n★ Amlodipine + Hydrochlorothiazide\n➥ Additive BP reduction\n\n🔹For CAD protection\n★ Amlodipine + Aspirin\n➥ Reduces cardiovascular risk"
+      ],
+      "teachingNotes": "Take once daily (same time each day)\nCan take with or without food\nDo not stop suddenly\nMonitor ankle swelling\nRise slowly (avoid dizziness)\nFull effect takes 1–2 weeks",
+      "id": "med_1774537163563_4voa0ecpp",
+      "createdAt": "2026-03-26T14:59:23.563Z",
+      "updatedAt": "2026-03-26T14:59:23.563Z"
+    },
+    {
+      "name": "VENLAFAXINE++",
+      "drugClass": "SNRI",
+      "mechanismOfAction": "Blocks reuptake of serotonin (5-HT) and norepinephrine (NE) in brain.\nAt lower dose → mostly serotonin effect.\nAt higher dose → stronger norepinephrine effect.\nMild dopamine effect at very high doses.",
+      "clinicalUses": [
+        "Major Depression (depression, fatigue/malaise, insomnia)",
+        "Generalized Anxiety (anxiety, restlessness)",
+        "Panic Disorder (palpitations, anxiety)",
+        "Social Anxiety Disorder (anxiety, social withdrawal, avoidance behavior, sweating)",
+        "Menopausal Hot Flashes (hot flashes, sweating)",
+        "Neuropathic Pain/chronic pain adjunct (paresthesia)",
+        "PTSD (anxiety)",
+        "OCD (anxiety)"
+      ],
+      "adverseEffects": [
+        "nausea",
+        "dry mouth",
+        "sweating",
+        "insomnia",
+        "dizziness",
+        "headache",
+        "constipation",
+        "sexual dysfunction",
+        "increased BP",
+        "anorexia",
+        "tremor"
+      ],
+      "contraindications": [
+        "Current MAOI use or within required washout period",
+        "Severe uncontrolled hypertension (relative/strong caution)",
+        "Mania without mood stabilizer (caution)"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": false,
+        "cautionInBreastfeeding": true,
+        "sexSpecificRisks": [
+          "Male: Erectile dysfunction, delayed ejaculation, reduced libido.",
+          "Female: Reduced libido, delayed orgasm, menstrual changes occasionally.",
+          "Pregnancy-age women: Review contraception/pregnancy planning.",
+          "Postmenopausal women: Can help hot flashes."
+        ]
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "depression",
+          "anxiety",
+          "restlessness",
+          "fatigue/malaise",
+          "poor concentration",
+          "social withdrawal",
+          "insomnia"
+        ],
+        "secondarySymptoms": [
+          "hot flashes",
+          "myalgia",
+          "irritability",
+          "anorexia"
+        ],
+        "inappropriateSymptoms": [
+          "Acute confusion",
+          "Severe agitation from stimulant intoxication",
+          "High fever with rigidity",
+          "Uncontrolled severe hypertension",
+          "Active mania",
+          "Seizure emergency",
+          "Psychotic hallucinations alone"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Major Depression (depression, fatigue/malaise, insomnia)",
+          "details": "Full treatment medicine."
+        },
+        {
+          "useName": "Generalized Anxiety (anxiety, restlessness)",
+          "details": "Full treatment, commonly first-line."
+        },
+        {
+          "useName": "Panic Disorder (palpitations, anxiety)",
+          "details": "Full treatment; start low to avoid early anxiety."
+        },
+        {
+          "useName": "Social Anxiety Disorder (anxiety, social withdrawal, avoidance behavior, sweating)",
+          "details": "Full treatment option."
+        },
+        {
+          "useName": "Menopausal Hot Flashes (hot flashes, sweating)",
+          "details": "Symptomatic reduction, especially if hormone therapy unsuitable."
+        },
+        {
+          "useName": "Neuropathic Pain/chronic pain adjunct (paresthesia)",
+          "details": "Adjunctive, not always first choice."
+        },
+        {
+          "useName": "PTSD (anxiety)",
+          "details": "Alternative option, often with therapy."
+        },
+        {
+          "useName": "OCD (anxiety)",
+          "details": "Usually second-line/off-label."
+        }
+      ],
+      "medicineAdvantage": "🔹Strong antidepressant efficacy\n➥Often very effective for moderate to severe depression.\n🔹Useful when SSRI fails\n➥Because it affects both serotonin + norepinephrine.\n🔹Good for anxiety disorders\n➥Helpful in panic, generalized anxiety, social anxiety.\n🔹Can improve low energy and poor motivation\n➥Higher doses may help fatigue and slowed thinking.\n🔹Useful for pain symptoms with depression\n➥May reduce neuropathic or body pain linked with depression.\n🔹Usually less sedating than mirtazapine/paroxetine\n➥Good when daytime alertness needed.\n🔹Weight gain usually lower than some alternatives\n➥Less than mirtazapine, many TCAs.",
+      "medicineDisadvantage": "🔸Short half-life/discontinuation syndrome\n➥Missed doses can cause dizziness, electric-shock feeling, nausea, anxiety.\n🔸Can raise BP\n➥Especially higher doses.\n🔸Sexual dysfunction common\n➥Reduced libido, delayed orgasm.\n🔸Nausea common early\n➥Frequent during first 1–2 weeks.\n🔸Sweating common\n➥Some patients stop because of excessive sweating.\n🔸Can worsen anxiety initially\n➥Temporary jitteriness in first days.\n🔸Withdrawal often harder than fluoxetine\n➥Needs slow taper.\n🔸Not ideal in uncontrolled hypertension\n➥Monitor BP.",
+      "comparisonData": "★ Venlafaxine\n➥Strong antidepressant efficacy\n➥Excellent for anxiety + depression\n➥Dose-flexible\n\n🔹Best Use\n➥Depression with anxiety\n➥Panic disorder\n➥Treatment after SSRI failure\n\n🔹When Doctor Choose\n➥Moderate/severe depression\n➥Low motivation + anxiety\n\n🔸Weakness\n➥Withdrawal symptoms\n➥BP increase\n➥Nausea\n\n★ Desvenlafaxine\n➥Active metabolite of venlafaxine\n➥Simple dosing\n➥Fewer metabolism interactions\n\n🔹Best Use\n➥When venlafaxine helpful but simpler regimen desired\n\n🔹When Doctor Choose\n➥Concern about liver metabolism issues\n\n🔸Weakness\n➥Can still cause nausea/BP rise\n➥Often more expensive\n\n★ Duloxetine\n➥Strong for depression + anxiety + pain\n\n🔹Best Use\n➥Neuropathy, fibromyalgia, chronic pain + depression\n\n🔹When Doctor Choose\n➥Pain prominent\n\n🔸Weakness\n➥Nausea\n➥Possible liver caution",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For partial response in depression\n★ Venlafaxine + Bupropion\n➥May improve energy, concentration, sexual side effects.\n\n🔹For insomnia/anxiety with depression\n★ Venlafaxine + Mirtazapine\n➥Useful when poor sleep, anorexia. (“California rocket fuel” nickname)\n\n🔹For resistant depression\n★ Venlafaxine + Aripiprazole\n➥Evidence-based augmentation when inadequate response.\n\n🔹For severe anxiety early treatment\n★ Venlafaxine + Short-term benzodiazepine\n➥Temporary relief until antidepressant works.\n\n🔹For persistent fatigue/apathy\n★ Venlafaxine + low-dose stimulant (specialist use)\n➥Sometimes used in resistant cases.\n\n🔹For sexual side effects\n★ Venlafaxine + Bupropion or Sildenafil (case-dependent)\n➥May reduce dysfunction."
+      ],
+      "teachingNotes": "Take same time daily.\nDo not stop suddenly. Taper slowly.\nIf missed dose, take when remembered unless near next dose.\nMay need 2–6 weeks for full benefit.\nEarly nausea often improves.\nCheck blood pressure periodically.\nSeek urgent help for serotonin syndrome signs: fever, agitation, tremor, diarrhea.\nReport suicidal thoughts, mania, severe restlessness early.",
+      "id": "med_1777305795144_lx7qimpap",
+      "createdAt": "2026-04-27T16:03:15.144Z",
+      "updatedAt": "2026-04-27T16:03:15.144Z"
+    },
+    {
+      "name": "TESTOSTERONE ENANTHATE++",
+      "drugClass": "Androgen",
+      "mechanismOfAction": "After IM or SC injection, the enanthate ester slowly releases testosterone.\nTestosterone binds androgen receptors in multiple tissues.\nSome converts to:\n     DHT → sexual function, prostate, hair\n     Estradiol → bone health, libido, mood\nRestores physiologic testosterone effects:\n    sexual function\n    erythropoiesis\n    muscle maintenance\n    bone density\n    secondary sexual characteristics",
+      "clinicalUses": [
+        "Male hypogonadism (low libido, fatigue/malaise, erectile dysfunction, muscle weakness)",
+        "Primary testicular failure (testosterone low, infertility)",
+        "Hypogonadotropic hypogonadism (low libido, fatigue/malaise, infertility)",
+        "Delayed puberty (absent pubertal progression)",
+        "Bone loss associated with androgen deficiency"
+      ],
+      "adverseEffects": [
+        "Acne",
+        "Oily skin",
+        "Fluid retention",
+        "Increased hematocrit",
+        "Mood changes",
+        "Reduced sperm count",
+        "Gynecomastia",
+        "Testicular atrophy"
+      ],
+      "contraindications": [
+        "Known or suspected cancer",
+        "Pregnancy",
+        "Hematocrit significantly elevated",
+        "Severe untreated obstructive sleep apnea",
+        "Uncontrolled heart failure",
+        "Desire for immediate fertility (relative contraindication"
+      ],
+      "sexRules": {
+        "avoidInPregnancy": true,
+        "cautionInBreastfeeding": false,
+        "sexSpecificRisks": []
+      },
+      "symptomMatchRules": {
+        "primarySymptoms": [
+          "low libido",
+          "reduced morning erections",
+          "erectile dysfunction",
+          "fatigue/malaise",
+          "delayed puberty",
+          "body hair reduced"
+        ],
+        "secondarySymptoms": [
+          "poor concentration",
+          "weight gain",
+          "depression"
+        ],
+        "inappropriateSymptoms": [
+          "fever",
+          "dysuria",
+          "cough",
+          "wheezing",
+          "abdominal pain",
+          "vomiting",
+          "diarrhea",
+          "chest pain"
+        ]
+      },
+      "clinicalUseDetails": [
+        {
+          "useName": "Male hypogonadism (low libido, fatigue/malaise, erectile dysfunction, muscle weakness)",
+          "details": "Primary replacement therapy"
+        },
+        {
+          "useName": "Delayed puberty (absent pubertal progression)",
+          "details": "Short-term induction under specialist supervision"
+        },
+        {
+          "useName": "Bone loss associated with androgen deficiency",
+          "details": "➥ Adjunctive treatment\n➥ Not sole osteoporosis therapy"
+        }
+      ],
+      "medicineAdvantage": "🔹Predictable long duration\n➥ Effective for approximately 1–2 weeks after injection.\n\n🔹Dose flexibility\n➥ Can be adjusted:\n       weekly\n       every 10 days\n       every 2 weeks",
+      "medicineDisadvantage": "🔸Peak–trough fluctuations\n➥ May cause:\n       irritability\n       mood changes\n       fatigue before next dose\n\n🔸Suppresses fertility\n➥ Suppresses LH and FSH.\n➥ Can reduce sperm production.\n\n🔸Can increase hematocrit\n➥ Risk of polycythemia.\n\n🔸Can worsen sleep apnea\n➥ Especially in predisposed patients.\n\n🔸Can increase estrogen\n➥ May cause:\n       gynecomastia\n       fluid retention",
+      "comparisonData": "",
+      "augmentingMedicines": "",
+      "simplifiedStructuredAugmentingMedicines": [
+        "🔹For fertility preservation\n★ Testosterone Enanthate + hCG\n➥ Helps maintain intratesticular testosterone.\n➥ May reduce testicular atrophy.\n\n🔹For infertility concern after suppression\n★ Testosterone Enanthate + Clomiphene (specialist use)\n➥ May stimulate endogenous gonadotropins.\n\n🔹For persistent erectile dysfunction after testosterone normalization\n★ Testosterone Enanthate + PDE5 inhibitor\n➥ Example: sildenafil.\n➥ Useful only if testosterone deficiency is corrected.\n\n🔹For bone loss\n★ Testosterone Enanthate + Vitamin D / Calcium ± osteoporosis therapy\n➥ Supportive, not replacement.\n\n🔹For estrogen-related adverse effects (not routine)\n★ Testosterone Enanthate + Aromatase inhibitor\n➥ Reserved for selected patients with confirmed elevated estradiol."
+      ],
+      "teachingNotes": "💉 Administration\n➥ Deep IM or prescribed SC injection.\n➥ Rotate injection sites.\n\n🧪 Check\n➥ total testosterone\n➥ CBC/hematocrit\n➥ PSA (when appropriate)\n➥ liver function\n➥ lipids\n\nFertility counseling\n➥ Discuss sperm plans before starting.\n\nLifestyle\n➥ Exercise, sleep, and weight control improve TRT outcomes.",
+      "id": "med_1777813735129_9mt6l7bj1",
+      "createdAt": "2026-05-03T13:08:55.129Z",
+      "updatedAt": "2026-05-03T13:08:55.129Z"
+    }
+  ],
+  "exportedAt": "2026-05-03T13:09:16.933Z",
+  "version": "1.0"
+}

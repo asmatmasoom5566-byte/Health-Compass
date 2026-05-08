@@ -15,7 +15,6 @@ export default function Register() {
   const { register } = useAuth();
   const [formData, setFormData] = useState({
     fullName: '',
-    email: '',
     phone: '',
     password: '',
     confirmPassword: '',
@@ -47,8 +46,18 @@ export default function Register() {
       return;
     }
 
-    if (!formData.email && !formData.phone) {
-      setError('Either email or phone number is required');
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters');
+      return;
+    }
+
+    if (!formData.phone) {
+      setError('Phone number is required');
+      return;
+    }
+
+    if (!formData.inviteCode) {
+      setError('Invite code is required');
       return;
     }
 
@@ -57,13 +66,12 @@ export default function Register() {
     try {
       await register({
         fullName: formData.fullName,
-        email: formData.email || undefined,
-        phone: formData.phone || undefined,
+        phone: formData.phone,
         password: formData.password,
         profession: formData.profession,
         country: formData.country || undefined,
         clinicHospital: formData.clinicHospital || undefined,
-        inviteCode: formData.inviteCode || undefined,
+        inviteCode: formData.inviteCode,
       });
 
       setSuccess('Registration successful! Please check your email/phone for verification. You can login after verification and admin approval.');
@@ -140,27 +148,15 @@ export default function Register() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="doctor@example.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-                <p className="text-xs text-muted-foreground">Required if phone not provided</p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">Phone Number *</Label>
                 <Input
                   id="phone"
                   type="tel"
                   placeholder="+1234567890"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  required
                 />
-                <p className="text-xs text-muted-foreground">Required if email not provided</p>
               </div>
 
               <div className="space-y-2">
@@ -208,12 +204,13 @@ export default function Register() {
               </div>
 
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="inviteCode">Invite Code (Optional)</Label>
+                <Label htmlFor="inviteCode">Invite Code *</Label>
                 <Input
                   id="inviteCode"
-                  placeholder="Enter invite code if you have one"
+                  placeholder="Enter your invite code"
                   value={formData.inviteCode}
                   onChange={(e) => setFormData({ ...formData, inviteCode: e.target.value })}
+                  required
                 />
               </div>
             </div>

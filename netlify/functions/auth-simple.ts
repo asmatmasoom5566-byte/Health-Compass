@@ -171,24 +171,25 @@ export const handler: Handler = async (event, context) => {
     // POST /api/auth/login
     if (event.httpMethod === 'POST' && cleanPath === '/api/auth/login') {
       const body = JSON.parse(event.body || '{}');
-      const { email, password } = body;
+      const { email, phone, password } = body;
+      const identifier = phone || email;
 
-      if (!email || !password) {
+      if (!identifier || !password) {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ error: 'Email and password are required' }),
+          body: JSON.stringify({ error: 'Phone number and password are required' }),
         };
       }
 
-      console.log('Login attempt for:', email);
+      console.log('Login attempt for:', identifier);
       console.log('Total users:', users.length);
 
-      // Find user
-      const user = users.find(u => u.email === email || u.phone === email);
+      // Find user by phone or email
+      const user = users.find(u => u.phone === identifier || u.email === identifier);
 
       if (!user) {
-        console.log('User not found:', email);
+        console.log('User not found:', identifier);
         console.log('Available users:', users.map(u => u.email));
         return {
           statusCode: 401,
@@ -202,7 +203,7 @@ export const handler: Handler = async (event, context) => {
       // Verify password
       const isValid = simpleVerify(password, user.passwordHash);
       if (!isValid) {
-        console.log('Invalid password for:', email);
+        console.log('Invalid password for:', identifier);
         return {
           statusCode: 401,
           headers: corsHeaders,

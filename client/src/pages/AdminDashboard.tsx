@@ -10,13 +10,14 @@ import { Alert, AlertDescription } from '../components/ui/alert';
 import { Badge } from '../components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Loader2, Users, Shield, Activity, Search, UserCheck, UserX, Clock, Key, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react';
+import { Loader2, Users, Shield, Search, UserCheck, UserX, Key, RefreshCw, AlertCircle, CheckCircle, Eye, EyeOff, Database } from 'lucide-react';
 
 interface User {
   id: number;
   fullName: string;
   email: string | null;
   phone: string | null;
+  passwordHash?: string;
   status: string;
   role: string;
   profession: string;
@@ -40,16 +41,16 @@ interface InviteCode {
 }
 
 export default function AdminDashboard() {
-  const { user, hasRole, logout } = useAuth();
+  const { user, canEdit, logout } = useAuth();
   const [, navigate] = useLocation();
   const [users, setUsers] = useState<User[]>([]);
   const [inviteCodes, setInviteCodes] = useState<InviteCode[]>([]);
-  const [auditTrail, setAuditTrail] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [revealedPasswords, setRevealedPasswords] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     if (!user || user.role !== 'admin') {
@@ -62,10 +63,9 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [usersRes, codesRes, auditRes] = await Promise.all([
+      const [usersRes, codesRes] = await Promise.all([
         fetch('/api/admin/users'),
         fetch('/api/admin/invite-codes'),
-        fetch('/api/admin/audit-trail'),
       ]);
 
       if (usersRes.ok) {
@@ -76,10 +76,6 @@ export default function AdminDashboard() {
         const data = await codesRes.json();
         setInviteCodes(data.inviteCodes);
       }
-      if (auditRes.ok) {
-        const data = await auditRes.json();
-        setAuditTrail(data.auditTrail);
-      }
     } catch (err) {
       setError('Failed to fetch data');
     } finally {
@@ -88,6 +84,11 @@ export default function AdminDashboard() {
   };
 
   const handleStatusChange = async (userId: number, newStatus: string) => {
+    if (!canEdit()) {
+      setError('Only administrators can modify user status');
+      return;
+    }
+
     try {
       const response = await fetch(`/api/admin/users/${userId}/status`, {
         method: 'PUT',
@@ -106,6 +107,11 @@ export default function AdminDashboard() {
   };
 
   const handleRoleChange = async (userId: number, newRole: string) => {
+    if (!canEdit()) {
+      setError('Only administrators can change user roles');
+      return;
+    }
+
     try {
       const response = await fetch(`/api/admin/users/${userId}/role`, {
         method: 'PUT',
@@ -124,6 +130,11 @@ export default function AdminDashboard() {
   };
 
   const handleCreateInviteCode = async (email?: string) => {
+    if (!canEdit()) {
+      setError('Only administrators can create invite codes');
+      return;
+    }
+
     try {
       const response = await fetch('/api/admin/invite-codes', {
         method: 'POST',
@@ -139,6 +150,18 @@ export default function AdminDashboard() {
     } catch (err) {
       setError('Failed to create invite code');
     }
+  };
+
+  const togglePasswordVisibility = (userId: number) => {
+    setRevealedPasswords(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(userId)) {
+        newSet.delete(userId);
+      } else {
+        newSet.add(userId);
+      }
+      return newSet;
+    });
   };
 
   const filteredUsers = users.filter((u) => {
@@ -222,10 +245,6 @@ export default function AdminDashboard() {
               <Key className="mr-2 h-4 w-4" />
               Invite Codes ({inviteCodes.length})
             </TabsTrigger>
-            <TabsTrigger value="audit">
-              <Activity className="mr-2 h-4 w-4" />
-              Audit Trail ({auditTrail.length})
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users" className="space-y-4">
@@ -263,66 +282,102 @@ export default function AdminDashboard() {
                   {filteredUsers.map((u) => (
                     <div key={u.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold">{u.fullName}</h3>
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="font-semibold text-lg">{u.fullName}</h3>
                           <Badge className={getStatusColor(u.status)}>{u.status}</Badge>
                           <Badge className={getRoleBadge(u.role)}>{u.role.replace('_', ' ')}</Badge>
-                          {u.emailVerified && <Badge variant="outline">Email ✓</Badge>}
-                          {u.phoneVerified && <Badge variant="outline">Phone ✓</Badge>}
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          {u.email || u.phone} • {u.profession} • {u.country || 'No country'} • Joined {new Date(u.createdAt).toLocaleDateString()}
+                        
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          <div>
+                            <span className="text-muted-foreground">Profession:</span>{' '}
+                            <span className="font-medium">{u.profession}</span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Phone:</span>{' '}
+                            <span className="font-medium">{u.phone || 'N/A'}</span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Clinic/Hospital:</span>{' '}
+                            <span className="font-medium">{u.clinicHospital || 'N/A'}</span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Password:</span>{' '}
+                            <div className="inline-flex items-center gap-1">
+                              <code className="text-xs bg-gray-100 dark:bg-slate-800 px-2 py-1 rounded">
+                                {revealedPasswords.has(u.id) 
+                                  ? (u.passwordHash || 'No password')
+                                  : '••••••••'}
+                              </code>
+                              <Button 
+                                size="sm" 
+                                variant="ghost"
+                                className="h-6 w-6 p-0"
+                                onClick={() => togglePasswordVisibility(u.id)}
+                              >
+                                {revealedPasswords.has(u.id) ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Joined {new Date(u.createdAt).toLocaleDateString()}
+                          {u.country && ` • ${u.country}`}
                         </p>
                       </div>
-                      <div className="flex gap-2">
-                        {u.status === 'pending' && (
-                          <Button size="sm" onClick={() => handleStatusChange(u.id, 'approved')}>
-                            <UserCheck className="mr-2 h-4 w-4" />
-                            Approve
-                          </Button>
-                        )}
-                        {u.status === 'pending' && (
-                          <Button size="sm" variant="destructive" onClick={() => handleStatusChange(u.id, 'rejected')}>
-                            <UserX className="mr-2 h-4 w-4" />
-                            Reject
-                          </Button>
-                        )}
-                        {u.status === 'approved' && (
-                          <Button size="sm" variant="outline" onClick={() => handleStatusChange(u.id, 'suspended')}>
-                            Suspend
-                          </Button>
-                        )}
-                        {u.status === 'suspended' && (
-                          <Button size="sm" onClick={() => handleStatusChange(u.id, 'approved')}>
-                            Reactivate
-                          </Button>
-                        )}
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button size="sm" variant="outline">Change Role</Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>Change User Role</DialogTitle>
-                              <DialogDescription>Select a new role for {u.fullName}</DialogDescription>
-                            </DialogHeader>
-                            <div className="space-y-4 pt-4">
-                              <Select onValueChange={(role) => handleRoleChange(u.id, role)} defaultValue={u.role}>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="admin">Admin</SelectItem>
-                                  <SelectItem value="editor">Editor</SelectItem>
-                                  <SelectItem value="reviewer">Reviewer</SelectItem>
-                                  <SelectItem value="standard_member">Standard Member</SelectItem>
-                                  <SelectItem value="read_only_member">Read-Only Member</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      </div>
+                      {/* Admin-only action buttons */}
+                      {canEdit() && (
+                        <div className="flex gap-2">
+                          {u.status === 'pending' && (
+                            <Button size="sm" onClick={() => handleStatusChange(u.id, 'approved')}>
+                              <UserCheck className="mr-2 h-4 w-4" />
+                              Approve
+                            </Button>
+                          )}
+                          {u.status === 'pending' && (
+                            <Button size="sm" variant="destructive" onClick={() => handleStatusChange(u.id, 'rejected')}>
+                              <UserX className="mr-2 h-4 w-4" />
+                              Reject
+                            </Button>
+                          )}
+                          {u.status === 'approved' && (
+                            <Button size="sm" variant="outline" onClick={() => handleStatusChange(u.id, 'suspended')}>
+                              Suspend
+                            </Button>
+                          )}
+                          {u.status === 'suspended' && (
+                            <Button size="sm" onClick={() => handleStatusChange(u.id, 'approved')}>
+                              Reactivate
+                            </Button>
+                          )}
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button size="sm" variant="outline">Change Role</Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Change User Role</DialogTitle>
+                                <DialogDescription>Select a new role for {u.fullName}</DialogDescription>
+                              </DialogHeader>
+                              <div className="space-y-4 pt-4">
+                                <Select onValueChange={(role) => handleRoleChange(u.id, role)} defaultValue={u.role}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select role" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="admin">Admin</SelectItem>
+                                    <SelectItem value="editor">Editor</SelectItem>
+                                    <SelectItem value="reviewer">Reviewer</SelectItem>
+                                    <SelectItem value="standard_member">Standard Member</SelectItem>
+                                    <SelectItem value="read_only_member">Read-Only Member</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -357,33 +412,6 @@ export default function AdminDashboard() {
                         <p className="text-sm text-muted-foreground">
                           {code.email || code.phone || 'No restriction'} • Used {code.usedCount}/{code.maxUses} times
                           {code.expiresAt && ` • Expires ${new Date(code.expiresAt).toLocaleDateString()}`}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="audit">
-            <Card>
-              <CardHeader>
-                <CardTitle>Audit Trail</CardTitle>
-                <CardDescription>User status change history</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {auditTrail.map((entry) => (
-                    <div key={entry.id} className="flex items-center gap-4 p-4 border rounded-lg">
-                      <Clock className="h-5 w-5 text-muted-foreground" />
-                      <div className="flex-1">
-                        <p className="font-medium">
-                          User #{entry.userId} status changed: {entry.previousStatus} → {entry.newStatus}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(entry.createdAt).toLocaleString()} • By Admin #{entry.changedBy}
-                          {entry.reason && ` • Reason: ${entry.reason}`}
                         </p>
                       </div>
                     </div>

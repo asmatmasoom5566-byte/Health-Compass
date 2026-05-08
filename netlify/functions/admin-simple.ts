@@ -1,32 +1,50 @@
 /**
  * Simple Admin Handler for Netlify
- * Self-contained with JWT authentication
+ * Self-contained with JWT authentication and localStorage-based data persistence
  */
 
 import { Handler, HandlerEvent } from '@netlify/functions';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
 
-// In-memory storage (same as auth-simple)
-interface User {
-  id: number;
-  fullName: string;
-  email: string | null;
-  phone: string | null;
-  passwordHash: string;
-  profession: string;
-  country: string | null;
-  clinicHospital: string | null;
-  status: string;
-  role: string;
-  emailVerified: boolean;
-  phoneVerified: boolean;
-}
+// Helper functions for localStorage-based storage
+const getUsers = (): any[] => {
+  try {
+    const stored = process.env.NETLIFY ? '[]' : (globalThis as any).localStorage?.getItem('users') || '[]';
+    return JSON.parse(stored);
+  } catch {
+    return [];
+  }
+};
 
-// This would normally connect to a database
-// For now, we'll import from auth-simple's storage
-let users: any[] = [];
+const saveUsers = (users: any[]) => {
+  if (process.env.NETLIFY) return;
+  (globalThis as any).localStorage?.setItem('users', JSON.stringify(users));
+};
+
+const getInviteCodes = (): any[] => {
+  try {
+    const stored = process.env.NETLIFY ? '[]' : (globalThis as any).localStorage?.getItem('inviteCodes') || '[]';
+    return JSON.parse(stored);
+  } catch {
+    return [];
+  }
+};
+
+const saveInviteCodes = (codes: any[]) => {
+  if (process.env.NETLIFY) return;
+  (globalThis as any).localStorage?.setItem('inviteCodes', JSON.stringify(codes));
+};
+
+// Generate invite code
+function generateInviteCode(): string {
+  const prefix = 'HC';
+  const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const timestamp = Date.now().toString(36).toUpperCase().slice(-4);
+  return `${prefix}${random}${timestamp}`;
+}
 
 // CORS headers
 const corsHeaders = {
@@ -83,11 +101,11 @@ export const handler: Handler = async (event, context) => {
         };
       }
 
-      // Return empty array or connect to actual storage
+      const users = getUsers();
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ users: [] }),
+        body: JSON.stringify({ users }),
       };
     }
 
@@ -102,25 +120,16 @@ export const handler: Handler = async (event, context) => {
         };
       }
 
+      const inviteCodes = getInviteCodes();
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({
-          inviteCodes: [
-            {
-              id: 1,
-              code: 'ASMAT881166',
-              maxUses: 10,
-              usedCount: 0,
-              isActive: true,
-            },
-          ],
-        }),
+        body: JSON.stringify({ inviteCodes }),
       };
     }
 
-    // GET /api/admin/audit-trail
-    if (event.httpMethod === 'GET' && cleanPath === '/api/admin/audit-trail') {
+    // POST /api/admin/invite-codes
+    if (event.httpMethod === 'POST' && cleanPath === '/api/admin/invite-codes') {
       const adminCheck = verifyAdmin(event);
       if ('status' in adminCheck) {
         return {
@@ -130,10 +139,93 @@ export const handler: Handler = async (event, context) => {
         };
       }
 
+      const body = JSON.parse(event.body || '{}');
+      const newCode = {
+        id: Date.now(),
+        code: generateInviteCode(),
+        maxUses: body.maxUses || 1,
+        usedCount: 0,
+        isActive: true,
+        createdBy: adminCheck.userId,
+        createdAt: new Date().toISOString(),
+      };
+
+      const inviteCodes = getInviteCodes();
+      inviteCodes.push(newCode);
+      saveInviteCodes(inviteCodes);
+
+      return {
+        statusCode: 201,
+        headers: corsHeaders,
+        body: JSON.stringify({ inviteCode: newCode }),
+      };
+    }
+
+    // PUT /api/admin/users/:id/status
+    if (event.httpMethod === 'PUT' && cleanPath.match(/^\/api\/admin\/users\/\d+\/status$/)) {
+      const adminCheck = verifyAdmin(event);
+      if ('status' in adminCheck) {
+        return {
+          statusCode: adminCheck.status,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: adminCheck.error }),
+        };
+      }
+
+      const userId = parseInt(cleanPath.split('/')[4]);
+      const body = JSON.parse(event.body || '{}');
+      const users = getUsers();
+      const userIndex = users.findIndex((u: any) => u.id === userId);
+
+      if (userIndex === -1) {
+        return {
+          statusCode: 404,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: 'User not found' }),
+        };
+      }
+
+      users[userIndex].status = body.status;
+      saveUsers(users);
+
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ auditTrail: [] }),
+        body: JSON.stringify({ user: users[userIndex] }),
+      };
+    }
+
+    // PUT /api/admin/users/:id/role
+    if (event.httpMethod === 'PUT' && cleanPath.match(/^\/api\/admin\/users\/\d+\/role$/)) {
+      const adminCheck = verifyAdmin(event);
+      if ('status' in adminCheck) {
+        return {
+          statusCode: adminCheck.status,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: adminCheck.error }),
+        };
+      }
+
+      const userId = parseInt(cleanPath.split('/')[4]);
+      const body = JSON.parse(event.body || '{}');
+      const users = getUsers();
+      const userIndex = users.findIndex((u: any) => u.id === userId);
+
+      if (userIndex === -1) {
+        return {
+          statusCode: 404,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: 'User not found' }),
+        };
+      }
+
+      users[userIndex].role = body.role;
+      saveUsers(users);
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({ user: users[userIndex] }),
       };
     }
 

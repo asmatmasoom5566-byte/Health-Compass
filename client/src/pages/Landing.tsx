@@ -48,7 +48,7 @@ import { DiagnosticQuestionsPanel } from "../components/DiagnosticQuestionsPanel
 
 export default function Landing() {
   const { user, isAuthenticated, isApproved, logout, hasRole } = useAuth();
-  const isAdmin = hasRole(['admin']);
+  const isAdmin = hasRole('admin');
   const noop = () => {}; // No-operation function for read-only users
   const {
     causes,
@@ -211,65 +211,54 @@ export default function Landing() {
                 </>
               ) : (
                 <>
-                  {isApproved && hasRole(['admin']) && (
+                  {isApproved && hasRole('admin') && (
                     <Link href="/admin">
-                      <Button variant="outline" className="gap-2">
-                        <Shield className="w-4 h-4" />
-                        Admin
+                      <Button variant="outline" className="gap-2" size="sm">
+                        <Shield className="w-3 h-3" />
+                        <span className="text-xs">Admin</span>
                       </Button>
                     </Link>
                   )}
-                  <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-slate-800 rounded-lg">
-                    <User className="w-4 h-4" />
-                    <span className="text-sm font-medium">{user?.fullName}</span>
-                    <Badge variant={isApproved ? 'default' : 'secondary'} className="text-xs">
-                      {user?.status}
-                    </Badge>
-                  </div>
-                  <Button variant="outline" onClick={() => logout()} className="gap-2">
-                    <LogOut className="w-4 h-4" />
-                    Logout
-                  </Button>
                 </>
               )}
 
               <Link href="/history">
-                <Button variant="outline" className="gap-2">
-                  <History className="w-4 h-4" />
-                  History
+                <Button variant="outline" className="gap-1" size="sm">
+                  <History className="w-3 h-3" />
+                  <span className="text-xs">History</span>
                 </Button>
               </Link>
 
               <Link href="/study">
-                <Button variant="outline" className="gap-2">
-                  <BookOpen className="w-4 h-4" />
-                  Study
+                <Button variant="outline" className="gap-1" size="sm">
+                  <BookOpen className="w-3 h-3" />
+                  <span className="text-xs">Study</span>
                 </Button>
               </Link>
               <Link href="/pharmacology">
-                <Button variant="outline" className="gap-2">
-                  <Pill className="w-4 h-4" />
-                  Pharmacology
+                <Button variant="outline" className="gap-1" size="sm">
+                  <Pill className="w-3 h-3" />
+                  <span className="text-xs">Pharmacology</span>
                 </Button>
               </Link>
               <Link href="/regester">
-                <Button variant="outline" className="gap-2">
-                  <FileText className="w-4 h-4" />
-                  Regester
+                <Button variant="outline" className="gap-1" size="sm">
+                  <FileText className="w-3 h-3" />
+                  <span className="text-xs">Regester</span>
                 </Button>
               </Link>
 
               <Link href="/all-visits">
-                <Button variant="outline" className="gap-2">
-                  <ClipboardList className="w-4 h-4" />
-                  All Visits
+                <Button variant="outline" className="gap-1" size="sm">
+                  <ClipboardList className="w-3 h-3" />
+                  <span className="text-xs">All Visits</span>
                 </Button>
               </Link>
 
               <Link href="/symptom-database">
-                <Button variant="outline" className="gap-2">
-                  <Database className="w-4 h-4" />
-                  Symptom DB
+                <Button variant="outline" className="gap-1" size="sm">
+                  <Database className="w-3 h-3" />
+                  <span className="text-xs">Symptom DB</span>
                 </Button>
               </Link>
             </div>
@@ -449,30 +438,19 @@ export default function Landing() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {isAdmin ? (
-                  <DataManager
-                    causes={causes}
-                    onImport={importData}
-                    onReset={resetDatabase}
-                    onAddCause={addCause}
-                    onDeleteCause={deleteCause}
-                    onEditCause={(cause) => updateCause(cause.id, cause)}
-                    onUpdateCauses={(updatedCauses) => {
-                      updateMultipleCauses(updatedCauses);
-                    }}
-                    canUndo={canUndo}
-                    onUndo={() => {}}
-                  />
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <Database className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg font-medium">Read-Only Access</p>
-                    <p className="text-sm mt-2">
-                      You can view the condition database but cannot make changes.
-                      Please contact an administrator if you need to modify data.
-                    </p>
-                  </div>
-                )}
+                <DataManager
+                  causes={causes}
+                  onImport={isAdmin ? importData : () => false}
+                  onReset={isAdmin ? resetDatabase : () => {}}
+                  onAddCause={isAdmin ? addCause : () => {}}
+                  onDeleteCause={isAdmin ? deleteCause : () => {}}
+                  onEditCause={isAdmin ? (cause) => updateCause(cause.id, cause) : () => {}}
+                  onUpdateCauses={isAdmin ? (updatedCauses) => {
+                    updateMultipleCauses(updatedCauses);
+                  } : () => {}}
+                  canUndo={canUndo}
+                  onUndo={() => {}}
+                />
               </CardContent>
             </Card>
           </TabsContent>

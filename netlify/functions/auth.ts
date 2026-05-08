@@ -173,8 +173,8 @@ export const handler: Handler = async (event, context) => {
         };
       }
 
-      const { email: emailInput, password } = result.data;
-      const identifier = emailInput || '';
+      const { email: emailInput, phone: phoneInput, password } = result.data;
+      const identifier = phoneInput || emailInput || '';
 
       console.log('Login attempt for:', identifier);
 

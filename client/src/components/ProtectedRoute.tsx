@@ -39,7 +39,7 @@ export default function ProtectedRoute({
       }
 
       // Requires admin but user is not admin
-      if (requireAdmin && !hasRole(['admin'])) {
+      if (requireAdmin && !hasRole('admin')) {
         navigate('/');
         return;
       }
@@ -92,7 +92,7 @@ export default function ProtectedRoute({
   }
 
   // Not admin (when admin required)
-  if (requireAdmin && !hasRole(['admin'])) {
+  if (requireAdmin && !hasRole('admin')) {
     return null; // Will redirect via useEffect
   }
 

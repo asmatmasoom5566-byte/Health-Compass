@@ -382,24 +382,14 @@ export type UserStatusAudit = typeof userStatusAudit.$inferSelect;
 // User registration schema
 export const userRegistrationSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
-  email: z.string().email("Invalid email format").optional().or(z.literal("")),
-  phone: z.string().min(10, "Phone number must be at least 10 digits").optional().or(z.literal("")),
+  phone: z.string().min(10, "Phone number must be at least 10 digits"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   profession: z.enum(['doctor', 'student', 'nurse', 'pharmacist', 'other'], {
     required_error: "Profession is required"
   }),
   country: z.string().optional(),
   clinicHospital: z.string().optional(),
-  inviteCode: z.string().optional(),
-}).refine(data => {
-  // At least one of email or phone must be provided
-  if ((!data.email || data.email === '') && (!data.phone || data.phone === '')) {
-    return {
-      message: "Either email or phone number is required",
-      path: ["email"]
-    };
-  }
-  return true;
+  inviteCode: z.string().min(1, "Invite code is required"),
 });
 
 // User login schema

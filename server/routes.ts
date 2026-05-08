@@ -43,7 +43,7 @@ export async function registerRoutes(
         return res.status(400).json({ error: result.error.errors[0].message });
       }
 
-      const { fullName, email, phone, password, profession, country, clinicHospital, inviteCode } = result.data;
+      const { fullName, phone, password, profession, country, clinicHospital, inviteCode } = result.data;
 
       // Check if invite code is required and validate
       const requireInvite = process.env.REQUIRE_INVITE_FOR_REGISTRATION === 'true';
@@ -65,23 +65,12 @@ export async function registerRoutes(
         if (code.usedCount >= code.maxUses) {
           return res.status(400).json({ error: 'Invite code has been used maximum times' });
         }
-        if (code.email && code.email !== email) {
-          return res.status(400).json({ error: 'Invite code is not valid for this email' });
-        }
       }
 
-      // Check if user already exists
-      if (email) {
-        const existingUser = await storage.getUserByEmail(email);
-        if (existingUser) {
-          return res.status(400).json({ error: 'Email already registered' });
-        }
-      }
-      if (phone) {
-        const existingUser = await storage.getUserByPhone(phone);
-        if (existingUser) {
-          return res.status(400).json({ error: 'Phone number already registered' });
-        }
+      // Check if user already exists by phone
+      const existingUser = await storage.getUserByPhone(phone);
+      if (existingUser) {
+        return res.status(400).json({ error: 'Phone number already registered' });
       }
 
       // Hash password
@@ -98,15 +87,15 @@ export async function registerRoutes(
       // Create user
       const user = await storage.createUser({
         fullName,
-        email: email || null,
-        phone: phone || null,
+        email: null,
+        phone,
         passwordHash,
         profession,
         country: country || null,
         clinicHospital: clinicHospital || null,
         status,
         role,
-        emailVerified: isFirstUser && autoVerifyFirstAdmin,
+        emailVerified: false,
         phoneVerified: false,
         lastLoginIp: null,
       });
@@ -116,37 +105,21 @@ export async function registerRoutes(
         await storage.updateInviteCodeUsage(inviteCode);
       }
 
-      // Send verification email/OTP
-      const verificationToken = generateToken();
-      const expiryHours = parseInt(process.env.VERIFICATION_TOKEN_EXPIRY_HOURS || '24');
-      const expiresAt = new Date(Date.now() + expiryHours * 60 * 60 * 1000);
-
-      if (email) {
-        await storage.createVerificationToken({
-          userId: user.id,
-          token: verificationToken,
-          type: 'email_verification',
-          expiresAt,
-        });
-        await sendVerificationEmail(email, verificationToken, fullName);
-      }
-
-      if (phone) {
-        const otp = generateOTP();
-        const otpExpiryMinutes = parseInt(process.env.OTP_EXPIRY_MINUTES || '10');
-        await storage.createVerificationToken({
-          userId: user.id,
-          token: otp,
-          type: 'phone_verification',
-          expiresAt: new Date(Date.now() + otpExpiryMinutes * 60 * 1000),
-        });
-        await sendSMSOTP(formatPhoneNumber(phone), otp);
-      }
+      // Send phone verification OTP
+      const otp = generateOTP();
+      const otpExpiryMinutes = parseInt(process.env.OTP_EXPIRY_MINUTES || '10');
+      await storage.createVerificationToken({
+        userId: user.id,
+        token: otp,
+        type: 'phone_verification',
+        expiresAt: new Date(Date.now() + otpExpiryMinutes * 60 * 1000),
+      });
+      await sendSMSOTP(formatPhoneNumber(phone), otp);
 
       res.status(201).json({
         message: isFirstUser 
           ? 'Admin account created successfully' 
-          : 'Registration successful. Please verify your email/phone and wait for approval.',
+          : 'Registration successful. Please verify your phone and wait for approval.',
         userId: user.id,
         status: user.status,
         requiresVerification: !isFirstUser,
@@ -375,8 +348,8 @@ export async function registerRoutes(
   // ADMIN ROUTES
   // ==========================================
 
-  // Get All Users (Admin only)
-  app.get("/api/admin/users", isAuthenticated, isAdmin, async (req, res) => {
+  // Get All Users (All authenticated users can view, only admins can see passwordHash)
+  app.get("/api/admin/users", isAuthenticated, async (req, res) => {
     try {
       const { search, status, role, profession, sortBy, sortOrder, page, limit } = req.query;
 
@@ -391,7 +364,14 @@ export async function registerRoutes(
         limit: limit ? parseInt(limit as string) : undefined,
       });
 
-      res.json({ users });
+      // Include passwordHash only for admins
+      const isAdminUser = req.user?.role === 'admin';
+      const sanitizedUsers = users.map(user => {
+        const { passwordHash, ...userWithoutPassword } = user;
+        return isAdminUser ? user : userWithoutPassword;
+      });
+
+      res.json({ users: sanitizedUsers });
     } catch (error) {
       console.error('Get users error:', error);
       res.status(500).json({ error: 'Failed to fetch users' });
