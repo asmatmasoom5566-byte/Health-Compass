@@ -1,50 +1,26 @@
 /**
  * Simple Admin Handler for Netlify
- * Self-contained with JWT authentication and localStorage-based data persistence
+ * Uses PostgreSQL for persistent, shared data storage
  */
 
 import { Handler, HandlerEvent } from '@netlify/functions';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
+import { 
+  getAllUsers, 
+  getUserById, 
+  updateUser, 
+  deleteUser,
+  getAllInviteCodes,
+  getInviteCode,
+  getInviteCodeById,
+  createInviteCode,
+  updateInviteCode,
+  deleteInviteCode,
+  getStatusAuditTrail,
+  initializeDefaultAdmin
+} from './db-storage';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
-
-// Helper functions for localStorage-based storage
-const getUsers = (): any[] => {
-  try {
-    const stored = process.env.NETLIFY ? '[]' : (globalThis as any).localStorage?.getItem('users') || '[]';
-    return JSON.parse(stored);
-  } catch {
-    return [];
-  }
-};
-
-const saveUsers = (users: any[]) => {
-  if (process.env.NETLIFY) return;
-  (globalThis as any).localStorage?.setItem('users', JSON.stringify(users));
-};
-
-const getInviteCodes = (): any[] => {
-  try {
-    const stored = process.env.NETLIFY ? '[]' : (globalThis as any).localStorage?.getItem('inviteCodes') || '[]';
-    return JSON.parse(stored);
-  } catch {
-    return [];
-  }
-};
-
-const saveInviteCodes = (codes: any[]) => {
-  if (process.env.NETLIFY) return;
-  (globalThis as any).localStorage?.setItem('inviteCodes', JSON.stringify(codes));
-};
-
-// Generate invite code
-function generateInviteCode(): string {
-  const prefix = 'HC';
-  const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-  const timestamp = Date.now().toString(36).toUpperCase().slice(-4);
-  return `${prefix}${random}${timestamp}`;
-}
 
 // CORS headers
 const corsHeaders = {
@@ -58,7 +34,7 @@ function verifyAdmin(event: HandlerEvent) {
   const authHeader = event.headers.authorization || event.headers.Authorization;
   
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return { error: 'Authentication required', status: 401 };
+    return { error: 'Authentication required', status: 401 as number };
   }
 
   const token = authHeader.substring(7);
@@ -67,16 +43,19 @@ function verifyAdmin(event: HandlerEvent) {
     const decoded = jwt.verify(token, JWT_SECRET) as any;
     
     if (decoded.role !== 'admin') {
-      return { error: 'Admin access required', status: 403 };
+      return { error: 'Admin access required', status: 403 as number };
     }
 
     return { userId: decoded.userId, role: decoded.role };
   } catch (error) {
-    return { error: 'Invalid token', status: 401 };
+    return { error: 'Invalid token', status: 401 as number };
   }
 }
 
 export const handler: Handler = async (event, context) => {
+  // Initialize default admin if needed
+  await initializeDefaultAdmin();
+
   // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {
     return {
@@ -93,15 +72,15 @@ export const handler: Handler = async (event, context) => {
     // GET /api/admin/users
     if (event.httpMethod === 'GET' && cleanPath === '/api/admin/users') {
       const adminCheck = verifyAdmin(event);
-      if ('status' in adminCheck) {
+      if ('status' in adminCheck && adminCheck.status) {
         return {
-          statusCode: adminCheck.status,
+          statusCode: adminCheck.status as number,
           headers: corsHeaders,
           body: JSON.stringify({ error: adminCheck.error }),
         };
       }
 
-      const users = getUsers();
+      const users = await getAllUsers();
       return {
         statusCode: 200,
         headers: corsHeaders,
@@ -112,15 +91,15 @@ export const handler: Handler = async (event, context) => {
     // GET /api/admin/invite-codes
     if (event.httpMethod === 'GET' && cleanPath === '/api/admin/invite-codes') {
       const adminCheck = verifyAdmin(event);
-      if ('status' in adminCheck) {
+      if ('status' in adminCheck && adminCheck.status) {
         return {
-          statusCode: adminCheck.status,
+          statusCode: adminCheck.status as number,
           headers: corsHeaders,
           body: JSON.stringify({ error: adminCheck.error }),
         };
       }
 
-      const inviteCodes = getInviteCodes();
+      const inviteCodes = await getAllInviteCodes();
       return {
         statusCode: 200,
         headers: corsHeaders,
@@ -131,28 +110,32 @@ export const handler: Handler = async (event, context) => {
     // POST /api/admin/invite-codes
     if (event.httpMethod === 'POST' && cleanPath === '/api/admin/invite-codes') {
       const adminCheck = verifyAdmin(event);
-      if ('status' in adminCheck) {
+      if ('status' in adminCheck && adminCheck.status) {
         return {
-          statusCode: adminCheck.status,
+          statusCode: adminCheck.status as number,
           headers: corsHeaders,
           body: JSON.stringify({ error: adminCheck.error }),
         };
       }
 
       const body = JSON.parse(event.body || '{}');
-      const newCode = {
-        id: Date.now(),
-        code: generateInviteCode(),
+      
+      // Generate invite code
+      const prefix = 'HC';
+      const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const timestamp = Date.now().toString(36).toUpperCase().slice(-4);
+      const code = `${prefix}${random}${timestamp}`;
+      
+      const newCode = await createInviteCode({
+        code,
         maxUses: body.maxUses || 1,
         usedCount: 0,
         isActive: true,
         createdBy: adminCheck.userId,
-        createdAt: new Date().toISOString(),
-      };
-
-      const inviteCodes = getInviteCodes();
-      inviteCodes.push(newCode);
-      saveInviteCodes(inviteCodes);
+        email: body.email || null,
+        phone: body.phone || null,
+        expiresAt: body.expiresAt || null,
+      });
 
       return {
         statusCode: 201,
@@ -164,9 +147,9 @@ export const handler: Handler = async (event, context) => {
     // PUT /api/admin/users/:id/status
     if (event.httpMethod === 'PUT' && cleanPath.match(/^\/api\/admin\/users\/\d+\/status$/)) {
       const adminCheck = verifyAdmin(event);
-      if ('status' in adminCheck) {
+      if ('status' in adminCheck && adminCheck.status) {
         return {
-          statusCode: adminCheck.status,
+          statusCode: adminCheck.status as number,
           headers: corsHeaders,
           body: JSON.stringify({ error: adminCheck.error }),
         };
@@ -174,33 +157,22 @@ export const handler: Handler = async (event, context) => {
 
       const userId = parseInt(cleanPath.split('/')[4]);
       const body = JSON.parse(event.body || '{}');
-      const users = getUsers();
-      const userIndex = users.findIndex((u: any) => u.id === userId);
-
-      if (userIndex === -1) {
-        return {
-          statusCode: 404,
-          headers: corsHeaders,
-          body: JSON.stringify({ error: 'User not found' }),
-        };
-      }
-
-      users[userIndex].status = body.status;
-      saveUsers(users);
+      
+      const updatedUser = await updateUser(userId, { status: body.status });
 
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ user: users[userIndex] }),
+        body: JSON.stringify({ user: updatedUser }),
       };
     }
 
     // PUT /api/admin/users/:id/role
     if (event.httpMethod === 'PUT' && cleanPath.match(/^\/api\/admin\/users\/\d+\/role$/)) {
       const adminCheck = verifyAdmin(event);
-      if ('status' in adminCheck) {
+      if ('status' in adminCheck && adminCheck.status) {
         return {
-          statusCode: adminCheck.status,
+          statusCode: adminCheck.status as number,
           headers: corsHeaders,
           body: JSON.stringify({ error: adminCheck.error }),
         };
@@ -208,24 +180,83 @@ export const handler: Handler = async (event, context) => {
 
       const userId = parseInt(cleanPath.split('/')[4]);
       const body = JSON.parse(event.body || '{}');
-      const users = getUsers();
-      const userIndex = users.findIndex((u: any) => u.id === userId);
-
-      if (userIndex === -1) {
-        return {
-          statusCode: 404,
-          headers: corsHeaders,
-          body: JSON.stringify({ error: 'User not found' }),
-        };
-      }
-
-      users[userIndex].role = body.role;
-      saveUsers(users);
+      
+      const updatedUser = await updateUser(userId, { role: body.role });
 
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ user: users[userIndex] }),
+        body: JSON.stringify({ user: updatedUser }),
+      };
+    }
+
+    // DELETE /api/admin/users/:id
+    if (event.httpMethod === 'DELETE' && cleanPath.match(/^\/api\/admin\/users\/\d+$/)) {
+      const adminCheck = verifyAdmin(event);
+      if ('status' in adminCheck && adminCheck.status) {
+        return {
+          statusCode: adminCheck.status as number,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: adminCheck.error }),
+        };
+      }
+
+      const userId = parseInt(cleanPath.split('/')[4]);
+      await deleteUser(userId);
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({ message: 'User deleted successfully' }),
+      };
+    }
+
+    // DELETE /api/admin/invite-codes/:id
+    if (event.httpMethod === 'DELETE' && cleanPath.match(/^\/api\/admin\/invite-codes\/\d+$/)) {
+      const adminCheck = verifyAdmin(event);
+      if ('status' in adminCheck && adminCheck.status) {
+        return {
+          statusCode: adminCheck.status as number,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: adminCheck.error }),
+        };
+      }
+
+      const codeId = parseInt(cleanPath.split('/')[4]);
+      const deleted = await deleteInviteCode(codeId);
+
+      if (!deleted) {
+        return {
+          statusCode: 404,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: 'Invite code not found' }),
+        };
+      }
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({ message: 'Invite code deleted successfully' }),
+      };
+    }
+
+    // GET /api/admin/audit-trail
+    if (event.httpMethod === 'GET' && cleanPath === '/api/admin/audit-trail') {
+      const adminCheck = verifyAdmin(event);
+      if ('status' in adminCheck && adminCheck.status) {
+        return {
+          statusCode: adminCheck.status as number,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: adminCheck.error }),
+        };
+      }
+
+      const auditTrail = await getStatusAuditTrail();
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({ auditTrail }),
       };
     }
 

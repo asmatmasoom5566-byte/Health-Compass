@@ -1,33 +1,14 @@
 /**
  * Simple Authentication Handler for Netlify
- * Self-contained with no external dependencies except JWT
+ * Uses PostgreSQL for persistent, shared data storage
  */
 
 import { Handler } from '@netlify/functions';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
+import { getUserById, getUserByPhone, getUserByEmail, createUser, getUserCount, updateUser, initializeDefaultAdmin } from './db-storage';
+import { hashPassword, verifyPassword } from '../../server/services/auth';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
-
-// Simple in-memory user storage (will reset on each deploy)
-interface User {
-  id: number;
-  fullName: string;
-  email: string | null;
-  phone: string | null;
-  passwordHash: string;
-  profession: string;
-  country: string | null;
-  clinicHospital: string | null;
-  status: string;
-  role: string;
-  emailVerified: boolean;
-  phoneVerified: boolean;
-}
-
-// Global users array (persists during function warm state)
-let users: User[] = [];
-let nextId = 1;
 
 // CORS headers
 const corsHeaders = {
@@ -36,47 +17,9 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
 };
 
-// Simple password hashing (SHA-256 for Netlify compatibility)
-function simpleHash(password: string): string {
-  return crypto
-    .createHash('sha256')
-    .update(password + 'salt-asmat-2024')
-    .digest('hex');
-}
-
-function simpleVerify(password: string, hash: string): boolean {
-  const newHash = simpleHash(password);
-  return newHash === hash;
-}
-
-// Initialize default admin
-function ensureAdminExists() {
-  if (users.length === 0) {
-    // Pre-hashed password for: asmat334499
-    const adminPasswordHash = simpleHash('asmat334499');
-    
-    users.push({
-      id: nextId++,
-      fullName: 'Asmat Kakar',
-      email: 'asmatmasoom5566@gmail.com',
-      phone: '0784690946',
-      passwordHash: adminPasswordHash,
-      profession: 'doctor',
-      country: 'Afghanistan',
-      clinicHospital: 'Doctor Asmat Masoom Clinic',
-      status: 'approved',
-      role: 'admin',
-      emailVerified: true,
-      phoneVerified: true,
-    });
-    
-    console.log('✅ Admin user created with ID:', nextId - 1);
-  }
-}
-
 export const handler: Handler = async (event, context) => {
-  // Ensure admin exists on every invocation
-  ensureAdminExists();
+  // Initialize default admin if needed
+  await initializeDefaultAdmin();
 
   // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {
@@ -105,22 +48,37 @@ export const handler: Handler = async (event, context) => {
       }
 
       // Check if user exists
-      if (email && users.find(u => u.email === email)) {
-        return {
-          statusCode: 400,
-          headers: corsHeaders,
-          body: JSON.stringify({ error: 'Email already registered' }),
-        };
+      if (email) {
+        const existingEmail = await getUserByEmail(email);
+        if (existingEmail) {
+          return {
+            statusCode: 400,
+            headers: corsHeaders,
+            body: JSON.stringify({ error: 'Email already registered' }),
+          };
+        }
+      }
+      
+      if (phone) {
+        const existingPhone = await getUserByPhone(phone);
+        if (existingPhone) {
+          return {
+            statusCode: 400,
+            headers: corsHeaders,
+            body: JSON.stringify({ error: 'Phone already registered' }),
+          };
+        }
       }
 
-      // Hash password
-      const passwordHash = simpleHash(password);
+      // Hash password using proper bcrypt
+      const passwordHash = await hashPassword(password);
 
       // Check if first user (make them admin)
-      const isFirstUser = users.length === 0 || (users.length === 1 && users[0].email === 'asmatmasoom5566@gmail.com');
+      const userCount = await getUserCount();
+      const isFirstUser = userCount === 0;
 
-      const newUser: User = {
-        id: nextId++,
+      // Create user in PostgreSQL
+      const newUser = await createUser({
         fullName,
         email: email || null,
         phone: phone || null,
@@ -128,13 +86,12 @@ export const handler: Handler = async (event, context) => {
         profession: profession || 'doctor',
         country: country || null,
         clinicHospital: clinicHospital || null,
-        status: 'approved', // Auto-approve for now
-        role: users.length === 0 ? 'admin' : 'standard_member',
+        status: 'approved',
+        role: isFirstUser ? 'admin' : 'standard_member',
         emailVerified: true,
         phoneVerified: true,
-      };
-
-      users.push(newUser);
+        lastLoginIp: null,
+      });
 
       // Generate JWT token
       const token = jwt.sign(
@@ -178,19 +135,23 @@ export const handler: Handler = async (event, context) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ error: 'Phone number and password are required' }),
+          body: JSON.stringify({ error: 'Phone/email and password are required' }),
         };
       }
 
       console.log('Login attempt for:', identifier);
-      console.log('Total users:', users.length);
 
       // Find user by phone or email
-      const user = users.find(u => u.phone === identifier || u.email === identifier);
+      let user: any = null;
+      if (phone) {
+        user = await getUserByPhone(phone);
+      }
+      if (!user && email) {
+        user = await getUserByEmail(email);
+      }
 
       if (!user) {
         console.log('User not found:', identifier);
-        console.log('Available users:', users.map(u => u.email));
         return {
           statusCode: 401,
           headers: corsHeaders,
@@ -200,8 +161,8 @@ export const handler: Handler = async (event, context) => {
 
       console.log('User found, verifying password...');
 
-      // Verify password
-      const isValid = simpleVerify(password, user.passwordHash);
+      // Verify password using bcrypt
+      const isValid = await verifyPassword(password, user.passwordHash);
       if (!isValid) {
         console.log('Invalid password for:', identifier);
         return {
@@ -211,7 +172,7 @@ export const handler: Handler = async (event, context) => {
         };
       }
 
-      console.log('Login successful for:', email);
+      console.log('Login successful for:', user.email || user.phone);
 
       // Generate JWT token
       const token = jwt.sign(
@@ -261,7 +222,7 @@ export const handler: Handler = async (event, context) => {
 
       try {
         const decoded = jwt.verify(token, JWT_SECRET) as any;
-        const user = users.find(u => u.id === decoded.userId);
+        const user = await getUserById(decoded.userId);
 
         if (!user) {
           return {
