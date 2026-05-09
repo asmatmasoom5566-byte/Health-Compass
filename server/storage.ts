@@ -222,6 +222,13 @@ class PostgresStorage {
       }
     }
     
+    // Delete related audit trail records first
+    await db.delete(userStatusAudit).where(eq(userStatusAudit.userId, id));
+    
+    // Delete related verification tokens
+    await db.delete(verificationTokens).where(eq(verificationTokens.userId, id));
+    
+    // Now delete the user
     await db.delete(users).where(eq(users.id, id));
   }
 
