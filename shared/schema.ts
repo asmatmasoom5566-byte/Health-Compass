@@ -1,7 +1,7 @@
 import { pgTable, text, serial, integer, boolean, jsonb, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { sql, relations } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 
 // We'll define the shapes here for consistency, even though persistence is client-side.
 // We keep a dummy table definition to satisfy backend infrastructure requirements if needed later.
@@ -11,8 +11,8 @@ export const causes = pgTable("causes", {
   name: text("name").notNull(),
   baseRate: integer("base_rate").notNull(), // 0-100
   symptoms: jsonb("symptoms").$type<string[]>().notNull(),
-  pathognomonicSymptoms: jsonb("pathognomonic_symptoms").$type<string[]>().notNull().default(sql`'[]'::jsonb`),
-  cardinalSymptoms: jsonb("cardinal_symptoms").$type<string[]>().notNull().default(sql`'[]'::jsonb`), // Important Features for conditions
+  pathognomonicSymptoms: jsonb("pathognomonic_symptoms").$type<string[]>().notNull().default([]),
+  cardinalSymptoms: jsonb("cardinal_symptoms").$type<string[]>().notNull().default([]), // Important Features for conditions
   // Course Type field removed per user request
   startDuration: integer("start_duration").notNull(), // Earliest possible time (MANDATORY)
   endDuration: integer("end_duration").notNull(), // Latest possible time (MANDATORY)
@@ -25,7 +25,7 @@ export const causes = pgTable("causes", {
 export const searchHistory = pgTable("search_history", {
   id: serial("id").primaryKey(),
   symptoms: jsonb("symptoms").$type<string[]>().notNull(),
-  timestamp: timestamp("timestamp").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  timestamp: timestamp("timestamp").default(new Date()).notNull(),
 });
 
 // For stateful symptom analysis
@@ -36,7 +36,7 @@ export const analysisSessions = pgTable("analysis_sessions", {
   answers: jsonb("answers").$type<Array<{question: string, answer: boolean}>>().default([]),
   diagnosisScores: jsonb("diagnosis_scores").$type<Array<{name: string, score: number}>>().default([]),
   status: text("status").default("active").notNull(), // active, completed
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  createdAt: timestamp("created_at").default(new Date()).notNull(),
 });
 
 // User Management Tables
@@ -55,8 +55,8 @@ export const users = pgTable("users", {
   phoneVerified: boolean("phone_verified").notNull().default(false),
   lastLoginAt: timestamp("last_login_at"),
   lastLoginIp: text("last_login_ip"),
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
-  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  createdAt: timestamp("created_at").default(new Date()).notNull(),
+  updatedAt: timestamp("updated_at").default(new Date()).notNull(),
 });
 
 export const verificationTokens = pgTable("verification_tokens", {
@@ -65,7 +65,7 @@ export const verificationTokens = pgTable("verification_tokens", {
   token: text("token").notNull(),
   type: text("type").notNull(), // email_verification, phone_verification, password_reset
   expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  createdAt: timestamp("created_at").default(new Date()).notNull(),
 });
 
 export const inviteCodes = pgTable("invite_codes", {
@@ -78,7 +78,7 @@ export const inviteCodes = pgTable("invite_codes", {
   maxUses: integer("max_uses").notNull().default(1),
   usedCount: integer("used_count").notNull().default(0),
   isActive: boolean("is_active").notNull().default(true),
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  createdAt: timestamp("created_at").default(new Date()).notNull(),
 });
 
 export const userStatusAudit = pgTable("user_status_audit", {
@@ -88,7 +88,7 @@ export const userStatusAudit = pgTable("user_status_audit", {
   newStatus: text("new_status").notNull(),
   changedBy: integer("changed_by").notNull().references(() => users.id),
   reason: text("reason"),
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  createdAt: timestamp("created_at").default(new Date()).notNull(),
 });
 
 // Relations
