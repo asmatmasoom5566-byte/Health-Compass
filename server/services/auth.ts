@@ -1,16 +1,11 @@
-import * as argon2 from 'argon2';
+import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
 /**
- * Hash a password using argon2
+ * Hash a password using bcrypt
  */
 export async function hashPassword(password: string): Promise<string> {
-  return await argon2.hash(password, {
-    type: argon2.argon2id,
-    memoryCost: 2 ** 16,
-    timeCost: 3,
-    parallelism: 1,
-  });
+  return await bcrypt.hash(password, 10);
 }
 
 /**
@@ -18,7 +13,7 @@ export async function hashPassword(password: string): Promise<string> {
  */
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
   try {
-    return await argon2.verify(hash, password);
+    return await bcrypt.compare(password, hash);
   } catch (error) {
     console.error('Password verification error:', error);
     return false;

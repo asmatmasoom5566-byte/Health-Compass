@@ -71,6 +71,7 @@ export default function Login() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
+                autoComplete="off"
               />
             </div>
 

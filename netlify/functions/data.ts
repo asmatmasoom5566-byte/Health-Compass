@@ -81,6 +81,46 @@ export const handler: Handler = async (event, context) => {
       };
     }
 
+    // GET /api/pharmacology - Get all pharmacology (authenticated users)
+    if (event.httpMethod === 'GET' && path === '/api/pharmacology') {
+      const authCheck = verifyAuth(event);
+      if ('status' in authCheck) {
+        return {
+          statusCode: authCheck.status,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: authCheck.error }),
+        };
+      }
+
+      const pharmacology = await storage.getPharmacology();
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({ pharmacology }),
+      };
+    }
+
+    // GET /api/patient-records - Get patient records (authenticated users)
+    if (event.httpMethod === 'GET' && path === '/api/patient-records') {
+      const authCheck = verifyAuth(event);
+      if ('status' in authCheck) {
+        return {
+          statusCode: authCheck.status,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: authCheck.error }),
+        };
+      }
+
+      const records = await storage.getPatientRecords();
+
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({ records }),
+      };
+    }
+
     // POST /api/analysis - Analyze symptoms (authenticated users)
     if (event.httpMethod === 'POST' && path === '/api/analysis') {
       const authCheck = verifyAuth(event);

@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Cause, Medicine } from '@shared/schema';
+import { useAuth } from '../contexts/AuthContext';
 
 interface SymptomEntry {
   id: string;
@@ -33,6 +34,8 @@ interface SymptomEntry {
 const SYMPTOM_MEANINGS_STORAGE_KEY = 'symptom_meanings_v1';
 
 const SymptomDatabasePage: React.FC = () => {
+  const { hasRole } = useAuth();
+  const canEdit = hasRole(['admin']); // Only admin can edit
   const { toast } = useToast();
   const [symptoms, setSymptoms] = useState<SymptomEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -614,15 +617,17 @@ const SymptomDatabasePage: React.FC = () => {
                   </div>
                 </div>
                 
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleEdit(symptom)}
-                  className="flex items-center gap-2"
-                >
-                  <Edit className="w-4 h-4" />
-                  Edit
-                </Button>
+                {canEdit && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEdit(symptom)}
+                    className="flex items-center gap-2"
+                  >
+                    <Edit className="w-4 h-4" />
+                    Edit
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>

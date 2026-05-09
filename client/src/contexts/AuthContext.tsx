@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { syncDataFromServer } from '../services/data-sync';
 
 interface User {
   id: number;
@@ -25,6 +26,7 @@ interface AuthContextType {
   resendVerification: (data: { email?: string; phone?: string }) => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  refreshUser: () => Promise<void>;
   hasPermission: (permission: string) => boolean;
   hasRole: (role: string) => boolean;
   canEdit: () => boolean;
@@ -53,6 +55,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Fetch current user on mount
   useEffect(() => {
     fetchCurrentUser();
+    
+    // Poll for user updates every 30 seconds to catch role changes
+    const pollInterval = setInterval(fetchCurrentUser, 30000);
+    
+    return () => clearInterval(pollInterval);
   }, []);
 
   const getToken = () => {
@@ -76,6 +83,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
+        
+        // Sync shared data from server when user is authenticated
+        if (token) {
+          await syncDataFromServer();
+        }
       } else {
         setUser(null);
         removeToken(); // Clear invalid token
@@ -91,7 +103,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
+      body: JSON.stringify({
+        phone: credentials.phone,
+        password: credentials.password,
+      }),
     });
 
     if (!response.ok) {
@@ -106,6 +121,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     // Set user data
     setUser(data.user);
+    
+    // Sync shared data from server (conditions, pharmacology, patient records)
+    await syncDataFromServer();
+    
+    // Force reload to reinitialize all hooks with fresh database data
+    window.location.reload();
   };
 
   const register = async (data: RegisterData) => {
@@ -217,6 +238,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const refreshUser = async () => {
+    await fetchCurrentUser();
+  };
+
   const hasPermission = (permission: string): boolean => {
     if (!user) return false;
 
@@ -259,6 +284,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         resendVerification,
         updateProfile,
         changePassword,
+        refreshUser,
         hasPermission,
         hasRole,
         canEdit,
