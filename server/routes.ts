@@ -46,26 +46,24 @@ export async function registerRoutes(
 
       const { fullName, phone, password, profession, country, clinicHospital, inviteCode } = result.data;
 
-      // Check if invite code is required and validate
-      const requireInvite = process.env.REQUIRE_INVITE_FOR_REGISTRATION === 'true';
-      if (requireInvite && !inviteCode) {
-        return res.status(400).json({ error: 'Invite code is required' });
+      // ALWAYS require invite code for registration
+      if (!inviteCode) {
+        return res.status(400).json({ error: 'Invite code is required for registration' });
       }
 
-      if (inviteCode) {
-        const code = await storage.getInviteCode(inviteCode);
-        if (!code) {
-          return res.status(400).json({ error: 'Invalid invite code' });
-        }
-        if (!code.isActive) {
-          return res.status(400).json({ error: 'Invite code is no longer active' });
-        }
-        if (code.expiresAt && new Date(code.expiresAt) < new Date()) {
-          return res.status(400).json({ error: 'Invite code has expired' });
-        }
-        if (code.usedCount >= code.maxUses) {
-          return res.status(400).json({ error: 'Invite code has been used maximum times' });
-        }
+      // Validate invite code
+      const code = await storage.getInviteCode(inviteCode);
+      if (!code) {
+        return res.status(400).json({ error: 'Invalid invite code' });
+      }
+      if (!code.isActive) {
+        return res.status(400).json({ error: 'Invite code is no longer active' });
+      }
+      if (code.expiresAt && new Date(code.expiresAt) < new Date()) {
+        return res.status(400).json({ error: 'Invite code has expired' });
+      }
+      if (code.usedCount >= code.maxUses) {
+        return res.status(400).json({ error: 'Invite code has reached its usage limit' });
       }
 
       // Check if user already exists by phone
@@ -97,7 +95,7 @@ export async function registerRoutes(
         status,
         role,
         emailVerified: false,
-        phoneVerified: false,
+        phoneVerified: true, // Auto-verify phone since they're registering with it
         lastLoginIp: null,
       });
 

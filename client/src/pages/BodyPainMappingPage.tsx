@@ -17,6 +17,7 @@ import {
   User,
   Search
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { BodyPainMapping } from '../components/BodyPainMapping';
 import { SuggestionList } from '../components/SuggestionList';
 import { useSymptomTracker } from '../hooks/use-symptom-tracker';
@@ -24,6 +25,8 @@ import { Cause } from '@shared/schema';
 
 export default function BodyPainMappingPage() {
   const { causes, selectedSymptoms, addSymptom, removeSymptom, clearSymptoms } = useSymptomTracker();
+  const { hasRole } = useAuth();
+  const isAdmin = hasRole('admin');
   const [selectedCondition, setSelectedCondition] = useState<Cause | null>(null);
   const [painRegions, setPainRegions] = useState<string[]>([]);
 
@@ -99,6 +102,7 @@ export default function BodyPainMappingPage() {
                     onAddSymptom={addSymptom}
                     onEdit={(cause) => console.log('Edit cause:', cause)}
                     onDelete={(causeId) => console.log('Delete cause:', causeId)}
+                    canEdit={isAdmin}
                   />
                 </CardContent>
               </Card>

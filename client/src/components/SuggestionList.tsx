@@ -75,6 +75,7 @@ interface SuggestionListProps {
   onSelect: (cause: Cause) => void;
   onScoredCausesChange?: (scoredCauses: ScoredCause[]) => void;
   onAddSymptom: (symptom: string) => void;
+  canEdit?: boolean; // Controls visibility of edit/remove features
 }
 
 export function SuggestionList({ 
@@ -85,7 +86,8 @@ export function SuggestionList({
   onDelete,
   onSelect,
   onScoredCausesChange,
-  onAddSymptom
+  onAddSymptom,
+  canEdit = true // Default to true for backward compatibility
 }: SuggestionListProps) {
   const [viewingCause, setViewingCause] = useState<ScoredCause | null>(null);
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
@@ -517,8 +519,8 @@ export function SuggestionList({
                   <Pill className="w-5 h-5" />
                 </Button>
                 
-                {/* Restore All Button - Only show when conditions have been removed */}
-                {removedCount > 0 && (
+                {/* Restore All Button - Only show when conditions have been removed AND user has edit permission */}
+                {removedCount > 0 && canEdit && (
                   <Button
                     onClick={handleRestoreAll}
                     variant="outline"
@@ -570,16 +572,18 @@ export function SuggestionList({
                         </span>
                       )}
                     </h3>
-                    {/* Edit Button - Positioned absolutely in top-right corner */}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-50 dark:hover:bg-blue-900/30"
-                      onClick={(e) => handleEditCondition(cause, e)}
-                      title="Edit Condition"
-                    >
-                      <Edit className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                    </Button>
+                    {/* Edit Button - Only visible for users with edit permission */}
+                    {canEdit && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-50 dark:hover:bg-blue-900/30"
+                        onClick={(e) => handleEditCondition(cause, e)}
+                        title="Edit Condition"
+                      >
+                        <Edit className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      </Button>
+                    )}
                     {cause.matchCount > 0 && (
                       <>
                         <div className="h-2 w-full bg-gray-200/50 dark:bg-gray-700/50 rounded-full overflow-hidden mt-2 backdrop-blur-sm border border-white/10">
@@ -729,14 +733,16 @@ export function SuggestionList({
                   
                   {/* Action Buttons */}
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {/* Remove Button - Only hides from view, doesn't delete from database */}
-                    <button
-                      onClick={(e) => handleRemoveCondition(cause.id, e)}
-                      className="p-1.5 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 transition-all duration-200 transform hover:scale-110"
-                      title="Remove from suggestions (won't delete from database)"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                    {/* Remove Button - Only visible for users with edit permission */}
+                    {canEdit && (
+                      <button
+                        onClick={(e) => handleRemoveCondition(cause.id, e)}
+                        className="p-1.5 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 transition-all duration-200 transform hover:scale-110"
+                        title="Remove from suggestions (won't delete from database)"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
                 
@@ -1138,8 +1144,8 @@ export function SuggestionList({
               </div>
             )}
             
-            {/* All Conditions Removed Message */}
-            {scoredCauses.length > 0 && filterRemoved(scoredCauses).length === 0 && (
+            {/* All Conditions Removed Message - Only visible to users with edit permission */}
+            {scoredCauses.length > 0 && filterRemoved(scoredCauses).length === 0 && canEdit && (
               <div className="flex flex-col items-center justify-center py-8 text-center">
                 <div className="bg-orange-100 dark:bg-orange-900/30 p-4 rounded-full mb-4">
                   <X className="w-8 h-8 text-orange-600 dark:text-orange-400" />

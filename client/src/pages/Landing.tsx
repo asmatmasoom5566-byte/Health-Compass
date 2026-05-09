@@ -382,6 +382,7 @@ export default function Landing() {
                       onSelect={handleSelectCause}
                       onScoredCausesChange={handleScoredCausesChange}
                       onAddSymptom={handleAddSymptom}
+                      canEdit={isAdmin}
                     />
                     
                     {isPatientComplete && (
