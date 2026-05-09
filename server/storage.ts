@@ -3,7 +3,7 @@ import { type User, type InsertUser, type VerificationToken, type InsertVerifica
 import { hashPassword } from "./services/auth";
 import { db } from './db';
 import { users, inviteCodes, userStatusAudit, causes, searchHistory, analysisSessions, verificationTokens } from '@shared/schema';
-import { eq, like, or, desc, asc, and, count, sql as drizzleSql } from 'drizzle-orm';
+import { eq, like, or, desc, asc, and, count, sql as drizzleSql, sql } from 'drizzle-orm';
 
 // Use PostgreSQL storage if database is connected, otherwise use in-memory
 const usePostgres = db !== null;
@@ -14,15 +14,12 @@ if (usePostgres) {
   console.log('📦 Using in-memory storage (fallback)');
 }
 
-// PostgreSQL Storage Class
+// PostgreSQL Storage Class - Actually uses PostgreSQL database
 class PostgresStorage {
-  private causes: Cause[] = [];
+  private causes: Cause[] = []; // Only for conditions (loaded from JSON)
   private searchHistory: SearchHistory[] = [];
   private analysisSessions: AnalysisSession[] = [];
-  private users: User[] = [];
   private verificationTokens: VerificationToken[] = [];
-  private inviteCodes: InviteCode[] = [];
-  private userStatusAudit: UserStatusAudit[] = [];
   private nextId = 1;
 
   constructor() {
@@ -121,31 +118,33 @@ class PostgresStorage {
 
   // User Management Methods
   async getUserCount(): Promise<number> {
-    return this.users.length;
+    const result = await db.select().from(users);
+    return result.length;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const newUser: User = {
-      id: this.nextId++,
+    const result = await db.insert(users).values({
       ...insertUser,
       lastLoginAt: null,
       createdAt: new Date(),
       updatedAt: new Date(),
-    } as User;
-    this.users.push(newUser);
-    return newUser;
+    }).returning();
+    return result[0];
   }
 
   async getUserById(id: number): Promise<User | undefined> {
-    return this.users.find(user => user.id === id);
+    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    return this.users.find(user => user.email === email);
+    const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    return result[0];
   }
 
   async getUserByPhone(phone: string): Promise<User | undefined> {
-    return this.users.find(user => user.phone === phone);
+    const result = await db.select().from(users).where(eq(users.phone, phone)).limit(1);
+    return result[0];
   }
 
   async getAllUsers(filters?: {
@@ -158,64 +157,72 @@ class PostgresStorage {
     page?: number;
     limit?: number;
   }): Promise<User[]> {
-    let filtered = [...this.users];
+    let query = db.select().from(users);
 
+    const conditions = [];
+    
     if (filters?.search) {
-      const search = filters.search.toLowerCase();
-      filtered = filtered.filter(u => 
-        u.fullName.toLowerCase().includes(search) ||
-        u.email?.toLowerCase().includes(search) ||
-        u.phone?.includes(search)
+      conditions.push(
+        or(
+          like(users.fullName, `%${filters.search}%`),
+          like(users.email, `%${filters.search}%`),
+          like(users.phone, `%${filters.search}%`)
+        )
       );
     }
 
-    if (filters?.status) {
-      filtered = filtered.filter(u => u.status === filters.status);
+    if (filters?.status && filters.status !== 'all') {
+      conditions.push(eq(users.status, filters.status));
     }
 
-    if (filters?.role) {
-      filtered = filtered.filter(u => u.role === filters.role);
+    if (filters?.role && filters.role !== 'all') {
+      conditions.push(eq(users.role, filters.role));
     }
 
-    if (filters?.profession) {
-      filtered = filtered.filter(u => u.profession === filters.profession);
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
     }
 
-    if (filters?.sortBy) {
-      const field = filters.sortBy as keyof User;
-      filtered.sort((a, b) => {
-        const aVal = a[field];
-        const bVal = b[field];
-        if (aVal < bVal) return filters.sortOrder === 'asc' ? -1 : 1;
-        if (aVal > bVal) return filters.sortOrder === 'asc' ? 1 : -1;
-        return 0;
-      });
-    }
+    const sortField = filters?.sortBy === 'fullName' ? users.fullName : users.createdAt;
+    const sortOrder = filters?.sortOrder === 'asc' ? asc : desc;
+    query = query.orderBy(sortOrder(sortField));
 
     if (filters?.page && filters?.limit) {
-      const start = (filters.page - 1) * filters.limit;
-      filtered = filtered.slice(start, start + filters.limit);
+      const offset = (filters.page - 1) * filters.limit;
+      query = query.limit(filters.limit).offset(offset);
+    } else if (filters?.limit) {
+      query = query.limit(filters.limit);
     }
 
-    return filtered;
+    return await query;
   }
 
   async updateUser(id: number, updates: Partial<User>): Promise<User> {
-    const index = this.users.findIndex(user => user.id === id);
-    if (index === -1) throw new Error("User not found");
+    const result = await db
+      .update(users)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
     
-    this.users[index] = { 
-      ...this.users[index], 
-      ...updates, 
-      updatedAt: new Date() 
-    };
-    return this.users[index];
+    if (result.length === 0) {
+      throw new Error("User not found");
+    }
+    return result[0];
   }
 
   async deleteUser(id: number): Promise<void> {
-    const index = this.users.findIndex(user => user.id === id);
-    if (index === -1) throw new Error("User not found");
-    this.users.splice(index, 1);
+    const user = await this.getUserById(id);
+    if (!user) throw new Error("User not found");
+    
+    // Check if it's the last admin
+    if (user.role === 'admin') {
+      const admins = await db.select().from(users).where(eq(users.role, 'admin'));
+      if (admins.length <= 1) {
+        throw new Error("Cannot delete the last admin user");
+      }
+    }
+    
+    await db.delete(users).where(eq(users.id, id));
   }
 
   async updateUserStatus(userId: number, newStatus: string, adminId: number, reason?: string): Promise<User> {
@@ -261,92 +268,110 @@ class PostgresStorage {
   }
 
   async createInviteCode(insertCode: InsertInviteCode): Promise<InviteCode> {
-    const newCode: InviteCode = {
-      id: this.nextId++,
+    const result = await db.insert(inviteCodes).values({
       ...insertCode,
       usedCount: 0,
       createdAt: new Date(),
-    };
-    this.inviteCodes.push(newCode);
-    return newCode;
+    }).returning();
+    return result[0];
   }
 
   async getInviteCode(code: string): Promise<InviteCode | undefined> {
-    return this.inviteCodes.find(c => c.code === code);
+    const result = await db.select().from(inviteCodes).where(eq(inviteCodes.code, code)).limit(1);
+    return result[0];
+  }
+
+  async getInviteCodeById(id: number): Promise<InviteCode | undefined> {
+    const result = await db.select().from(inviteCodes).where(eq(inviteCodes.id, id)).limit(1);
+    return result[0];
   }
 
   async updateInviteCodeUsage(code: string): Promise<InviteCode> {
-    const index = this.inviteCodes.findIndex(c => c.code === code);
-    if (index === -1) throw new Error("Invite code not found");
+    const existingCode = await this.getInviteCode(code);
+    if (!existingCode) throw new Error("Invite code not found");
     
-    this.inviteCodes[index].usedCount += 1;
+    const newUsedCount = existingCode.usedCount + 1;
+    const shouldDeactivate = newUsedCount >= existingCode.maxUses;
     
-    // Auto-deactivate if maxUses is reached (for single-use codes)
-    if (this.inviteCodes[index].usedCount >= this.inviteCodes[index].maxUses) {
-      this.inviteCodes[index].isActive = false;
-      console.log(`🔒 Invite code ${code} auto-deactivated (reached max uses: ${this.inviteCodes[index].maxUses})`);
+    const result = await db
+      .update(inviteCodes)
+      .set({ 
+        usedCount: newUsedCount,
+        isActive: shouldDeactivate ? false : existingCode.isActive
+      })
+      .where(eq(inviteCodes.code, code))
+      .returning();
+    
+    if (shouldDeactivate) {
+      console.log(`🔒 Invite code ${code} auto-deactivated (reached max uses: ${existingCode.maxUses})`);
     }
     
-    return this.inviteCodes[index];
+    return result[0];
+  }
+
+  async updateInviteCode(id: number, updates: Partial<InviteCode>): Promise<InviteCode> {
+    const result = await db
+      .update(inviteCodes)
+      .set(updates)
+      .where(eq(inviteCodes.id, id))
+      .returning();
+    
+    if (result.length === 0) {
+      throw new Error("Invite code not found");
+    }
+    return result[0];
   }
 
   async getAllInviteCodes(filters?: {
     isActive?: boolean;
     createdBy?: number;
   }): Promise<InviteCode[]> {
-    let filtered = [...this.inviteCodes];
+    let query = db.select().from(inviteCodes).orderBy(desc(inviteCodes.createdAt));
 
+    const conditions = [];
+    
     if (filters?.isActive !== undefined) {
-      filtered = filtered.filter(c => c.isActive === filters.isActive);
+      conditions.push(eq(inviteCodes.isActive, filters.isActive));
     }
 
     if (filters?.createdBy) {
-      filtered = filtered.filter(c => c.createdBy === filters.createdBy);
+      conditions.push(eq(inviteCodes.createdBy, filters.createdBy));
     }
 
-    return filtered;
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+
+    return await query;
   }
 
   async deleteInviteCode(id: number): Promise<void> {
-    const index = this.inviteCodes.findIndex(c => c.id === id);
-    if (index === -1) throw new Error("Invite code not found");
-    this.inviteCodes.splice(index, 1);
-  }
-
-  async deleteUser(id: number): Promise<void> {
-    const index = this.users.findIndex(u => u.id === id);
-    if (index === -1) throw new Error("User not found");
+    const code = await this.getInviteCodeById(id);
+    if (!code) throw new Error("Invite code not found");
     
-    // Prevent deleting the last admin
-    const user = this.users[index];
-    if (user.role === 'admin') {
-      const adminCount = this.users.filter(u => u.role === 'admin').length;
-      if (adminCount <= 1) {
-        throw new Error("Cannot delete the last admin user");
-      }
+    if (code.usedCount > 0) {
+      throw new Error("Cannot delete invite code that has been used");
     }
     
-    this.users.splice(index, 1);
+    await db.delete(inviteCodes).where(eq(inviteCodes.id, id));
   }
 
   async createStatusAuditEntry(insertEntry: Omit<UserStatusAudit, 'id' | 'createdAt'>): Promise<UserStatusAudit> {
-    const newEntry: UserStatusAudit = {
-      id: this.nextId++,
+    const result = await db.insert(userStatusAudit).values({
       ...insertEntry,
       createdAt: new Date(),
-    };
-    this.userStatusAudit.push(newEntry);
-    return newEntry;
+    }).returning();
+    return result[0];
   }
 
   async getStatusAuditTrail(userId?: number): Promise<UserStatusAudit[]> {
-    let filtered = [...this.userStatusAudit];
+    let query = db.select().from(userStatusAudit).orderBy(desc(userStatusAudit.createdAt));
+
     if (userId) {
-      filtered = filtered.filter(entry => entry.userId === userId);
+      query = query.where(eq(userStatusAudit.userId, userId));
     }
-    return filtered.sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+
+    return await query;
   }
 
   // Auto-initialize admin user and invite code on startup
