@@ -23,6 +23,31 @@ export function usePharmacology() {
     return [];
   });
 
+  // Auto-load from import file if localStorage is empty
+  useEffect(() => {
+    const autoLoadFromImport = async () => {
+      const stored = localStorage.getItem(PHARMACOLOGY_STORAGE_KEY);
+      if (!stored) {
+        try {
+          console.log('Auto-loading pharmacology data from import file...');
+          const response = await fetch('/pharmacology-import.json');
+          if (response.ok) {
+            const data = await response.json();
+            if (data.medicines && Array.isArray(data.medicines)) {
+              console.log(`Loaded ${data.medicines.length} medicines from import file`);
+              localStorage.setItem(PHARMACOLOGY_STORAGE_KEY, JSON.stringify(data));
+              setMedicines(data.medicines);
+            }
+          }
+        } catch (error) {
+          console.log('No import file found or failed to load:', error);
+        }
+      }
+    };
+    
+    autoLoadFromImport();
+  }, []);
+
   // Persist to local storage whenever state changes
   useEffect(() => {
     console.log("=== PHARMACOLOGY STATE UPDATE DEBUG ===");

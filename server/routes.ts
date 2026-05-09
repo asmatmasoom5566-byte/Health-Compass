@@ -12,6 +12,7 @@ import { sendVerificationEmail, sendApprovalNotification, sendRejectionNotificat
 import { sendSMSOTP, formatPhoneNumber } from "./services/sms";
 import { isAuthenticated, isApproved, isAdmin } from "./middleware/auth";
 import { loginLimiter, registrationLimiter, verificationResendLimiter } from "./middleware/rate-limit";
+import * as argon2 from 'argon2';
 
 export async function registerRoutes(
   httpServer: Server,
@@ -99,6 +100,8 @@ export async function registerRoutes(
         phoneVerified: false,
         lastLoginIp: null,
       });
+
+      console.log(`✅ User registered: ${fullName} (ID: ${user.id}, Phone: ${phone}, Status: ${status})`);
 
       // Update invite code usage if provided
       if (inviteCode) {
@@ -364,11 +367,19 @@ export async function registerRoutes(
         limit: limit ? parseInt(limit as string) : undefined,
       });
 
+      console.log(`📊 Admin fetching users: ${users.length} users found`);
+
       // Include passwordHash only for admins
       const isAdminUser = req.user?.role === 'admin';
       const sanitizedUsers = users.map(user => {
-        const { passwordHash, ...userWithoutPassword } = user;
-        return isAdminUser ? user : userWithoutPassword;
+        if (isAdminUser) {
+          // Return full user object including passwordHash for admins
+          return user;
+        } else {
+          // Remove passwordHash for non-admins
+          const { passwordHash, ...userWithoutPassword } = user;
+          return userWithoutPassword;
+        }
       });
 
       res.json({ users: sanitizedUsers });
@@ -425,6 +436,51 @@ export async function registerRoutes(
     }
   });
 
+  // Reset User Password (Admin only)
+  app.put("/api/admin/users/:id/reset-password", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { newPassword } = req.body;
+      
+      if (!newPassword || newPassword.length < 6) {
+        return res.status(400).json({ error: 'Password must be at least 6 characters' });
+      }
+
+      const userId = parseInt(req.params.id);
+      
+      // Hash the new password
+      const passwordHash = await argon2.hash(newPassword);
+      
+      // Update user's password
+      await storage.updateUser(userId, { passwordHash });
+
+      res.json({ message: 'Password reset successfully' });
+    } catch (error) {
+      console.error('Reset password error:', error);
+      res.status(500).json({ error: 'Failed to reset password' });
+    }
+  });
+
+  // Delete User (Admin only)
+  app.delete("/api/admin/users/:id", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      
+      // Prevent admin from deleting themselves
+      if (userId === req.user!.id) {
+        return res.status(400).json({ error: 'Cannot delete your own account' });
+      }
+
+      await storage.deleteUser(userId);
+      console.log(`🗑️ User deleted: ID ${userId} by admin ${req.user!.fullName}`);
+
+      res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+      console.error('Delete user error:', error);
+      const message = error instanceof Error ? error.message : 'Failed to delete user';
+      res.status(500).json({ error: message });
+    }
+  });
+
   // Get Invite Codes (Admin only)
   app.get("/api/admin/invite-codes", isAuthenticated, isAdmin, async (req, res) => {
     try {
@@ -468,6 +524,18 @@ export async function registerRoutes(
     } catch (error) {
       console.error('Create invite code error:', error);
       res.status(500).json({ error: 'Failed to create invite code' });
+    }
+  });
+
+  // Delete Invite Code (Admin only)
+  app.delete("/api/admin/invite-codes/:id", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const inviteCodeId = parseInt(req.params.id);
+      await storage.deleteInviteCode(inviteCodeId);
+      res.json({ message: 'Invite code deleted successfully' });
+    } catch (error) {
+      console.error('Delete invite code error:', error);
+      res.status(500).json({ error: 'Failed to delete invite code' });
     }
   });
 

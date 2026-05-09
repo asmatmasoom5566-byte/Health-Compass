@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from '../components/ui/alert';
 import { Badge } from '../components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Loader2, Users, Shield, Search, UserCheck, UserX, Key, RefreshCw, AlertCircle, CheckCircle, Eye, EyeOff, Database } from 'lucide-react';
+import { Loader2, Users, Shield, Search, UserCheck, UserX, Key, RefreshCw, AlertCircle, CheckCircle, Eye, EyeOff, Database, Copy, Trash2, Lock } from 'lucide-react';
 
 interface User {
   id: number;
@@ -51,6 +51,9 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [revealedPasswords, setRevealedPasswords] = useState<Set<number>>(new Set());
+  const [resetUserId, setResetUserId] = useState<number | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [showResetDialog, setShowResetDialog] = useState(false);
 
   useEffect(() => {
     if (!user || user.role !== 'admin') {
@@ -149,6 +152,111 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       setError('Failed to create invite code');
+    }
+  };
+
+  const handleCopyInviteCode = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setSuccess('Invite code copied to clipboard');
+      setTimeout(() => setSuccess(''), 2000);
+    } catch (err) {
+      setError('Failed to copy invite code');
+    }
+  };
+
+  const handleDeleteInviteCode = async (codeId: number) => {
+    if (!canEdit()) {
+      setError('Only administrators can delete invite codes');
+      return;
+    }
+
+    if (!confirm('Are you sure you want to delete this invite code?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/invite-codes/${codeId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setSuccess('Invite code deleted successfully');
+        fetchData();
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        setError('Failed to delete invite code');
+      }
+    } catch (err) {
+      setError('Failed to delete invite code');
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!canEdit() || !resetUserId || !newPassword) {
+      setError('Please enter a new password');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/users/${resetUserId}/reset-password`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newPassword }),
+      });
+
+      if (response.ok) {
+        setSuccess('Password reset successfully');
+        setShowResetDialog(false);
+        setResetUserId(null);
+        setNewPassword('');
+        fetchData();
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        const data = await response.json();
+        setError(data.error || 'Failed to reset password');
+      }
+    } catch (err) {
+      setError('Failed to reset password');
+    }
+  };
+
+  const openResetPasswordDialog = (userId: number) => {
+    setResetUserId(userId);
+    setNewPassword('');
+    setShowResetDialog(true);
+  };
+
+  const handleDeleteUser = async (userId: number, userName: string) => {
+    if (!canEdit()) {
+      setError('Only administrators can delete users');
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to delete ${userName}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setSuccess('User deleted successfully');
+        fetchData();
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        const data = await response.json();
+        setError(data.error || 'Failed to delete user');
+      }
+    } catch (err) {
+      setError('Failed to delete user');
     }
   };
 
@@ -279,7 +387,18 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="space-y-2">
-                  {filteredUsers.map((u) => (
+                  {filteredUsers.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                      <p className="text-lg font-medium text-muted-foreground">No users found</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {users.length === 0 
+                          ? "No registered users yet. Share invite codes to allow users to register."
+                          : "No users match your current search/filter criteria."}
+                      </p>
+                    </div>
+                  ) : (
+                    filteredUsers.map((u) => (
                     <div key={u.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
@@ -376,10 +495,27 @@ export default function AdminDashboard() {
                               </div>
                             </DialogContent>
                           </Dialog>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => openResetPasswordDialog(u.id)}
+                          >
+                            <Lock className="mr-2 h-4 w-4" />
+                            Reset Password
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            onClick={() => handleDeleteUser(u.id, u.fullName)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </Button>
                         </div>
                       )}
                     </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -398,29 +534,92 @@ export default function AdminDashboard() {
                 </Button>
 
                 <div className="space-y-2">
-                  {inviteCodes.map((code) => (
-                    <div key={code.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <code className="bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded font-mono text-sm">
-                            {code.code}
-                          </code>
-                          <Badge variant={code.isActive ? 'default' : 'secondary'}>
-                            {code.isActive ? 'Active' : 'Inactive'}
-                          </Badge>
+                  {inviteCodes.map((code) => {
+                    const usageText = code.usedCount === 0 
+                      ? 'Not used yet' 
+                      : code.usedCount >= code.maxUses 
+                        ? `Fully used (${code.usedCount}/${code.maxUses})`
+                        : `Partially used (${code.usedCount}/${code.maxUses})`;
+                    
+                    return (
+                      <div key={code.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <code className="bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded font-mono text-sm">
+                              {code.code}
+                            </code>
+                            <Badge variant={code.isActive ? 'default' : 'secondary'}>
+                              {code.isActive ? 'Active' : 'Inactive'}
+                            </Badge>
+                            <Badge variant={code.usedCount === 0 ? 'outline' : code.usedCount >= code.maxUses ? 'destructive' : 'secondary'}>
+                              {usageText}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            {code.email || code.phone || 'No restriction'} • Created {new Date(code.createdAt).toLocaleDateString()}
+                            {code.expiresAt && ` • Expires ${new Date(code.expiresAt).toLocaleDateString()}`}
+                          </p>
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          {code.email || code.phone || 'No restriction'} • Used {code.usedCount}/{code.maxUses} times
-                          {code.expiresAt && ` • Expires ${new Date(code.expiresAt).toLocaleDateString()}`}
-                        </p>
+                        <div className="flex gap-2">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handleCopyInviteCode(code.code)}
+                            title="Copy code"
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            onClick={() => handleDeleteInviteCode(code.id)}
+                            title="Delete code"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Password Reset Dialog */}
+        <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Reset User Password</DialogTitle>
+              <DialogDescription>Enter a new password for this user. They will need to use this password to log in.</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 pt-4">
+              <div className="space-y-2">
+                <Label htmlFor="new-password">New Password</Label>
+                <Input
+                  id="new-password"
+                  type="text"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter new password (min 6 characters)"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Minimum 6 characters. Share this password securely with the user.
+                </p>
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={() => setShowResetDialog(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleResetPassword}>
+                  <Lock className="mr-2 h-4 w-4" />
+                  Reset Password
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

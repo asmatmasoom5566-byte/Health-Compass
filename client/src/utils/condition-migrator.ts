@@ -98,11 +98,40 @@ export const migrateConditionsToDemographics = (existingConditions: any[]): Caus
 };
 
 // Template for generating conditions from user's custom database
-// Import user's custom conditions from JSON file (73 conditions)
-import userConditionsData from '../data/my-conditions.json';
+// Conditions will be loaded dynamically from public folder
+let cachedConditions: Cause[] | null = null;
 
+// Synchronous version for initial state - returns cached or empty
 export const generateFullConditionDatabase = (): Cause[] => {
-  return userConditionsData as unknown as Cause[];
+  // Return cached conditions if available
+  if (cachedConditions) {
+    return cachedConditions;
+  }
+  return [];
+};
+
+// Async function to load conditions (called from useEffect)
+export const loadConditionDatabase = async (): Promise<Cause[]> => {
+  // Return cached conditions if already loaded
+  if (cachedConditions) {
+    return cachedConditions;
+  }
+  
+  try {
+    // Load conditions from public folder
+    const response = await fetch('/my-conditions.json');
+    if (response.ok) {
+      const data = await response.json();
+      cachedConditions = data as unknown as Cause[];
+      console.log(`Loaded ${cachedConditions.length} conditions from my-conditions.json`);
+      return cachedConditions;
+    }
+  } catch (error) {
+    console.error('Failed to load conditions from my-conditions.json:', error);
+  }
+  
+  // Return empty array if load fails
+  return [];
 };
 
 // Course type functionality has been removed per user request

@@ -38,7 +38,7 @@ export interface TrackerState {
 const STORAGE_KEY = 'symptom_tracker_v1';
 
 // Import the full condition database and migration utilities
-import { generateFullConditionDatabase, migrateConditionsToDemographics } from '@/utils/condition-migrator';
+import { generateFullConditionDatabase, migrateConditionsToDemographics, loadConditionDatabase } from '@/utils/condition-migrator';
 
 // Initial seed data - now uses the full 124 condition database
 const INITIAL_CAUSES: Cause[] = generateFullConditionDatabase();
@@ -97,6 +97,32 @@ export function useSymptomTracker() {
     console.log('Using initial full condition database with 124 conditions');
     return INITIAL_CAUSES;
   });
+
+  // Auto-load conditions from JSON file if causes array is empty
+  useEffect(() => {
+    const autoLoadConditions = async () => {
+      // Only auto-load if no conditions are currently loaded
+      if (causes.length === 0) {
+        try {
+          console.log('Auto-loading conditions from my-conditions.json...');
+          const conditions = await loadConditionDatabase();
+          if (conditions.length > 0) {
+            console.log(`Loaded ${conditions.length} conditions, setting state...`);
+            setCauses(conditions);
+            toast({
+              title: "Condition Database Loaded",
+              description: `Successfully loaded ${conditions.length} conditions.`,
+              duration: 3000
+            });
+          }
+        } catch (error) {
+          console.error('Failed to auto-load conditions:', error);
+        }
+      }
+    };
+    
+    autoLoadConditions();
+  }, []);
 
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>(() => {
     try {

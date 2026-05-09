@@ -1,28 +1,32 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import pg from "pg";
-import * as schema from "@shared/schema";
+import dotenv from 'dotenv';
+dotenv.config();
 
-const { Pool } = pg;
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
 
-// Only require DATABASE_URL in production
-if (!process.env.DATABASE_URL && process.env.NODE_ENV === "production") {
-  throw new Error(
-    "DATABASE_URL must be set in production. Did you forget to provision a database?",
-  );
-}
+// Get database URL from environment variable
+const DATABASE_URL = process.env.DATABASE_URL;
 
-// Create a dummy pool for development/local testing
-let pool: pg.Pool;
-if (process.env.DATABASE_URL) {
-  pool = new Pool({ connectionString: process.env.DATABASE_URL });
+let dbInstance: any = null;
+
+if (!DATABASE_URL) {
+  console.warn('⚠️ DATABASE_URL not found in .env file');
+  console.warn('💡 Add your Neon PostgreSQL connection string to .env');
+  console.warn('💡 Format: DATABASE_URL=postgresql://user:pass@host/db');
+  console.warn('💡 Using in-memory storage as fallback');
 } else {
-  // Create a mock pool for local development
-  pool = new Pool({
-    connectionString: "postgresql://localhost:5432/dummy",
-    // Mock the query method to prevent actual database calls
-    query: () => Promise.resolve({ rows: [], rowCount: 0 })
-  } as any);
+  try {
+    // Create database connection using Neon serverless driver
+    const sql = neon(DATABASE_URL);
+
+    // Initialize Drizzle ORM with the Neon connection
+    dbInstance = drizzle(sql);
+    
+    console.log('✅ Connected to Neon PostgreSQL database');
+  } catch (error) {
+    console.error('❌ Failed to connect to database:', error);
+    console.warn('💡 Using in-memory storage as fallback');
+  }
 }
 
-export { pool };
-export const db = drizzle(pool, { schema });
+export { dbInstance as db };

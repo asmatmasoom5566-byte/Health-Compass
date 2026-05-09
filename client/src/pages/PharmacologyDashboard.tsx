@@ -33,9 +33,12 @@ import { MedicineComparisonSelector } from '@/components/MedicineComparisonSelec
 import { DetailedMedicineComparison } from '@/components/DetailedMedicineComparison';
 import { ShortMedicineComparison } from '@/components/ShortMedicineComparison';
 import { Link } from "wouter";
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function PharmacologyDashboard() {
   const { toast } = useToast();
+  const { hasRole } = useAuth();
+  const isAdmin = hasRole('admin');
   const { medicines } = usePharmacology();
   
   const [patientDemographics, setPatientDemographics] = useState({
@@ -381,7 +384,14 @@ export default function PharmacologyDashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-2">
-                <PharmacologyDataManager />
+                {isAdmin ? (
+                  <PharmacologyDataManager />
+                ) : (
+                  <div className="p-4 text-center text-muted-foreground">
+                    <p className="text-sm">Medicine database is in read-only mode for members.</p>
+                    <p className="text-xs mt-1">Contact an admin to make changes.</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>

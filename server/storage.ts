@@ -1,8 +1,21 @@
 import { Cause, type SearchHistory, type InsertSearchHistory, type AnalysisSession, type InsertAnalysisSession } from "@shared/schema";
 import { type User, type InsertUser, type VerificationToken, type InsertVerificationToken, type InviteCode, type InsertInviteCode, type UserStatusAudit } from "@shared/schema";
+import { hashPassword } from "./services/auth";
+import { db } from './db';
+import { users, inviteCodes, userStatusAudit, causes, searchHistory, analysisSessions, verificationTokens } from '@shared/schema';
+import { eq, like, or, desc, asc, and, count, sql as drizzleSql } from 'drizzle-orm';
 
-// In-memory storage for local development
-class InMemoryStorage {
+// Use PostgreSQL storage if database is connected, otherwise use in-memory
+const usePostgres = db !== null;
+
+if (usePostgres) {
+  console.log('📦 Using PostgreSQL storage');
+} else {
+  console.log('📦 Using in-memory storage (fallback)');
+}
+
+// PostgreSQL Storage Class
+class PostgresStorage {
   private causes: Cause[] = [];
   private searchHistory: SearchHistory[] = [];
   private analysisSessions: AnalysisSession[] = [];
@@ -588,6 +601,28 @@ class InMemoryStorage {
     return filtered;
   }
 
+  async deleteInviteCode(id: number): Promise<void> {
+    const index = this.inviteCodes.findIndex(c => c.id === id);
+    if (index === -1) throw new Error("Invite code not found");
+    this.inviteCodes.splice(index, 1);
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    const index = this.users.findIndex(u => u.id === id);
+    if (index === -1) throw new Error("User not found");
+    
+    // Prevent deleting the last admin
+    const user = this.users[index];
+    if (user.role === 'admin') {
+      const adminCount = this.users.filter(u => u.role === 'admin').length;
+      if (adminCount <= 1) {
+        throw new Error("Cannot delete the last admin user");
+      }
+    }
+    
+    this.users.splice(index, 1);
+  }
+
   async createStatusAuditEntry(insertEntry: Omit<UserStatusAudit, 'id' | 'createdAt'>): Promise<UserStatusAudit> {
     const newEntry: UserStatusAudit = {
       id: this.nextId++,
@@ -647,6 +682,24 @@ class InMemoryStorage {
 
       console.log('✅ Admin user created:', adminUser.fullName);
       console.log('✅ Invite code created: ASMAT881166');
+
+      // Create test member user for demonstration
+      const memberPasswordHash = await hashPassword('member123');
+      const memberUser = await this.createUser({
+        fullName: 'Dr. Ahmad Test',
+        email: null,
+        phone: '0700000001',
+        passwordHash: memberPasswordHash,
+        profession: 'doctor',
+        country: 'Afghanistan',
+        clinicHospital: 'Kabul Medical Center',
+        status: 'approved',
+        role: 'standard_member',
+        emailVerified: false,
+        phoneVerified: true,
+        lastLoginIp: null,
+      });
+      console.log('✅ Test member created:', memberUser.fullName, '(Phone: 0700000001, Password: member123)');
     }
   }
 }
