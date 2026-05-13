@@ -7,7 +7,6 @@ import {
   Stethoscope, 
   History, 
   Database, 
-  Settings,
   Activity,
   BarChart3,
   AlertTriangle,
@@ -276,10 +275,6 @@ export default function Landing() {
               <BarChart3 className="w-4 h-4" />
               Analytics
             </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-2">
-              <Settings className="w-4 h-4" />
-              Settings
-            </TabsTrigger>
           </TabsList>
 
           {/* Diagnosis Tab */}
@@ -458,71 +453,6 @@ export default function Landing() {
               <ClinicalCalculators />
               <ReferenceRanges />
             </div>
-          </TabsContent>
-
-          {/* Settings Tab */}
-          <TabsContent value="settings" className="space-y-6">
-            <Card className="bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 border-border">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="w-5 h-5 text-primary" />
-                  Application Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-medium mb-4">Data Management</h3>
-                    <div className="flex gap-3">
-                      <Button variant="outline" onClick={() => resetDatabase()}>
-                        Reset Database
-                      </Button>
-                      <Button variant="outline" disabled={!canUndo}>
-                        Undo Last Action
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-lg font-medium mb-4">Display Options</h3>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Show Confidence Indicators</span>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => {
-                            const newShowConfidence: Record<string, boolean> = {};
-                            scoredCauses.forEach(cause => {
-                              newShowConfidence[cause.id] = !showConfidence[cause.id];
-                            });
-                            setShowConfidence(newShowConfidence);
-                          }}
-                        >
-                          Toggle All
-                        </Button>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Auto-save Patient Data</span>
-                        <Badge variant="secondary">Enabled</Badge>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Mobile View</span>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            document.body.classList.toggle('mobile-view');
-                          }}
-                        >
-                          Show Mobile
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
         </Tabs>
       </div>
