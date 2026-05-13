@@ -12,6 +12,7 @@ import { DefiningSymptomsEnsurer } from "./utils/defining-symptoms-ensurer";
 import { DefiningSymptomsManager } from './utils/defining-symptoms-manager';
 import Landing from "./pages/Landing";
 import History from "./pages/History";
+import Prescription from "./pages/Prescription";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import VerifyAccount from "./pages/VerifyAccount";
@@ -40,6 +41,11 @@ function Router() {
       <Route path="/test">
         <ProtectedRoute>
           <TestPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/prescription">
+        <ProtectedRoute>
+          <Prescription />
         </ProtectedRoute>
       </Route>
       <Route path="/history">

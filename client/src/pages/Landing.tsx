@@ -23,7 +23,8 @@ import {
   LogIn,
   UserPlus,
   Shield,
-  LogOut
+  LogOut,
+  FilePlus
 } from "lucide-react";
 import { Link } from "wouter";
 import { useAuth } from "../contexts/AuthContext";
@@ -225,6 +226,13 @@ export default function Landing() {
                 <Button variant="outline" className="gap-1" size="sm">
                   <History className="w-3 h-3" />
                   <span className="text-xs">History</span>
+                </Button>
+              </Link>
+
+              <Link href="/prescription">
+                <Button variant="outline" className="gap-1" size="sm">
+                  <FilePlus className="w-3 h-3" />
+                  <span className="text-xs">Prescription</span>
                 </Button>
               </Link>
 
