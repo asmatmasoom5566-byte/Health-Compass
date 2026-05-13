@@ -229,12 +229,6 @@ export default function Landing() {
                 </Button>
               </Link>
 
-              <Link href="/study">
-                <Button variant="outline" className="gap-1" size="sm">
-                  <BookOpen className="w-3 h-3" />
-                  <span className="text-xs">Study</span>
-                </Button>
-              </Link>
               <Link href="/pharmacology">
                 <Button variant="outline" className="gap-1" size="sm">
                   <Pill className="w-3 h-3" />
