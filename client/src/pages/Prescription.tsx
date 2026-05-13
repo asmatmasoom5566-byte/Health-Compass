@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -19,7 +19,12 @@ import {
   User,
   FileText,
   Save,
-  Eye
+  Eye,
+  Stethoscope,
+  Phone,
+  MapPin,
+  Building2,
+  Edit3
 } from "lucide-react";
 
 interface PrescriptionMedication {
@@ -43,7 +48,44 @@ interface PatientInfo {
   diagnosis: string;
 }
 
+interface DoctorProfile {
+  name: string;
+  specialty: string;
+  contact: string;
+  clinicName: string;
+  clinicAddress: string;
+}
+
 const Prescription = () => {
+  const [doctorProfile, setDoctorProfile] = useState<DoctorProfile>({
+    name: "",
+    specialty: "",
+    contact: "",
+    clinicName: "",
+    clinicAddress: ""
+  });
+
+  const [showDoctorProfile, setShowDoctorProfile] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+
+  // Load doctor profile from localStorage on mount
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('doctorProfile');
+    if (savedProfile) {
+      try {
+        const profile = JSON.parse(savedProfile);
+        setDoctorProfile(profile);
+      } catch (e) {
+        console.error('Error loading doctor profile:', e);
+      }
+    }
+  }, []);
+
+  const saveDoctorProfile = (profile: DoctorProfile) => {
+    localStorage.setItem('doctorProfile', JSON.stringify(profile));
+    setDoctorProfile(profile);
+    setIsEditingProfile(false);
+  };
   const [patientInfo, setPatientInfo] = useState<PatientInfo>({
     name: "",
     age: "",
@@ -150,6 +192,25 @@ const Prescription = () => {
   const generatePrescriptionText = () => {
     let text = `PRESCRIPTION\n`;
     text += `=${'='.repeat(50)}\n\n`;
+    
+    // Add doctor/clinic info
+    if (doctorProfile.name) {
+      text += `Doctor: ${doctorProfile.name}\n`;
+    }
+    if (doctorProfile.specialty) {
+      text += `Specialty: ${doctorProfile.specialty}\n`;
+    }
+    if (doctorProfile.contact) {
+      text += `Contact: ${doctorProfile.contact}\n`;
+    }
+    if (doctorProfile.clinicName) {
+      text += `Clinic: ${doctorProfile.clinicName}\n`;
+    }
+    if (doctorProfile.clinicAddress) {
+      text += `Address: ${doctorProfile.clinicAddress}\n`;
+    }
+    
+    text += `\n${'-'.repeat(50)}\n\n`;
     text += `Patient Name: ${patientInfo.name}\n`;
     text += `Age: ${patientInfo.age} | Sex: ${patientInfo.sex}\n`;
     text += `Weight: ${patientInfo.weight} kg\n`;
@@ -216,8 +277,186 @@ const Prescription = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Panel - Patient Info & Medications */}
+          {/* Left Panel - Doctor Profile, Patient Info & Medications */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Doctor/Clinic Profile Section */}
+            <Card className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-blue-200 dark:border-blue-800">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Stethoscope className="w-5 h-5 text-blue-600" />
+                    Doctor/Clinic Profile
+                  </CardTitle>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowDoctorProfile(!showDoctorProfile)}
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      {showDoctorProfile ? 'Hide' : 'Show'}
+                    </Button>
+                    {doctorProfile.name && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsEditingProfile(!isEditingProfile)}
+                      >
+                        <Edit3 className="w-4 h-4 mr-2" />
+                        Edit
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {showDoctorProfile && (
+                  <div className="space-y-4">
+                    {/* Display Mode */}
+                    {!isEditingProfile && doctorProfile.name ? (
+                      <div className="bg-white dark:bg-slate-800 p-4 rounded-lg space-y-3">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Doctor Name</p>
+                            <p className="font-semibold text-gray-900 dark:text-gray-100">
+                              {doctorProfile.name || 'Not set'}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Specialty</p>
+                            <p className="font-semibold text-gray-900 dark:text-gray-100">
+                              {doctorProfile.specialty || 'Not set'}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Contact</p>
+                            <p className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-1">
+                              <Phone className="w-3 h-3" />
+                              {doctorProfile.contact || 'Not set'}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Clinic/Hospital</p>
+                            <p className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-1">
+                              <Building2 className="w-3 h-3" />
+                              {doctorProfile.clinicName || 'Not set'}
+                            </p>
+                          </div>
+                          <div className="col-span-2">
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Clinic Address</p>
+                            <p className="font-semibold text-gray-900 dark:text-gray-100 flex items-start gap-1">
+                              <MapPin className="w-3 h-3 mt-1" />
+                              {doctorProfile.clinicAddress || 'Not set'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      /* Edit Mode */
+                      <div className="bg-white dark:bg-slate-800 p-4 rounded-lg space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label className="flex items-center gap-1">
+                              <User className="w-3 h-3" />
+                              Doctor Name *
+                            </Label>
+                            <Input
+                              value={doctorProfile.name}
+                              onChange={(e) => setDoctorProfile({...doctorProfile, name: e.target.value})}
+                              placeholder="Dr. Full Name"
+                            />
+                          </div>
+                          <div>
+                            <Label className="flex items-center gap-1">
+                              <Stethoscope className="w-3 h-3" />
+                              Specialty
+                            </Label>
+                            <Input
+                              value={doctorProfile.specialty}
+                              onChange={(e) => setDoctorProfile({...doctorProfile, specialty: e.target.value})}
+                              placeholder="e.g., General Medicine, Cardiology"
+                            />
+                          </div>
+                          <div>
+                            <Label className="flex items-center gap-1">
+                              <Phone className="w-3 h-3" />
+                              Contact Number
+                            </Label>
+                            <Input
+                              value={doctorProfile.contact}
+                              onChange={(e) => setDoctorProfile({...doctorProfile, contact: e.target.value})}
+                              placeholder="e.g., +1234567890"
+                            />
+                          </div>
+                          <div>
+                            <Label className="flex items-center gap-1">
+                              <Building2 className="w-3 h-3" />
+                              Clinic/Hospital Name
+                            </Label>
+                            <Input
+                              value={doctorProfile.clinicName}
+                              onChange={(e) => setDoctorProfile({...doctorProfile, clinicName: e.target.value})}
+                              placeholder="e.g., City Medical Center"
+                            />
+                          </div>
+                          <div className="col-span-2">
+                            <Label className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" />
+                              Clinic Address
+                            </Label>
+                            <Textarea
+                              value={doctorProfile.clinicAddress}
+                              onChange={(e) => setDoctorProfile({...doctorProfile, clinicAddress: e.target.value})}
+                              placeholder="Full clinic/hospital address"
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex gap-2 pt-2">
+                          <Button 
+                            onClick={() => saveDoctorProfile(doctorProfile)}
+                            size="sm"
+                            className="flex-1"
+                          >
+                            <Save className="w-4 h-4 mr-2" />
+                            Save Profile
+                          </Button>
+                          <Button 
+                            onClick={() => {
+                              setIsEditingProfile(false);
+                              if (!doctorProfile.name) setShowDoctorProfile(false);
+                            }}
+                            variant="outline"
+                            size="sm"
+                            className="flex-1"
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* First-time setup message */}
+                    {!isEditingProfile && !doctorProfile.name && (
+                      <div className="text-center py-4">
+                        <Stethoscope className="w-12 h-12 mx-auto mb-3 text-blue-300" />
+                        <p className="text-gray-600 dark:text-gray-400 mb-3">
+                          Set up your doctor profile to include on all prescriptions
+                        </p>
+                        <Button 
+                          onClick={() => setIsEditingProfile(true)}
+                          size="sm"
+                        >
+                          <Edit3 className="w-4 h-4 mr-2" />
+                          Create Profile
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Patient Information */}
             <Card className="bg-white dark:bg-slate-800 border-border">
               <CardHeader>
@@ -550,8 +789,33 @@ const Prescription = () => {
               </div>
               <div ref={prescriptionRef} className="p-6">
                 <div className="bg-white p-8 border-2 border-gray-300">
+                  {/* Doctor/Clinic Header */}
+                  <div className="text-center mb-6 border-b-2 border-blue-600 pb-4">
+                    {doctorProfile.name && (
+                      <h1 className="text-3xl font-bold text-gray-900 mb-1">
+                        {doctorProfile.name}
+                      </h1>
+                    )}
+                    {doctorProfile.specialty && (
+                      <p className="text-lg text-blue-600 font-semibold mb-2">
+                        {doctorProfile.specialty}
+                      </p>
+                    )}
+                    <div className="space-y-1 text-sm text-gray-600">
+                      {doctorProfile.contact && (
+                        <p>Contact: {doctorProfile.contact}</p>
+                      )}
+                      {doctorProfile.clinicName && (
+                        <p className="font-semibold text-gray-900">{doctorProfile.clinicName}</p>
+                      )}
+                      {doctorProfile.clinicAddress && (
+                        <p>{doctorProfile.clinicAddress}</p>
+                      )}
+                    </div>
+                  </div>
+
                   <div className="text-center mb-6">
-                    <h1 className="text-2xl font-bold text-gray-900">MEDICAL PRESCRIPTION</h1>
+                    <h2 className="text-2xl font-bold text-gray-900">MEDICAL PRESCRIPTION</h2>
                     <div className="border-b-2 border-gray-900 mt-2"></div>
                   </div>
 
