@@ -1698,31 +1698,29 @@ const Prescription = () => {
         {/* Database Prescription Preview Modal - Uses exact same HTML as print */}
         {previewRx && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-slate-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white dark:bg-slate-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
               <div className="sticky top-0 bg-white dark:bg-slate-800 border-b p-4 flex items-center justify-between">
                 <h2 className="text-xl font-bold">Prescription Preview</h2>
                 <Button onClick={() => setPreviewRx(null)} variant="ghost" size="sm">
                   Close
                 </Button>
               </div>
-              <div className="p-4">
-                {/* Render the exact same HTML as print view - extract body content only */}
-                <div 
-                  className="bg-white border-2 border-gray-300"
-                  dangerouslySetInnerHTML={{
-                    __html: (() => {
-                      const fullHTML = generatePrintHTML(
-                        previewRx.patientInfo || {},
-                        previewRx.medications || [],
-                        previewRx.doctorProfile || {},
-                        previewRx.additionalNotes || '',
-                        previewRx.followUpDate || ''
-                      );
-                      // Extract only the body content between <body> and </body>
-                      const bodyMatch = fullHTML.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-                      return bodyMatch ? bodyMatch[1] : fullHTML;
-                    })()
+              <div className="flex-1 overflow-auto p-4">
+                {/* Use iframe to render the exact same HTML as print view with all styles */}
+                <iframe
+                  srcDoc={generatePrintHTML(
+                    previewRx.patientInfo || {},
+                    previewRx.medications || [],
+                    previewRx.doctorProfile || {},
+                    previewRx.additionalNotes || '',
+                    previewRx.followUpDate || ''
+                  )}
+                  className="w-full border-2 border-gray-300 rounded"
+                  style={{ 
+                    minHeight: '800px',
+                    height: '100%'
                   }}
+                  title="Prescription Preview"
                 />
               </div>
             </div>
