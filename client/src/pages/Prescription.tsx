@@ -380,6 +380,44 @@ const Prescription = () => {
     pAdditionalNotes = additionalNotes,
     pFollowUpDate = followUpDate
   ) => {
+    // Calculate dynamic font sizes based on content amount
+    const medCount = pMedications.length;
+    const hasNotes = pAdditionalNotes ? 1 : 0;
+    const contentScore = medCount + hasNotes;
+    
+    // Dynamic sizing: reduce font size as content increases
+    let baseFontSize, patientFontSize, medNameSize, medDetailsSize, sectionSize;
+    
+    if (contentScore <= 3) {
+      // Minimal content - larger text
+      baseFontSize = '11pt';
+      patientFontSize = '11pt';
+      medNameSize = '12pt';
+      medDetailsSize = '10pt';
+      sectionSize = '11pt';
+    } else if (contentScore <= 6) {
+      // Moderate content - medium text
+      baseFontSize = '10pt';
+      patientFontSize = '10pt';
+      medNameSize = '11pt';
+      medDetailsSize = '9pt';
+      sectionSize = '10pt';
+    } else if (contentScore <= 10) {
+      // More content - smaller text
+      baseFontSize = '9pt';
+      patientFontSize = '9pt';
+      medNameSize = '10pt';
+      medDetailsSize = '8pt';
+      sectionSize = '9pt';
+    } else {
+      // Heavy content - smallest readable text
+      baseFontSize = '8pt';
+      patientFontSize = '8pt';
+      medNameSize = '9pt';
+      medDetailsSize = '7pt';
+      sectionSize = '8pt';
+    }
+    
     let printContent = `
 <!DOCTYPE html>
 <html>
@@ -388,7 +426,7 @@ const Prescription = () => {
   <style>
     @page {
       size: A4;
-      margin: 12mm 15mm;
+      margin: 10mm 15mm;
     }
     * {
       margin: 0;
@@ -397,19 +435,19 @@ const Prescription = () => {
     }
     body {
       font-family: Arial, sans-serif;
-      font-size: 10pt;
-      line-height: 1.3;
+      font-size: ${baseFontSize};
+      line-height: 1.25;
       color: #000;
     }
     .container {
       max-width: 100%;
-      padding: 5px;
+      padding: 3px;
     }
     .header {
       text-align: center;
       border-bottom: 2px solid #2563eb;
-      padding-bottom: 6px;
-      margin-bottom: 8px;
+      padding-bottom: 5px;
+      margin-bottom: 6px;
     }
     .doctor-name {
       font-size: 16pt;
@@ -429,74 +467,97 @@ const Prescription = () => {
     .patient-info {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 3px 12px;
-      margin-bottom: 6px;
-      font-size: 9pt;
+      gap: 4px 15px;
+      margin-bottom: 8px;
+      font-size: ${patientFontSize};
+      padding: 8px;
+      background: #f0f9ff;
+      border: 2px solid #2563eb;
+      border-radius: 6px;
     }
     .patient-info div {
       display: flex;
+      align-items: center;
     }
     .label {
-      font-weight: 600;
-      min-width: 85px;
+      font-weight: 700;
+      min-width: 90px;
     }
     .section {
-      margin: 5px 0;
-      padding: 4px 6px;
+      margin: 6px 0;
+      padding: 5px 8px;
       background: #f9fafb;
       border-left: 3px solid #2563eb;
     }
     .section-title {
       font-weight: bold;
-      font-size: 10pt;
-      margin-bottom: 3px;
+      font-size: ${sectionSize};
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .vitals-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 3px;
+      gap: 4px;
     }
     .vital-item {
       background: white;
-      padding: 2px 5px;
-      border-radius: 2px;
-      font-size: 8pt;
+      padding: 3px 6px;
+      border-radius: 3px;
+      font-size: ${medDetailsSize};
     }
     .vital-label {
       font-size: 7pt;
       color: #6b7280;
     }
     .medications {
-      margin: 10px 0;
+      margin: 8px 0;
+      padding: 10px;
+      background: #ffffff;
+      border: 2px solid #1e40af;
+      border-radius: 6px;
+    }
+    .medications .section-title {
+      font-size: ${medNameSize};
+      margin-bottom: 8px;
+      text-align: center;
+      border-bottom: 2px solid #1e40af;
+      padding-bottom: 4px;
     }
     .med-item {
-      margin-bottom: 5px;
-      padding-bottom: 4px;
+      margin-bottom: 6px;
+      padding-bottom: 5px;
       border-bottom: 1px solid #e5e7eb;
     }
     .med-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
       border-bottom: none;
     }
     .med-name {
       font-weight: bold;
-      font-size: 10pt;
+      font-size: ${medNameSize};
+      color: #1e40af;
+      margin-bottom: 2px;
     }
     .med-details {
-      margin-left: 12px;
-      font-size: 8pt;
-      margin-top: 1px;
+      margin-left: 15px;
+      font-size: ${medDetailsSize};
+      margin-top: 2px;
+      line-height: 1.4;
     }
     .footer {
-      margin-top: 12px;
-      padding-top: 6px;
+      margin-top: 15px;
+      padding-top: 8px;
       border-top: 1px solid #000;
       display: flex;
-      justify-content: space-between;
-      font-size: 8pt;
+      justify-content: flex-end;
+      font-size: 9pt;
     }
     @media print {
       body {
-        font-size: 10pt;
+        font-size: ${baseFontSize};
       }
       .no-print {
         display: none;
@@ -633,17 +694,14 @@ const Prescription = () => {
 
     // Follow-up
     if (pFollowUpDate) {
-      printContent += `<div style="margin-top: 8px;"><strong>Follow-up:</strong> ${new Date(pFollowUpDate).toLocaleDateString()}</div>`;
+      printContent += `<div style="margin-top: 6px;"><strong>Follow-up:</strong> ${new Date(pFollowUpDate).toLocaleDateString()}</div>`;
     }
 
-    // Footer with signature
+    // Footer with doctor's signature only
     printContent += `
     <div class="footer">
-      <div>
-        <div style="margin-bottom: 30px;">Signature: _______________________</div>
-        <div>Doctor's Signature</div>
-      </div>
       <div style="text-align: right;">
+        <div style="margin-bottom: 35px;">Doctor's Signature: _______________________</div>
         <div><strong>Date:</strong> ${new Date().toLocaleDateString()}</div>
       </div>
     </div>
