@@ -34,7 +34,10 @@ import {
   Database,
   Search,
   Upload,
-  FolderOpen
+  FolderOpen,
+  ChevronDown,
+  ChevronUp,
+  RotateCcw
 } from "lucide-react";
 
 interface PrescriptionMedication {
@@ -138,6 +141,10 @@ const Prescription = () => {
   const [showDatabase, setShowDatabase] = useState(false);
   const [savedPrescriptions, setSavedPrescriptions] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [previewRx, setPreviewRx] = useState<any>(null);
+  const [showPatientInfo, setShowPatientInfo] = useState(false);
+  const [showMedications, setShowMedications] = useState(false);
+  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
   const prescriptionRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -231,6 +238,42 @@ const Prescription = () => {
     const filtered = prescriptions.filter((rx: any) => rx.id !== id);
     localStorage.setItem('prescriptions', JSON.stringify(filtered));
     setSavedPrescriptions(filtered.reverse());
+  };
+
+  const clearPatientInfo = () => {
+    if (!confirm('Clear all patient information?')) return;
+    setPatientInfo({
+      name: "",
+      age: "",
+      sex: "",
+      weight: "",
+      phone: "",
+      registerNumber: "",
+      chiefComplaint: "",
+      complaintDuration: "",
+      complaintDurationUnit: "Days",
+      visitType: "New",
+      allergies: "",
+      safetyAlerts: "",
+      diagnosis: "",
+      bp: "",
+      heartRate: "",
+      temperature: "",
+      respiratoryRate: "",
+      spo2: "",
+      bloodGlucose: ""
+    });
+  };
+
+  const clearMedications = () => {
+    if (!confirm('Clear all medications?')) return;
+    setMedications([]);
+  };
+
+  const clearAdditionalInfo = () => {
+    if (!confirm('Clear additional information?')) return;
+    setAdditionalNotes("");
+    setFollowUpDate("");
   };
 
   const frequencies = [
@@ -954,11 +997,34 @@ const Prescription = () => {
             {/* Patient Information */}
             <Card className="bg-white dark:bg-slate-800 border-border">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5 text-blue-600" />
-                  Patient Information
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="w-5 h-5 text-blue-600" />
+                    Patient Information
+                  </CardTitle>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowPatientInfo(!showPatientInfo)}
+                    >
+                      {showPatientInfo ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      {showPatientInfo ? 'Hide' : 'Add'}
+                    </Button>
+                    {showPatientInfo && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={clearPatientInfo}
+                      >
+                        <RotateCcw className="w-4 h-4 mr-1" />
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </CardHeader>
+              {showPatientInfo && (
               <CardContent>
                 <Tabs defaultValue="identification" className="w-full">
                   <TabsList className="grid w-full grid-cols-4">
@@ -1205,18 +1271,8 @@ const Prescription = () => {
                     </div>
                   </TabsContent>
                 </Tabs>
-                
-                {/* Diagnosis Section - Always visible */}
-                <div className="mt-6 pt-6 border-t">
-                  <Label className="text-lg font-semibold mb-2 block">Diagnosis / Clinical Notes</Label>
-                  <Textarea
-                    value={patientInfo.diagnosis}
-                    onChange={(e) => setPatientInfo({...patientInfo, diagnosis: e.target.value})}
-                    placeholder="Primary diagnosis and relevant clinical information"
-                    rows={3}
-                  />
-                </div>
               </CardContent>
+              )}
             </Card>
 
             {/* Medications */}
@@ -1227,13 +1283,36 @@ const Prescription = () => {
                     <Pill className="w-5 h-5 text-purple-600" />
                     Prescription Medications
                   </CardTitle>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowMedications(!showMedications)}
+                    >
+                      {showMedications ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      {showMedications ? 'Hide' : 'Add'}
+                    </Button>
+                    {showMedications && medications.length > 0 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={clearMedications}
+                      >
+                        <RotateCcw className="w-4 h-4 mr-1" />
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+              {showMedications && (
+              <CardContent>
+                <div className="mb-4">
                   <Button onClick={addMedication} size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Medication
                   </Button>
                 </div>
-              </CardHeader>
-              <CardContent>
                 {medications.length === 0 ? (
                   <div className="text-center py-12 text-gray-500">
                     <Pill className="w-12 h-12 mx-auto mb-3 opacity-30" />
@@ -1371,16 +1450,40 @@ const Prescription = () => {
                   </div>
                 )}
               </CardContent>
+              )}
             </Card>
 
             {/* Additional Notes & Follow-up */}
             <Card className="bg-white dark:bg-slate-800 border-border">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-green-600" />
-                  Additional Information
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-green-600" />
+                    Additional Information
+                  </CardTitle>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowAdditionalInfo(!showAdditionalInfo)}
+                    >
+                      {showAdditionalInfo ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      {showAdditionalInfo ? 'Hide' : 'Add'}
+                    </Button>
+                    {showAdditionalInfo && (additionalNotes || followUpDate) && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={clearAdditionalInfo}
+                      >
+                        <RotateCcw className="w-4 h-4 mr-1" />
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </CardHeader>
+              {showAdditionalInfo && (
               <CardContent>
                 <div className="space-y-4">
                   <div>
@@ -1405,6 +1508,7 @@ const Prescription = () => {
                   </div>
                 </div>
               </CardContent>
+              )}
             </Card>
           </div>
 
@@ -1565,6 +1669,14 @@ const Prescription = () => {
                               <Button
                                 variant="outline"
                                 size="sm"
+                                onClick={() => setPreviewRx(rx)}
+                                title="Preview"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
                                 onClick={() => loadPrescription(rx)}
                               >
                                 <FolderOpen className="w-4 h-4" />
@@ -1583,6 +1695,62 @@ const Prescription = () => {
                     ))}
                   </div>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Database Prescription Preview Modal */}
+        {previewRx && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-slate-800 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white dark:bg-slate-800 border-b p-4 flex items-center justify-between">
+                <h2 className="text-xl font-bold">Prescription Preview</h2>
+                <Button onClick={() => setPreviewRx(null)} variant="ghost" size="sm">
+                  Close
+                </Button>
+              </div>
+              <div className="p-6">
+                <div className="bg-white p-6 border-2 border-gray-300">
+                  <div className="text-center mb-4">
+                    <h1 className="text-2xl font-bold text-gray-900">MEDICAL PRESCRIPTION</h1>
+                    <div className="border-b-2 border-gray-900 mt-2"></div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
+                    <div><strong>Patient:</strong> {previewRx.patientInfo?.name || 'N/A'}</div>
+                    <div><strong>Date:</strong> {new Date(previewRx.createdAt).toLocaleDateString()}</div>
+                    {previewRx.patientInfo?.registerNumber && <div><strong>Register:</strong> {previewRx.patientInfo.registerNumber}</div>}
+                    {previewRx.patientInfo?.age && <div><strong>Age/Sex:</strong> {previewRx.patientInfo.age} / {previewRx.patientInfo.sex}</div>}
+                    {previewRx.patientInfo?.chiefComplaint && (
+                      <div className="col-span-2">
+                        <strong>Complaint:</strong> {previewRx.patientInfo.chiefComplaint}
+                        {previewRx.patientInfo?.complaintDuration && ` (${previewRx.patientInfo.complaintDuration} ${previewRx.patientInfo.complaintDurationUnit})`}
+                      </div>
+                    )}
+                  </div>
+
+                  {previewRx.medications && previewRx.medications.length > 0 && (
+                    <div className="mb-4">
+                      <h3 className="font-bold mb-2">PRESCRIPTION:</h3>
+                      {previewRx.medications.map((med: any, idx: number) => (
+                        <div key={idx} className="mb-2 pb-2 border-b last:border-b-0 text-sm">
+                          <p className="font-semibold">{idx + 1}. {med.name}</p>
+                          <p className="ml-4">Dosage: {med.dosage} | {med.frequency}
+                            {med.duration && ` | ${med.duration} ${med.durationUnit}`}
+                          </p>
+                          {med.instructions && <p className="ml-4 text-gray-600">{med.instructions}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {previewRx.additionalNotes && (
+                    <div className="mb-4 text-sm">
+                      <strong>Notes:</strong> {previewRx.additionalNotes}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
