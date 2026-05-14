@@ -277,17 +277,17 @@ const Prescription = () => {
   };
 
   const frequencies = [
-    "Once daily (OD)",
-    "Twice daily (BID)",
-    "Three times daily (TID)",
-    "Four times daily (QID)",
-    "Every 6 hours (Q6H)",
-    "Every 8 hours (Q8H)",
-    "Every 12 hours (Q12H)",
-    "As needed (PRN)",
-    "At bedtime (HS)",
-    "Before meals (AC)",
-    "After meals (PC)",
+    "Once daily",
+    "Twice daily",
+    "Three times daily",
+    "Four times daily",
+    "Every 6 hours",
+    "Every 8 hours",
+    "Every 12 hours",
+    "As needed",
+    "At bedtime",
+    "Before meals",
+    "After meals",
     "Once weekly",
     "Twice weekly"
   ];
@@ -769,10 +769,6 @@ const Prescription = () => {
     for (const med of medications) {
       if (!med.name.trim()) {
         alert('Medication Name is required for all medications!');
-        return;
-      }
-      if (!med.dosage.trim()) {
-        alert('Dosage is required for all medications!');
         return;
       }
       if (!med.frequency) {
@@ -1362,12 +1358,11 @@ const Prescription = () => {
                               </div>
                             </div>
                             <div>
-                              <Label>Dosage <span className="text-red-500">*</span></Label>
+                              <Label>Dosage</Label>
                               <Input
                                 value={med.dosage}
                                 onChange={(e) => updateMedication(med.id, "dosage", e.target.value)}
-                                placeholder="e.g., 1 tablet, 5ml (required)"
-                                className="border-2 border-blue-200"
+                                placeholder="e.g., 1 tablet, 5ml (optional)"
                               />
                             </div>
                             <div>
@@ -1703,7 +1698,7 @@ const Prescription = () => {
         {/* Database Prescription Preview Modal */}
         {previewRx && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-slate-800 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white dark:bg-slate-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
               <div className="sticky top-0 bg-white dark:bg-slate-800 border-b p-4 flex items-center justify-between">
                 <h2 className="text-xl font-bold">Prescription Preview</h2>
                 <Button onClick={() => setPreviewRx(null)} variant="ghost" size="sm">
@@ -1711,45 +1706,213 @@ const Prescription = () => {
                 </Button>
               </div>
               <div className="p-6">
-                <div className="bg-white p-6 border-2 border-gray-300">
-                  <div className="text-center mb-4">
-                    <h1 className="text-2xl font-bold text-gray-900">MEDICAL PRESCRIPTION</h1>
+                <div className="bg-white p-8 border-2 border-gray-300">
+                  {/* Doctor/Clinic Header */}
+                  {previewRx.doctorProfile && (previewRx.doctorProfile.name || previewRx.doctorProfile.specialty) && (
+                    <div className="text-center mb-6 border-b-2 border-blue-600 pb-4">
+                      {previewRx.doctorProfile.name && (
+                        <h1 className="text-3xl font-bold text-gray-900 mb-1">
+                          {previewRx.doctorProfile.name}
+                        </h1>
+                      )}
+                      {previewRx.doctorProfile.specialty && (
+                        <p className="text-lg text-blue-600 font-semibold mb-2">
+                          {previewRx.doctorProfile.specialty}
+                        </p>
+                      )}
+                      <div className="space-y-1 text-sm text-gray-600">
+                        {previewRx.doctorProfile.contact && (
+                          <p>Contact: {previewRx.doctorProfile.contact}</p>
+                        )}
+                        {previewRx.doctorProfile.clinicName && (
+                          <p className="font-semibold text-gray-900">{previewRx.doctorProfile.clinicName}</p>
+                        )}
+                        {previewRx.doctorProfile.clinicAddress && (
+                          <p>{previewRx.doctorProfile.clinicAddress}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900">MEDICAL PRESCRIPTION</h2>
                     <div className="border-b-2 border-gray-900 mt-2"></div>
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-                    <div><strong>Patient:</strong> {previewRx.patientInfo?.name || 'N/A'}</div>
-                    <div><strong>Date:</strong> {new Date(previewRx.createdAt).toLocaleDateString()}</div>
-                    {previewRx.patientInfo?.registerNumber && <div><strong>Register:</strong> {previewRx.patientInfo.registerNumber}</div>}
-                    {previewRx.patientInfo?.age && <div><strong>Age/Sex:</strong> {previewRx.patientInfo.age} / {previewRx.patientInfo.sex}</div>}
-                    {previewRx.patientInfo?.chiefComplaint && (
-                      <div className="col-span-2">
-                        <strong>Complaint:</strong> {previewRx.patientInfo.chiefComplaint}
-                        {previewRx.patientInfo?.complaintDuration && ` (${previewRx.patientInfo.complaintDuration} ${previewRx.patientInfo.complaintDurationUnit})`}
+
+                  {/* Patient Information */}
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <p className="font-semibold">Patient Name:</p>
+                      <p>{previewRx.patientInfo?.name || '_______________'}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">Date:</p>
+                      <p>{new Date(previewRx.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    {previewRx.patientInfo?.registerNumber && (
+                      <div>
+                        <p className="font-semibold">Register No:</p>
+                        <p>{previewRx.patientInfo.registerNumber}</p>
+                      </div>
+                    )}
+                    {previewRx.patientInfo?.visitType && (
+                      <div>
+                        <p className="font-semibold">Visit Type:</p>
+                        <p>{previewRx.patientInfo.visitType}</p>
+                      </div>
+                    )}
+                    {previewRx.patientInfo?.age && (
+                      <div>
+                        <p className="font-semibold">Age:</p>
+                        <p>{previewRx.patientInfo.age}</p>
+                      </div>
+                    )}
+                    {previewRx.patientInfo?.sex && (
+                      <div>
+                        <p className="font-semibold">Sex:</p>
+                        <p>{previewRx.patientInfo.sex}</p>
+                      </div>
+                    )}
+                    {previewRx.patientInfo?.phone && (
+                      <div>
+                        <p className="font-semibold">Phone:</p>
+                        <p>{previewRx.patientInfo.phone}</p>
+                      </div>
+                    )}
+                    {previewRx.patientInfo?.weight && (
+                      <div>
+                        <p className="font-semibold">Weight:</p>
+                        <p>{previewRx.patientInfo.weight} kg</p>
                       </div>
                     )}
                   </div>
 
+                  {/* Chief Complaint */}
+                  {previewRx.patientInfo?.chiefComplaint && (
+                    <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                      <p className="font-semibold text-lg mb-2">Chief Complaint:</p>
+                      <p>{previewRx.patientInfo.chiefComplaint}</p>
+                      {previewRx.patientInfo?.complaintDuration && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          Duration: {previewRx.patientInfo.complaintDuration} {previewRx.patientInfo.complaintDurationUnit}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Allergies & Safety */}
+                  <div className="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                    <p className="font-semibold mb-2">Allergies & Safety:</p>
+                    <p><span className="text-sm">Drug Allergies:</span> {previewRx.patientInfo?.allergies || 'None known'}</p>
+                    {previewRx.patientInfo?.safetyAlerts && (
+                      <p><span className="text-sm">Safety Alerts:</span> {previewRx.patientInfo.safetyAlerts}</p>
+                    )}
+                  </div>
+
+                  {/* Vital Signs */}
+                  {(previewRx.patientInfo?.bp || previewRx.patientInfo?.heartRate || previewRx.patientInfo?.temperature || 
+                    previewRx.patientInfo?.respiratoryRate || previewRx.patientInfo?.spo2 || previewRx.patientInfo?.bloodGlucose) && (
+                    <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+                      <p className="font-semibold text-lg mb-3">Vital Signs:</p>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {previewRx.patientInfo?.bp && (
+                          <div className="bg-white p-2 rounded">
+                            <p className="text-xs text-gray-600">BP</p>
+                            <p className="font-semibold">{previewRx.patientInfo.bp} mmHg</p>
+                          </div>
+                        )}
+                        {previewRx.patientInfo?.heartRate && (
+                          <div className="bg-white p-2 rounded">
+                            <p className="text-xs text-gray-600">Heart Rate</p>
+                            <p className="font-semibold">{previewRx.patientInfo.heartRate} bpm</p>
+                          </div>
+                        )}
+                        {previewRx.patientInfo?.temperature && (
+                          <div className="bg-white p-2 rounded">
+                            <p className="text-xs text-gray-600">Temperature</p>
+                            <p className="font-semibold">{previewRx.patientInfo.temperature}°F</p>
+                          </div>
+                        )}
+                        {previewRx.patientInfo?.respiratoryRate && (
+                          <div className="bg-white p-2 rounded">
+                            <p className="text-xs text-gray-600">Resp. Rate</p>
+                            <p className="font-semibold">{previewRx.patientInfo.respiratoryRate} /min</p>
+                          </div>
+                        )}
+                        {previewRx.patientInfo?.spo2 && (
+                          <div className="bg-white p-2 rounded">
+                            <p className="text-xs text-gray-600">SpO2</p>
+                            <p className="font-semibold">{previewRx.patientInfo.spo2}%</p>
+                          </div>
+                        )}
+                        {previewRx.patientInfo?.bloodGlucose && (
+                          <div className="bg-white p-2 rounded">
+                            <p className="text-xs text-gray-600">Blood Glucose</p>
+                            <p className="font-semibold">{previewRx.patientInfo.bloodGlucose} mg/dL</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Diagnosis */}
+                  {previewRx.patientInfo?.diagnosis && (
+                    <div className="mb-6">
+                      <p className="font-semibold">Diagnosis:</p>
+                      <p>{previewRx.patientInfo.diagnosis}</p>
+                    </div>
+                  )}
+
+                  {/* Medications */}
                   {previewRx.medications && previewRx.medications.length > 0 && (
-                    <div className="mb-4">
-                      <h3 className="font-bold mb-2">PRESCRIPTION:</h3>
+                    <div className="mb-6">
+                      <h3 className="font-bold text-lg mb-3 border-b pb-2">PRESCRIPTION:</h3>
                       {previewRx.medications.map((med: any, idx: number) => (
-                        <div key={idx} className="mb-2 pb-2 border-b last:border-b-0 text-sm">
-                          <p className="font-semibold">{idx + 1}. {med.name}</p>
-                          <p className="ml-4">Dosage: {med.dosage} | {med.frequency}
-                            {med.duration && ` | ${med.duration} ${med.durationUnit}`}
-                          </p>
-                          {med.instructions && <p className="ml-4 text-gray-600">{med.instructions}</p>}
+                        <div key={idx} className="mb-4 pb-4 border-b last:border-b-0">
+                          <p className="font-bold">{idx + 1}. {med.name}</p>
+                          <div className="ml-4 space-y-1 text-sm">
+                            {med.dosage && <p><span className="font-semibold">Dosage:</span> {med.dosage}</p>}
+                            <p><span className="font-semibold">Route:</span> {med.route || 'Oral'}</p>
+                            <p><span className="font-semibold">Frequency:</span> {med.frequency}</p>
+                            {med.duration && <p><span className="font-semibold">Duration:</span> {med.duration} {med.durationUnit}</p>}
+                            {med.quantity && <p><span className="font-semibold">Quantity:</span> {med.quantity}</p>}
+                            {med.instructions && <p><span className="font-semibold">Instructions:</span> {med.instructions}</p>}
+                          </div>
                         </div>
                       ))}
                     </div>
                   )}
 
+                  {/* Additional Notes */}
                   {previewRx.additionalNotes && (
-                    <div className="mb-4 text-sm">
-                      <strong>Notes:</strong> {previewRx.additionalNotes}
+                    <div className="mb-6">
+                      <p className="font-semibold">Additional Notes:</p>
+                      <p className="whitespace-pre-wrap">{previewRx.additionalNotes}</p>
                     </div>
                   )}
+
+                  {/* Follow-up */}
+                  {previewRx.followUpDate && (
+                    <div className="mb-6">
+                      <p className="font-semibold">Follow-up Date:</p>
+                      <p>{new Date(previewRx.followUpDate).toLocaleDateString()}</p>
+                    </div>
+                  )}
+
+                  {/* Footer */}
+                  <div className="mt-12 pt-8 border-t">
+                    <div className="flex justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">Signature:</p>
+                        <div className="mt-8 border-b border-gray-400 w-48"></div>
+                        <p className="text-sm mt-1">Doctor's Signature</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-gray-600">Date:</p>
+                        <p className="font-semibold">{new Date(previewRx.createdAt).toLocaleDateString()}</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
