@@ -382,7 +382,7 @@ const Prescription = () => {
   <style>
     @page {
       size: A4;
-      margin: 15mm;
+      margin: 12mm 15mm;
     }
     * {
       margin: 0;
@@ -391,89 +391,81 @@ const Prescription = () => {
     }
     body {
       font-family: Arial, sans-serif;
-      font-size: 11pt;
-      line-height: 1.4;
+      font-size: 10pt;
+      line-height: 1.3;
       color: #000;
     }
     .container {
       max-width: 100%;
-      padding: 10px;
+      padding: 5px;
     }
     .header {
       text-align: center;
       border-bottom: 2px solid #2563eb;
-      padding-bottom: 8px;
-      margin-bottom: 10px;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
     }
     .doctor-name {
-      font-size: 18pt;
+      font-size: 16pt;
       font-weight: bold;
       margin-bottom: 2px;
     }
     .doctor-specialty {
-      font-size: 12pt;
+      font-size: 11pt;
       color: #2563eb;
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
     .doctor-info {
-      font-size: 9pt;
+      font-size: 8pt;
       color: #4b5563;
-    }
-    .title {
-      text-align: center;
-      font-size: 16pt;
-      font-weight: bold;
-      margin: 10px 0;
-      border-bottom: 2px solid #000;
-      padding-bottom: 4px;
     }
     .patient-info {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 4px 15px;
-      margin-bottom: 8px;
-      font-size: 10pt;
+      gap: 3px 12px;
+      margin-bottom: 6px;
+      font-size: 9pt;
     }
     .patient-info div {
       display: flex;
     }
     .label {
       font-weight: 600;
-      min-width: 100px;
+      min-width: 85px;
     }
     .section {
-      margin: 8px 0;
-      padding: 6px;
+      margin: 5px 0;
+      padding: 4px 6px;
       background: #f9fafb;
       border-left: 3px solid #2563eb;
     }
     .section-title {
       font-weight: bold;
-      font-size: 11pt;
-      margin-bottom: 4px;
+      font-size: 10pt;
+      margin-bottom: 3px;
     }
     .vitals-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
+      gap: 3px;
     }
     .vital-item {
       background: white;
-      padding: 3px 6px;
-      border-radius: 3px;
-      font-size: 9pt;
+      padding: 2px 5px;
+      border-radius: 2px;
+      font-size: 8pt;
     }
     .vital-label {
-      font-size: 8pt;
+      font-size: 7pt;
       color: #6b7280;
     }
     .medications {
       margin: 10px 0;
     }
     .med-item {
-      margin-bottom: 8px;
-      padding-bottom: 6px;
+      margin-bottom: 5px;
+      padding-bottom: 4px;
       border-bottom: 1px solid #e5e7eb;
     }
     .med-item:last-child {
@@ -481,20 +473,20 @@ const Prescription = () => {
     }
     .med-name {
       font-weight: bold;
-      font-size: 11pt;
+      font-size: 10pt;
     }
     .med-details {
-      margin-left: 15px;
-      font-size: 9pt;
-      margin-top: 2px;
+      margin-left: 12px;
+      font-size: 8pt;
+      margin-top: 1px;
     }
     .footer {
-      margin-top: 20px;
-      padding-top: 10px;
+      margin-top: 12px;
+      padding-top: 6px;
       border-top: 1px solid #000;
       display: flex;
       justify-content: space-between;
-      font-size: 9pt;
+      font-size: 8pt;
     }
     @media print {
       body {
@@ -513,18 +505,18 @@ const Prescription = () => {
     // Add doctor header with 3D-style for print
     if (doctorProfile.name || doctorProfile.specialty || doctorProfile.contact || doctorProfile.clinicName) {
       printContent += `
-    <div class="header" style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #8b5cf6 100%); padding: 20px; border-radius: 12px; margin-bottom: 15px; position: relative; overflow: hidden;">
+    <div class="header" style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #8b5cf6 100%); padding: 15px; border-radius: 10px; margin-bottom: 10px; position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
       <!-- Background Pattern -->
-      <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
-      <div style="position: absolute; bottom: -30px; left: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+      <div style="position: absolute; top: -15px; right: -15px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+      <div style="position: absolute; bottom: -20px; left: -20px; width: 90px; height: 90px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
       
       <div style="position: relative; z-index: 1;">
         <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; gap: 15px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
             <!-- Doctor Icon -->
-            <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 3px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
-              <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); display: flex; align-items: center; justify-content: center;">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 6px rgba(0,0,0,0.2);">
+              <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); display: flex; align-items: center; justify-content: center;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2V4.3A.3.3 0 0 0 4.8 2.3z"/>
                   <path d="M2 9V6a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v3"/>
                   <path d="M9 22h6c2.5 0 4-1.5 4-4v-3c0-2.5-1.5-4-4-4H9c-2.5 0-4 1.5-4 4v3c0 2.5 1.5 4 4 4z"/>
@@ -537,16 +529,16 @@ const Prescription = () => {
             
             <div>`;
       
-      if (doctorProfile.name) printContent += `<div style="font-size: 20pt; font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin-bottom: 3px;">${doctorProfile.name}</div>`;
-      if (doctorProfile.specialty) printContent += `<div style="font-size: 13pt; color: rgba(255,255,255,0.95); font-weight: 600;">${doctorProfile.specialty}</div>`;
+      if (doctorProfile.name) printContent += `<div style="font-size: 18pt; font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin-bottom: 2px;">${doctorProfile.name}</div>`;
+      if (doctorProfile.specialty) printContent += `<div style="font-size: 11pt; color: rgba(255,255,255,0.95); font-weight: 600;">${doctorProfile.specialty}</div>`;
       
       printContent += `</div>
           </div>
           
           <!-- Medical Cross Icon -->
-          <div style="width: 50px; height: 50px; border-radius: 8px; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transform: rotate(12deg);">
-            <div style="width: 38px; height: 38px; border-radius: 6px; background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); display: flex; align-items: center; justify-content: center;">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#dc2626">
+          <div style="width: 42px; height: 42px; border-radius: 7px; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 6px rgba(0,0,0,0.2); transform: rotate(12deg);">
+            <div style="width: 32px; height: 32px; border-radius: 5px; background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); display: flex; align-items: center; justify-content: center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#dc2626">
                 <path d="M9 2h6v6h6v6h-6v6H9v-6H3V8h6V2z"/>
               </svg>
             </div>
@@ -554,7 +546,7 @@ const Prescription = () => {
         </div>`;
       
       if (doctorProfile.contact || doctorProfile.clinicName || doctorProfile.clinicAddress) {
-        printContent += `<div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.3); display: flex; flex-wrap: wrap; gap: 12px; font-size: 9pt; color: rgba(255,255,255,0.95);">`;
+        printContent += `<div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.3); display: flex; flex-wrap: wrap; gap: 10px; font-size: 8pt; color: rgba(255,255,255,0.95);">`;
         if (doctorProfile.contact) printContent += `<div>📞 ${doctorProfile.contact}</div>`;
         if (doctorProfile.clinicName) printContent += `<div style="font-weight: 600;">🏥 ${doctorProfile.clinicName}</div>`;
         if (doctorProfile.clinicAddress) printContent += `<div>📍 ${doctorProfile.clinicAddress}</div>`;
@@ -566,14 +558,14 @@ const Prescription = () => {
     </div>`;
     }
 
-    // Title
-    printContent += `<div class="title">MEDICAL PRESCRIPTION</div>`;
-
     // Patient info - only show filled fields
     printContent += `<div class="patient-info">`;
     if (patientInfo.name) printContent += `<div><span class="label">Patient:</span> ${patientInfo.name}</div>`;
     if (patientInfo.registerNumber) printContent += `<div><span class="label">Register No:</span> ${patientInfo.registerNumber}</div>`;
-    if (patientInfo.age) printContent += `<div><span class="label">Age/Sex:</span> ${patientInfo.age} / ${patientInfo.sex}</div>`;
+    if (patientInfo.age || patientInfo.sex) {
+      const ageSex = [patientInfo.age ? `${patientInfo.age} yrs` : '', patientInfo.sex || ''].filter(Boolean).join(' / ');
+      printContent += `<div><span class="label">Age/Sex:</span> ${ageSex}</div>`;
+    }
     if (patientInfo.phone) printContent += `<div><span class="label">Phone:</span> ${patientInfo.phone}</div>`;
     if (patientInfo.visitType) printContent += `<div><span class="label">Visit:</span> ${patientInfo.visitType}</div>`;
     if (patientInfo.weight) printContent += `<div><span class="label">Weight:</span> ${patientInfo.weight} kg</div>`;
@@ -589,12 +581,14 @@ const Prescription = () => {
       printContent += `</div></div>`;
     }
 
-    // Allergies & Safety - always show
-    printContent += `<div class="section" style="border-left-color: #f59e0b; background: #fef3c7;">`;
-    printContent += `<div class="section-title">⚠ Allergies & Safety</div>`;
-    printContent += `<div><strong>Allergies:</strong> ${patientInfo.allergies || 'None known'}</div>`;
-    if (patientInfo.safetyAlerts) printContent += `<div><strong>Safety Alerts:</strong> ${patientInfo.safetyAlerts}</div>`;
-    printContent += `</div>`;
+    // Allergies & Safety - only show if there's data
+    if (patientInfo.allergies || patientInfo.safetyAlerts) {
+      printContent += `<div class="section" style="border-left-color: #f59e0b; background: #fef3c7;">`;
+      printContent += `<div class="section-title">⚠ Allergies & Safety</div>`;
+      if (patientInfo.allergies) printContent += `<div><strong>Allergies:</strong> ${patientInfo.allergies}</div>`;
+      if (patientInfo.safetyAlerts) printContent += `<div><strong>Safety Alerts:</strong> ${patientInfo.safetyAlerts}</div>`;
+      printContent += `</div>`;
+    }
 
     // Vitals - only if any filled
     if (patientInfo.bp || patientInfo.heartRate || patientInfo.temperature || patientInfo.respiratoryRate || patientInfo.spo2 || patientInfo.bloodGlucose) {
