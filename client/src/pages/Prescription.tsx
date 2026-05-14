@@ -373,12 +373,18 @@ const Prescription = () => {
     }, 250);
   };
 
-  const generatePrintHTML = () => {
+  const generatePrintHTML = (
+    pPatientInfo = patientInfo,
+    pMedications = medications,
+    pDoctorProfile = doctorProfile,
+    pAdditionalNotes = additionalNotes,
+    pFollowUpDate = followUpDate
+  ) => {
     let printContent = `
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Prescription - ${patientInfo.name}</title>
+  <title>Prescription - ${pPatientInfo.name}</title>
   <style>
     @page {
       size: A4;
@@ -503,7 +509,7 @@ const Prescription = () => {
 `;
 
     // Add doctor header with 3D-style for print
-    if (doctorProfile.name || doctorProfile.specialty || doctorProfile.contact || doctorProfile.clinicName) {
+    if (pDoctorProfile.name || pDoctorProfile.specialty || pDoctorProfile.contact || pDoctorProfile.clinicName) {
       printContent += `
     <div class="header" style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #8b5cf6 100%); padding: 15px; border-radius: 10px; margin-bottom: 10px; position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
       <!-- Background Pattern -->
@@ -529,8 +535,8 @@ const Prescription = () => {
             
             <div>`;
       
-      if (doctorProfile.name) printContent += `<div style="font-size: 18pt; font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin-bottom: 2px;">${doctorProfile.name}</div>`;
-      if (doctorProfile.specialty) printContent += `<div style="font-size: 11pt; color: rgba(255,255,255,0.95); font-weight: 600;">${doctorProfile.specialty}</div>`;
+      if (pDoctorProfile.name) printContent += `<div style="font-size: 18pt; font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin-bottom: 2px;">${pDoctorProfile.name}</div>`;
+      if (pDoctorProfile.specialty) printContent += `<div style="font-size: 11pt; color: rgba(255,255,255,0.95); font-weight: 600;">${pDoctorProfile.specialty}</div>`;
       
       printContent += `</div>
           </div>
@@ -545,11 +551,11 @@ const Prescription = () => {
           </div>
         </div>`;
       
-      if (doctorProfile.contact || doctorProfile.clinicName || doctorProfile.clinicAddress) {
+      if (pDoctorProfile.contact || pDoctorProfile.clinicName || pDoctorProfile.clinicAddress) {
         printContent += `<div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.3); display: flex; flex-wrap: wrap; gap: 10px; font-size: 8pt; color: rgba(255,255,255,0.95);">`;
-        if (doctorProfile.contact) printContent += `<div>📞 ${doctorProfile.contact}</div>`;
-        if (doctorProfile.clinicName) printContent += `<div style="font-weight: 600;">🏥 ${doctorProfile.clinicName}</div>`;
-        if (doctorProfile.clinicAddress) printContent += `<div>📍 ${doctorProfile.clinicAddress}</div>`;
+        if (pDoctorProfile.contact) printContent += `<div>📞 ${pDoctorProfile.contact}</div>`;
+        if (pDoctorProfile.clinicName) printContent += `<div style="font-weight: 600;">🏥 ${pDoctorProfile.clinicName}</div>`;
+        if (pDoctorProfile.clinicAddress) printContent += `<div>📍 ${pDoctorProfile.clinicAddress}</div>`;
         printContent += `</div>`;
       }
       
@@ -560,52 +566,52 @@ const Prescription = () => {
 
     // Patient info - only show filled fields
     printContent += `<div class="patient-info">`;
-    if (patientInfo.name) printContent += `<div><span class="label">Patient:</span> ${patientInfo.name}</div>`;
-    if (patientInfo.registerNumber) printContent += `<div><span class="label">Register No:</span> ${patientInfo.registerNumber}</div>`;
-    if (patientInfo.age || patientInfo.sex) {
-      const ageSex = [patientInfo.age ? `${patientInfo.age} yrs` : '', patientInfo.sex || ''].filter(Boolean).join(' / ');
+    if (pPatientInfo.name) printContent += `<div><span class="label">Patient:</span> ${pPatientInfo.name}</div>`;
+    if (pPatientInfo.registerNumber) printContent += `<div><span class="label">Register No:</span> ${pPatientInfo.registerNumber}</div>`;
+    if (pPatientInfo.age || pPatientInfo.sex) {
+      const ageSex = [pPatientInfo.age ? `${pPatientInfo.age} yrs` : '', pPatientInfo.sex || ''].filter(Boolean).join(' / ');
       printContent += `<div><span class="label">Age/Sex:</span> ${ageSex}</div>`;
     }
-    if (patientInfo.phone) printContent += `<div><span class="label">Phone:</span> ${patientInfo.phone}</div>`;
-    if (patientInfo.visitType) printContent += `<div><span class="label">Visit:</span> ${patientInfo.visitType}</div>`;
-    if (patientInfo.weight) printContent += `<div><span class="label">Weight:</span> ${patientInfo.weight} kg</div>`;
-    if (patientInfo.diagnosis) printContent += `<div style="grid-column: 1 / -1;"><span class="label">Diagnosis:</span> ${patientInfo.diagnosis}</div>`;
+    if (pPatientInfo.phone) printContent += `<div><span class="label">Phone:</span> ${pPatientInfo.phone}</div>`;
+    if (pPatientInfo.visitType) printContent += `<div><span class="label">Visit:</span> ${pPatientInfo.visitType}</div>`;
+    if (pPatientInfo.weight) printContent += `<div><span class="label">Weight:</span> ${pPatientInfo.weight} kg</div>`;
+    if (pPatientInfo.diagnosis) printContent += `<div style="grid-column: 1 / -1;"><span class="label">Diagnosis:</span> ${pPatientInfo.diagnosis}</div>`;
     printContent += `</div>`;
 
     // Chief complaint
-    if (patientInfo.chiefComplaint) {
-      printContent += `<div class="section"><div class="section-title">Chief Complaint</div><div>${patientInfo.chiefComplaint}`;
-      if (patientInfo.complaintDuration) {
-        printContent += ` <em>(Duration: ${patientInfo.complaintDuration} ${patientInfo.complaintDurationUnit})</em>`;
+    if (pPatientInfo.chiefComplaint) {
+      printContent += `<div class="section"><div class="section-title">Chief Complaint</div><div>${pPatientInfo.chiefComplaint}`;
+      if (pPatientInfo.complaintDuration) {
+        printContent += ` <em>(Duration: ${pPatientInfo.complaintDuration} ${pPatientInfo.complaintDurationUnit})</em>`;
       }
       printContent += `</div></div>`;
     }
 
     // Allergies & Safety - only show if there's data
-    if (patientInfo.allergies || patientInfo.safetyAlerts) {
+    if (pPatientInfo.allergies || pPatientInfo.safetyAlerts) {
       printContent += `<div class="section" style="border-left-color: #f59e0b; background: #fef3c7;">`;
       printContent += `<div class="section-title">⚠ Allergies & Safety</div>`;
-      if (patientInfo.allergies) printContent += `<div><strong>Allergies:</strong> ${patientInfo.allergies}</div>`;
-      if (patientInfo.safetyAlerts) printContent += `<div><strong>Safety Alerts:</strong> ${patientInfo.safetyAlerts}</div>`;
+      if (pPatientInfo.allergies) printContent += `<div><strong>Allergies:</strong> ${pPatientInfo.allergies}</div>`;
+      if (pPatientInfo.safetyAlerts) printContent += `<div><strong>Safety Alerts:</strong> ${pPatientInfo.safetyAlerts}</div>`;
       printContent += `</div>`;
     }
 
     // Vitals - only if any filled
-    if (patientInfo.bp || patientInfo.heartRate || patientInfo.temperature || patientInfo.respiratoryRate || patientInfo.spo2 || patientInfo.bloodGlucose) {
+    if (pPatientInfo.bp || pPatientInfo.heartRate || pPatientInfo.temperature || pPatientInfo.respiratoryRate || pPatientInfo.spo2 || pPatientInfo.bloodGlucose) {
       printContent += `<div class="section"><div class="section-title">Vital Signs</div><div class="vitals-grid">`;
-      if (patientInfo.bp) printContent += `<div class="vital-item"><div class="vital-label">BP</div><div>${patientInfo.bp} mmHg</div></div>`;
-      if (patientInfo.heartRate) printContent += `<div class="vital-item"><div class="vital-label">Heart Rate</div><div>${patientInfo.heartRate} bpm</div></div>`;
-      if (patientInfo.temperature) printContent += `<div class="vital-item"><div class="vital-label">Temp</div><div>${patientInfo.temperature}°F</div></div>`;
-      if (patientInfo.respiratoryRate) printContent += `<div class="vital-item"><div class="vital-label">RR</div><div>${patientInfo.respiratoryRate} /min</div></div>`;
-      if (patientInfo.spo2) printContent += `<div class="vital-item"><div class="vital-label">SpO2</div><div>${patientInfo.spo2}%</div></div>`;
-      if (patientInfo.bloodGlucose) printContent += `<div class="vital-item"><div class="vital-label">Glucose</div><div>${patientInfo.bloodGlucose} mg/dL</div></div>`;
+      if (pPatientInfo.bp) printContent += `<div class="vital-item"><div class="vital-label">BP</div><div>${pPatientInfo.bp} mmHg</div></div>`;
+      if (pPatientInfo.heartRate) printContent += `<div class="vital-item"><div class="vital-label">Heart Rate</div><div>${pPatientInfo.heartRate} bpm</div></div>`;
+      if (pPatientInfo.temperature) printContent += `<div class="vital-item"><div class="vital-label">Temp</div><div>${pPatientInfo.temperature}°F</div></div>`;
+      if (pPatientInfo.respiratoryRate) printContent += `<div class="vital-item"><div class="vital-label">RR</div><div>${pPatientInfo.respiratoryRate} /min</div></div>`;
+      if (pPatientInfo.spo2) printContent += `<div class="vital-item"><div class="vital-label">SpO2</div><div>${pPatientInfo.spo2}%</div></div>`;
+      if (pPatientInfo.bloodGlucose) printContent += `<div class="vital-item"><div class="vital-label">Glucose</div><div>${pPatientInfo.bloodGlucose} mg/dL</div></div>`;
       printContent += `</div></div>`;
     }
 
     // Medications
-    if (medications.length > 0) {
+    if (pMedications.length > 0) {
       printContent += `<div class="medications"><div class="section-title" style="font-size: 12pt; margin-bottom: 8px;">PRESCRIPTION</div>`;
-      medications.forEach((med, index) => {
+      pMedications.forEach((med, index) => {
         printContent += `<div class="med-item">`;
         printContent += `<div class="med-name">${index + 1}. ${med.name}</div>`;
         printContent += `<div class="med-details">`;
@@ -621,13 +627,13 @@ const Prescription = () => {
     }
 
     // Additional notes
-    if (additionalNotes) {
-      printContent += `<div class="section"><div class="section-title">Additional Notes</div><div>${additionalNotes}</div></div>`;
+    if (pAdditionalNotes) {
+      printContent += `<div class="section"><div class="section-title">Additional Notes</div><div>${pAdditionalNotes}</div></div>`;
     }
 
     // Follow-up
-    if (followUpDate) {
-      printContent += `<div style="margin-top: 8px;"><strong>Follow-up:</strong> ${new Date(followUpDate).toLocaleDateString()}</div>`;
+    if (pFollowUpDate) {
+      printContent += `<div style="margin-top: 8px;"><strong>Follow-up:</strong> ${new Date(pFollowUpDate).toLocaleDateString()}</div>`;
     }
 
     // Footer with signature
@@ -1689,7 +1695,7 @@ const Prescription = () => {
           </div>
         )}
 
-        {/* Database Prescription Preview Modal */}
+        {/* Database Prescription Preview Modal - Uses exact same HTML as print */}
         {previewRx && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white dark:bg-slate-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -1699,215 +1705,25 @@ const Prescription = () => {
                   Close
                 </Button>
               </div>
-              <div className="p-6">
-                <div className="bg-white p-8 border-2 border-gray-300">
-                  {/* Doctor/Clinic Header */}
-                  {previewRx.doctorProfile && (previewRx.doctorProfile.name || previewRx.doctorProfile.specialty) && (
-                    <div className="text-center mb-6 border-b-2 border-blue-600 pb-4">
-                      {previewRx.doctorProfile.name && (
-                        <h1 className="text-3xl font-bold text-gray-900 mb-1">
-                          {previewRx.doctorProfile.name}
-                        </h1>
-                      )}
-                      {previewRx.doctorProfile.specialty && (
-                        <p className="text-lg text-blue-600 font-semibold mb-2">
-                          {previewRx.doctorProfile.specialty}
-                        </p>
-                      )}
-                      <div className="space-y-1 text-sm text-gray-600">
-                        {previewRx.doctorProfile.contact && (
-                          <p>Contact: {previewRx.doctorProfile.contact}</p>
-                        )}
-                        {previewRx.doctorProfile.clinicName && (
-                          <p className="font-semibold text-gray-900">{previewRx.doctorProfile.clinicName}</p>
-                        )}
-                        {previewRx.doctorProfile.clinicAddress && (
-                          <p>{previewRx.doctorProfile.clinicAddress}</p>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="text-center mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900">MEDICAL PRESCRIPTION</h2>
-                    <div className="border-b-2 border-gray-900 mt-2"></div>
-                  </div>
-
-                  {/* Patient Information */}
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div>
-                      <p className="font-semibold">Patient Name:</p>
-                      <p>{previewRx.patientInfo?.name || '_______________'}</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold">Date:</p>
-                      <p>{new Date(previewRx.createdAt).toLocaleDateString()}</p>
-                    </div>
-                    {previewRx.patientInfo?.registerNumber && (
-                      <div>
-                        <p className="font-semibold">Register No:</p>
-                        <p>{previewRx.patientInfo.registerNumber}</p>
-                      </div>
-                    )}
-                    {previewRx.patientInfo?.visitType && (
-                      <div>
-                        <p className="font-semibold">Visit Type:</p>
-                        <p>{previewRx.patientInfo.visitType}</p>
-                      </div>
-                    )}
-                    {previewRx.patientInfo?.age && (
-                      <div>
-                        <p className="font-semibold">Age:</p>
-                        <p>{previewRx.patientInfo.age}</p>
-                      </div>
-                    )}
-                    {previewRx.patientInfo?.sex && (
-                      <div>
-                        <p className="font-semibold">Sex:</p>
-                        <p>{previewRx.patientInfo.sex}</p>
-                      </div>
-                    )}
-                    {previewRx.patientInfo?.phone && (
-                      <div>
-                        <p className="font-semibold">Phone:</p>
-                        <p>{previewRx.patientInfo.phone}</p>
-                      </div>
-                    )}
-                    {previewRx.patientInfo?.weight && (
-                      <div>
-                        <p className="font-semibold">Weight:</p>
-                        <p>{previewRx.patientInfo.weight} kg</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Chief Complaint */}
-                  {previewRx.patientInfo?.chiefComplaint && (
-                    <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                      <p className="font-semibold text-lg mb-2">Chief Complaint:</p>
-                      <p>{previewRx.patientInfo.chiefComplaint}</p>
-                      {previewRx.patientInfo?.complaintDuration && (
-                        <p className="text-sm text-gray-600 mt-1">
-                          Duration: {previewRx.patientInfo.complaintDuration} {previewRx.patientInfo.complaintDurationUnit}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Allergies & Safety */}
-                  <div className="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
-                    <p className="font-semibold mb-2">Allergies & Safety:</p>
-                    <p><span className="text-sm">Drug Allergies:</span> {previewRx.patientInfo?.allergies || 'None known'}</p>
-                    {previewRx.patientInfo?.safetyAlerts && (
-                      <p><span className="text-sm">Safety Alerts:</span> {previewRx.patientInfo.safetyAlerts}</p>
-                    )}
-                  </div>
-
-                  {/* Vital Signs */}
-                  {(previewRx.patientInfo?.bp || previewRx.patientInfo?.heartRate || previewRx.patientInfo?.temperature || 
-                    previewRx.patientInfo?.respiratoryRate || previewRx.patientInfo?.spo2 || previewRx.patientInfo?.bloodGlucose) && (
-                    <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-                      <p className="font-semibold text-lg mb-3">Vital Signs:</p>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        {previewRx.patientInfo?.bp && (
-                          <div className="bg-white p-2 rounded">
-                            <p className="text-xs text-gray-600">BP</p>
-                            <p className="font-semibold">{previewRx.patientInfo.bp} mmHg</p>
-                          </div>
-                        )}
-                        {previewRx.patientInfo?.heartRate && (
-                          <div className="bg-white p-2 rounded">
-                            <p className="text-xs text-gray-600">Heart Rate</p>
-                            <p className="font-semibold">{previewRx.patientInfo.heartRate} bpm</p>
-                          </div>
-                        )}
-                        {previewRx.patientInfo?.temperature && (
-                          <div className="bg-white p-2 rounded">
-                            <p className="text-xs text-gray-600">Temperature</p>
-                            <p className="font-semibold">{previewRx.patientInfo.temperature}°F</p>
-                          </div>
-                        )}
-                        {previewRx.patientInfo?.respiratoryRate && (
-                          <div className="bg-white p-2 rounded">
-                            <p className="text-xs text-gray-600">Resp. Rate</p>
-                            <p className="font-semibold">{previewRx.patientInfo.respiratoryRate} /min</p>
-                          </div>
-                        )}
-                        {previewRx.patientInfo?.spo2 && (
-                          <div className="bg-white p-2 rounded">
-                            <p className="text-xs text-gray-600">SpO2</p>
-                            <p className="font-semibold">{previewRx.patientInfo.spo2}%</p>
-                          </div>
-                        )}
-                        {previewRx.patientInfo?.bloodGlucose && (
-                          <div className="bg-white p-2 rounded">
-                            <p className="text-xs text-gray-600">Blood Glucose</p>
-                            <p className="font-semibold">{previewRx.patientInfo.bloodGlucose} mg/dL</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Diagnosis */}
-                  {previewRx.patientInfo?.diagnosis && (
-                    <div className="mb-6">
-                      <p className="font-semibold">Diagnosis:</p>
-                      <p>{previewRx.patientInfo.diagnosis}</p>
-                    </div>
-                  )}
-
-                  {/* Medications */}
-                  {previewRx.medications && previewRx.medications.length > 0 && (
-                    <div className="mb-6">
-                      <h3 className="font-bold text-lg mb-3 border-b pb-2">PRESCRIPTION:</h3>
-                      {previewRx.medications.map((med: any, idx: number) => (
-                        <div key={idx} className="mb-4 pb-4 border-b last:border-b-0">
-                          <p className="font-bold">{idx + 1}. {med.name}</p>
-                          <div className="ml-4 space-y-1 text-sm">
-                            {med.dosage && <p><span className="font-semibold">Dosage:</span> {med.dosage}</p>}
-                            <p><span className="font-semibold">Route:</span> {med.route || 'Oral'}</p>
-                            <p><span className="font-semibold">Frequency:</span> {med.frequency}</p>
-                            {med.duration && <p><span className="font-semibold">Duration:</span> {med.duration} {med.durationUnit}</p>}
-                            {med.quantity && <p><span className="font-semibold">Quantity:</span> {med.quantity}</p>}
-                            {med.instructions && <p><span className="font-semibold">Instructions:</span> {med.instructions}</p>}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Additional Notes */}
-                  {previewRx.additionalNotes && (
-                    <div className="mb-6">
-                      <p className="font-semibold">Additional Notes:</p>
-                      <p className="whitespace-pre-wrap">{previewRx.additionalNotes}</p>
-                    </div>
-                  )}
-
-                  {/* Follow-up */}
-                  {previewRx.followUpDate && (
-                    <div className="mb-6">
-                      <p className="font-semibold">Follow-up Date:</p>
-                      <p>{new Date(previewRx.followUpDate).toLocaleDateString()}</p>
-                    </div>
-                  )}
-
-                  {/* Footer */}
-                  <div className="mt-12 pt-8 border-t">
-                    <div className="flex justify-between">
-                      <div>
-                        <p className="text-sm text-gray-600">Signature:</p>
-                        <div className="mt-8 border-b border-gray-400 w-48"></div>
-                        <p className="text-sm mt-1">Doctor's Signature</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-600">Date:</p>
-                        <p className="font-semibold">{new Date(previewRx.createdAt).toLocaleDateString()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div className="p-4">
+                {/* Render the exact same HTML as print view - extract body content only */}
+                <div 
+                  className="bg-white border-2 border-gray-300"
+                  dangerouslySetInnerHTML={{
+                    __html: (() => {
+                      const fullHTML = generatePrintHTML(
+                        previewRx.patientInfo || {},
+                        previewRx.medications || [],
+                        previewRx.doctorProfile || {},
+                        previewRx.additionalNotes || '',
+                        previewRx.followUpDate || ''
+                      );
+                      // Extract only the body content between <body> and </body>
+                      const bodyMatch = fullHTML.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+                      return bodyMatch ? bodyMatch[1] : fullHTML;
+                    })()
+                  }}
+                />
               </div>
             </div>
           </div>
