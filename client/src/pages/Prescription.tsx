@@ -122,7 +122,7 @@ const Prescription = () => {
     chiefComplaint: "",
     complaintDuration: "",
     complaintDurationUnit: "Days",
-    visitType: "New",
+    visitType: "",
     allergies: "",
     safetyAlerts: "",
     diagnosis: "",
@@ -331,12 +331,12 @@ const Prescription = () => {
       id: Date.now().toString(),
       name: "",
       dosage: "",
-      frequency: "Once daily (OD)",
+      frequency: "",
       duration: "",
       durationUnit: "Days",
       instructions: "",
       quantity: "",
-      route: "Oral"
+      route: ""
     };
     setMedications([...medications, newMed]);
   };
@@ -467,13 +467,14 @@ const Prescription = () => {
     .patient-info {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 4px 15px;
-      margin-bottom: 8px;
+      gap: 6px 18px;
+      margin-bottom: 10px;
       font-size: ${patientFontSize};
-      padding: 8px;
-      background: #f0f9ff;
-      border: 2px solid #2563eb;
-      border-radius: 6px;
+      padding: 10px 12px;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 2px solid #0ea5e9;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     .patient-info div {
       display: flex;
@@ -481,13 +482,15 @@ const Prescription = () => {
     }
     .label {
       font-weight: 700;
-      min-width: 90px;
+      min-width: 95px;
+      color: #0369a1;
     }
     .section {
-      margin: 6px 0;
-      padding: 5px 8px;
-      background: #f9fafb;
-      border-left: 3px solid #2563eb;
+      margin: 7px 0;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 4px solid #3b82f6;
+      border-radius: 4px;
     }
     .section-title {
       font-weight: bold;
@@ -495,40 +498,53 @@ const Prescription = () => {
       margin-bottom: 4px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      color: #1e40af;
     }
     .vitals-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
+      gap: 5px;
     }
     .vital-item {
       background: white;
-      padding: 3px 6px;
-      border-radius: 3px;
+      padding: 4px 8px;
+      border-radius: 4px;
       font-size: ${medDetailsSize};
+      border: 1px solid #e2e8f0;
     }
     .vital-label {
       font-size: 7pt;
-      color: #6b7280;
+      color: #64748b;
+      font-weight: 600;
     }
     .medications {
-      margin: 8px 0;
-      padding: 10px;
-      background: #ffffff;
-      border: 2px solid #1e40af;
-      border-radius: 6px;
+      margin: 10px 0;
+      padding: 12px;
+      background: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%);
+      border: 2px solid #2563eb;
+      border-radius: 8px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.08);
     }
     .medications .section-title {
       font-size: ${medNameSize};
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       text-align: center;
-      border-bottom: 2px solid #1e40af;
-      padding-bottom: 4px;
+      border-bottom: 2px solid #2563eb;
+      padding-bottom: 6px;
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+      color: white;
+      padding: 8px;
+      margin: -12px -12px 10px -12px;
+      border-radius: 6px 6px 0 0;
     }
     .med-item {
-      margin-bottom: 6px;
-      padding-bottom: 5px;
-      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 8px;
+      padding: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #e2e8f0;
+      background: white;
+      border-radius: 4px;
+      border-left: 3px solid #3b82f6;
     }
     .med-item:last-child {
       margin-bottom: 0;
@@ -539,18 +555,19 @@ const Prescription = () => {
       font-weight: bold;
       font-size: ${medNameSize};
       color: #1e40af;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
     }
     .med-details {
-      margin-left: 15px;
+      margin-left: 18px;
       font-size: ${medDetailsSize};
-      margin-top: 2px;
-      line-height: 1.4;
+      margin-top: 3px;
+      line-height: 1.5;
+      color: #334155;
     }
     .footer {
-      margin-top: 15px;
-      padding-top: 8px;
-      border-top: 1px solid #000;
+      margin-top: 18px;
+      padding-top: 10px;
+      border-top: 2px solid #000;
       display: flex;
       justify-content: flex-end;
       font-size: 9pt;
@@ -669,17 +686,30 @@ const Prescription = () => {
       printContent += `</div></div>`;
     }
 
-    // Medications
+    // Medications - centered on page
     if (pMedications.length > 0) {
-      printContent += `<div class="medications"><div class="section-title" style="font-size: 12pt; margin-bottom: 8px;">PRESCRIPTION</div>`;
+      printContent += `<div class="medications"><div class="section-title">℞ PRESCRIPTION</div>`;
       pMedications.forEach((med, index) => {
         printContent += `<div class="med-item">`;
         printContent += `<div class="med-name">${index + 1}. ${med.name}</div>`;
         printContent += `<div class="med-details">`;
-        printContent += `<div><strong>Dosage:</strong> ${med.dosage} | <strong>Route:</strong> ${med.route}</div>`;
-        printContent += `<div><strong>Frequency:</strong> ${med.frequency}`;
-        if (med.duration) printContent += ` | <strong>Duration:</strong> ${med.duration} ${med.durationUnit}`;
-        printContent += `</div>`;
+        
+        // Only show dosage if it has content
+        const dosageText = med.dosage ? `<strong>Dosage:</strong> ${med.dosage}` : '';
+        const routeText = med.route ? `<strong>Route:</strong> ${med.route}` : '';
+        
+        if (dosageText || routeText) {
+          const separator = dosageText && routeText ? ' | ' : '';
+          printContent += `<div>${dosageText}${separator}${routeText}</div>`;
+        }
+        
+        // Show frequency without label
+        if (med.frequency) {
+          printContent += `<div>${med.frequency}`;
+          if (med.duration) printContent += ` | <strong>Duration:</strong> ${med.duration} ${med.durationUnit}`;
+          printContent += `</div>`;
+        }
+        
         if (med.quantity) printContent += `<div><strong>Quantity:</strong> ${med.quantity}</div>`;
         if (med.instructions) printContent += `<div><strong>Instructions:</strong> ${med.instructions}</div>`;
         printContent += `</div></div>`;
