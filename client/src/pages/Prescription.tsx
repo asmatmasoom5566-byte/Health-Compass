@@ -24,7 +24,13 @@ import {
   Phone,
   MapPin,
   Building2,
-  Edit3
+  Edit3,
+  Activity,
+  Thermometer,
+  Heart,
+  Droplets,
+  Wind,
+  AlertTriangle
 } from "lucide-react";
 
 interface PrescriptionMedication {
@@ -44,8 +50,21 @@ interface PatientInfo {
   age: string;
   sex: string;
   weight: string;
+  phone: string;
+  registerNumber: string;
+  chiefComplaint: string;
+  complaintDuration: string;
+  complaintDurationUnit: string;
+  visitType: string;
   allergies: string;
+  safetyAlerts: string;
   diagnosis: string;
+  bp: string;
+  heartRate: string;
+  temperature: string;
+  respiratoryRate: string;
+  spo2: string;
+  bloodGlucose: string;
 }
 
 interface DoctorProfile {
@@ -91,8 +110,21 @@ const Prescription = () => {
     age: "",
     sex: "",
     weight: "",
+    phone: "",
+    registerNumber: "",
+    chiefComplaint: "",
+    complaintDuration: "",
+    complaintDurationUnit: "Days",
+    visitType: "New",
     allergies: "",
-    diagnosis: ""
+    safetyAlerts: "",
+    diagnosis: "",
+    bp: "",
+    heartRate: "",
+    temperature: "",
+    respiratoryRate: "",
+    spo2: "",
+    bloodGlucose: ""
   });
 
   const [medications, setMedications] = useState<PrescriptionMedication[]>([]);
@@ -211,11 +243,45 @@ const Prescription = () => {
     }
     
     text += `\n${'-'.repeat(50)}\n\n`;
+    
+    // Patient identification
+    text += `PATIENT INFORMATION:\n`;
     text += `Patient Name: ${patientInfo.name}\n`;
+    text += `Register No: ${patientInfo.registerNumber || 'N/A'}\n`;
     text += `Age: ${patientInfo.age} | Sex: ${patientInfo.sex}\n`;
-    text += `Weight: ${patientInfo.weight} kg\n`;
-    text += `Allergies: ${patientInfo.allergies || 'None known'}\n`;
-    text += `Diagnosis: ${patientInfo.diagnosis}\n\n`;
+    text += `Phone: ${patientInfo.phone || 'N/A'}\n`;
+    text += `Visit Type: ${patientInfo.visitType}\n`;
+    text += `Weight: ${patientInfo.weight ? patientInfo.weight + ' kg' : 'N/A'}\n\n`;
+    
+    // Chief complaint
+    if (patientInfo.chiefComplaint) {
+      text += `CHIEF COMPLAINT:\n`;
+      text += `${patientInfo.chiefComplaint}\n`;
+      if (patientInfo.complaintDuration) {
+        text += `Duration: ${patientInfo.complaintDuration} ${patientInfo.complaintDurationUnit}\n`;
+      }
+      text += `\n`;
+    }
+    
+    // Allergies & Safety
+    text += `ALLERGIES & SAFETY:\n`;
+    text += `Drug Allergies: ${patientInfo.allergies || 'None known'}\n`;
+    text += `Safety Alerts: ${patientInfo.safetyAlerts || 'None'}\n\n`;
+    
+    // Vital Signs
+    text += `VITAL SIGNS:\n`;
+    if (patientInfo.bp) text += `BP: ${patientInfo.bp} mmHg\n`;
+    if (patientInfo.heartRate) text += `Heart Rate: ${patientInfo.heartRate} bpm\n`;
+    if (patientInfo.temperature) text += `Temperature: ${patientInfo.temperature}°F\n`;
+    if (patientInfo.respiratoryRate) text += `Respiratory Rate: ${patientInfo.respiratoryRate} /min\n`;
+    if (patientInfo.spo2) text += `SpO2: ${patientInfo.spo2}%\n`;
+    if (patientInfo.bloodGlucose) text += `Blood Glucose: ${patientInfo.bloodGlucose} mg/dL\n`;
+    text += `\n`;
+    
+    if (patientInfo.diagnosis) {
+      text += `DIAGNOSIS: ${patientInfo.diagnosis}\n\n`;
+    }
+    
     text += `PRESCRIPTION:\n`;
     text += `-${'-'.repeat(50)}\n\n`;
 
@@ -466,66 +532,259 @@ const Prescription = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label>Patient Name *</Label>
-                    <Input
-                      value={patientInfo.name}
-                      onChange={(e) => setPatientInfo({...patientInfo, name: e.target.value})}
-                      placeholder="Full name"
-                    />
-                  </div>
-                  <div>
-                    <Label>Age *</Label>
-                    <Input
-                      type="number"
-                      value={patientInfo.age}
-                      onChange={(e) => setPatientInfo({...patientInfo, age: e.target.value})}
-                      placeholder="Years"
-                    />
-                  </div>
-                  <div>
-                    <Label>Sex *</Label>
-                    <Select
-                      value={patientInfo.sex}
-                      onValueChange={(value) => setPatientInfo({...patientInfo, sex: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Male">Male</SelectItem>
-                        <SelectItem value="Female">Female</SelectItem>
-                        <SelectItem value="Other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>Weight (kg)</Label>
-                    <Input
-                      type="number"
-                      value={patientInfo.weight}
-                      onChange={(e) => setPatientInfo({...patientInfo, weight: e.target.value})}
-                      placeholder="kg"
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <Label>Allergies</Label>
-                    <Input
-                      value={patientInfo.allergies}
-                      onChange={(e) => setPatientInfo({...patientInfo, allergies: e.target.value})}
-                      placeholder="Drug allergies (e.g., Penicillin)"
-                    />
-                  </div>
-                  <div className="col-span-3">
-                    <Label>Diagnosis / Clinical Notes</Label>
-                    <Textarea
-                      value={patientInfo.diagnosis}
-                      onChange={(e) => setPatientInfo({...patientInfo, diagnosis: e.target.value})}
-                      placeholder="Primary diagnosis and relevant clinical information"
-                      rows={2}
-                    />
-                  </div>
+                <Tabs defaultValue="identification" className="w-full">
+                  <TabsList className="grid w-full grid-cols-4">
+                    <TabsTrigger value="identification">ID</TabsTrigger>
+                    <TabsTrigger value="complaint">Complaint</TabsTrigger>
+                    <TabsTrigger value="allergy">Allergy</TabsTrigger>
+                    <TabsTrigger value="vitals">Vitals</TabsTrigger>
+                  </TabsList>
+                  
+                  {/* Patient Identification Tab */}
+                  <TabsContent value="identification" className="space-y-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      <div className="col-span-2">
+                        <Label>Patient Name *</Label>
+                        <Input
+                          value={patientInfo.name}
+                          onChange={(e) => setPatientInfo({...patientInfo, name: e.target.value})}
+                          placeholder="Full name"
+                        />
+                      </div>
+                      <div>
+                        <Label>Register Number</Label>
+                        <Input
+                          value={patientInfo.registerNumber}
+                          onChange={(e) => setPatientInfo({...patientInfo, registerNumber: e.target.value})}
+                          placeholder="e.g., PT-2024-001"
+                        />
+                      </div>
+                      <div>
+                        <Label>Age *</Label>
+                        <Input
+                          type="number"
+                          value={patientInfo.age}
+                          onChange={(e) => setPatientInfo({...patientInfo, age: e.target.value})}
+                          placeholder="Years"
+                        />
+                      </div>
+                      <div>
+                        <Label>Sex *</Label>
+                        <Select
+                          value={patientInfo.sex}
+                          onValueChange={(value) => setPatientInfo({...patientInfo, sex: value})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Male">Male</SelectItem>
+                            <SelectItem value="Female">Female</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label>Phone Number</Label>
+                        <Input
+                          type="tel"
+                          value={patientInfo.phone}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/[^\d+\-() ]/g, '');
+                            setPatientInfo({...patientInfo, phone: value});
+                          }}
+                          placeholder="+1234567890"
+                        />
+                      </div>
+                      <div>
+                        <Label>Weight (kg)</Label>
+                        <Input
+                          type="number"
+                          value={patientInfo.weight}
+                          onChange={(e) => setPatientInfo({...patientInfo, weight: e.target.value})}
+                          placeholder="kg"
+                        />
+                      </div>
+                      <div>
+                        <Label>Visit Type *</Label>
+                        <Select
+                          value={patientInfo.visitType}
+                          onValueChange={(value) => setPatientInfo({...patientInfo, visitType: value})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="New">New Visit</SelectItem>
+                            <SelectItem value="Follow-up">Follow-up</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  {/* Chief Complaint Tab */}
+                  <TabsContent value="complaint" className="space-y-4">
+                    <div>
+                      <Label>Chief Complaint *</Label>
+                      <Textarea
+                        value={patientInfo.chiefComplaint}
+                        onChange={(e) => setPatientInfo({...patientInfo, chiefComplaint: e.target.value})}
+                        placeholder="Primary reason for visit (e.g., Fever, headache, chest pain)"
+                        rows={3}
+                      />
+                    </div>
+                    <div>
+                      <Label>Duration of Complaint</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="number"
+                          value={patientInfo.complaintDuration}
+                          onChange={(e) => setPatientInfo({...patientInfo, complaintDuration: e.target.value})}
+                          placeholder="Number"
+                        />
+                        <Select
+                          value={patientInfo.complaintDurationUnit}
+                          onValueChange={(value) => setPatientInfo({...patientInfo, complaintDurationUnit: value})}
+                        >
+                          <SelectTrigger className="w-32">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Days">Days</SelectItem>
+                            <SelectItem value="Weeks">Weeks</SelectItem>
+                            <SelectItem value="Months">Months</SelectItem>
+                            <SelectItem value="Years">Years</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  {/* Allergy & Safety Tab */}
+                  <TabsContent value="allergy" className="space-y-4">
+                    <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-200 dark:border-yellow-800 rounded-lg">
+                      <div className="flex items-center gap-2 mb-3">
+                        <AlertTriangle className="w-5 h-5 text-yellow-600" />
+                        <Label className="text-yellow-800 dark:text-yellow-200 font-semibold">Allergy & Safety Alerts</Label>
+                      </div>
+                      <div className="space-y-3">
+                        <div>
+                          <Label className="text-sm">Known Drug Allergies</Label>
+                          <Textarea
+                            value={patientInfo.allergies}
+                            onChange={(e) => setPatientInfo({...patientInfo, allergies: e.target.value})}
+                            placeholder="e.g., Penicillin, Sulfa drugs, NSAIDs (or 'None known')"
+                            rows={2}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-sm">Safety Alerts/Warnings</Label>
+                          <Textarea
+                            value={patientInfo.safetyAlerts}
+                            onChange={(e) => setPatientInfo({...patientInfo, safetyAlerts: e.target.value})}
+                            placeholder="e.g., Pregnancy, renal impairment, liver disease, bleeding disorders"
+                            rows={2}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  {/* Vital Signs Tab */}
+                  <TabsContent value="vitals" className="space-y-4">
+                    <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-lg">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Activity className="w-5 h-5 text-blue-600" />
+                        <Label className="text-blue-800 dark:text-blue-200 font-semibold">Vital Signs</Label>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        <div>
+                          <Label className="flex items-center gap-1 text-sm">
+                            <Activity className="w-3 h-3" />
+                            BP (mmHg)
+                          </Label>
+                          <Input
+                            value={patientInfo.bp}
+                            onChange={(e) => setPatientInfo({...patientInfo, bp: e.target.value})}
+                            placeholder="120/80"
+                          />
+                        </div>
+                        <div>
+                          <Label className="flex items-center gap-1 text-sm">
+                            <Heart className="w-3 h-3" />
+                            HR (bpm)
+                          </Label>
+                          <Input
+                            type="number"
+                            value={patientInfo.heartRate}
+                            onChange={(e) => setPatientInfo({...patientInfo, heartRate: e.target.value})}
+                            placeholder="72"
+                          />
+                        </div>
+                        <div>
+                          <Label className="flex items-center gap-1 text-sm">
+                            <Thermometer className="w-3 h-3" />
+                            Temp (°F)
+                          </Label>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            value={patientInfo.temperature}
+                            onChange={(e) => setPatientInfo({...patientInfo, temperature: e.target.value})}
+                            placeholder="98.6"
+                          />
+                        </div>
+                        <div>
+                          <Label className="flex items-center gap-1 text-sm">
+                            <Wind className="w-3 h-3" />
+                            RR (/min)
+                          </Label>
+                          <Input
+                            type="number"
+                            value={patientInfo.respiratoryRate}
+                            onChange={(e) => setPatientInfo({...patientInfo, respiratoryRate: e.target.value})}
+                            placeholder="16"
+                          />
+                        </div>
+                        <div>
+                          <Label className="flex items-center gap-1 text-sm">
+                            <Droplets className="w-3 h-3" />
+                            SpO2 (%)
+                          </Label>
+                          <Input
+                            type="number"
+                            value={patientInfo.spo2}
+                            onChange={(e) => setPatientInfo({...patientInfo, spo2: e.target.value})}
+                            placeholder="98"
+                          />
+                        </div>
+                        <div>
+                          <Label className="flex items-center gap-1 text-sm">
+                            <Droplets className="w-3 h-3" />
+                            Blood Glucose (mg/dL)
+                          </Label>
+                          <Input
+                            type="number"
+                            value={patientInfo.bloodGlucose}
+                            onChange={(e) => setPatientInfo({...patientInfo, bloodGlucose: e.target.value})}
+                            placeholder="100"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+                
+                {/* Diagnosis Section - Always visible */}
+                <div className="mt-6 pt-6 border-t">
+                  <Label className="text-lg font-semibold mb-2 block">Diagnosis / Clinical Notes</Label>
+                  <Textarea
+                    value={patientInfo.diagnosis}
+                    onChange={(e) => setPatientInfo({...patientInfo, diagnosis: e.target.value})}
+                    placeholder="Primary diagnosis and relevant clinical information"
+                    rows={3}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -829,6 +1088,14 @@ const Prescription = () => {
                       <p>{new Date().toLocaleDateString()}</p>
                     </div>
                     <div>
+                      <p className="font-semibold">Register No:</p>
+                      <p>{patientInfo.registerNumber || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">Visit Type:</p>
+                      <p>{patientInfo.visitType}</p>
+                    </div>
+                    <div>
                       <p className="font-semibold">Age:</p>
                       <p>{patientInfo.age || '___'}</p>
                     </div>
@@ -837,14 +1104,76 @@ const Prescription = () => {
                       <p>{patientInfo.sex || '_______'}</p>
                     </div>
                     <div>
-                      <p className="font-semibold">Weight:</p>
-                      <p>{patientInfo.weight ? `${patientInfo.weight} kg` : '_______'}</p>
+                      <p className="font-semibold">Phone:</p>
+                      <p>{patientInfo.phone || 'N/A'}</p>
                     </div>
                     <div>
-                      <p className="font-semibold">Allergies:</p>
-                      <p>{patientInfo.allergies || 'None known'}</p>
+                      <p className="font-semibold">Weight:</p>
+                      <p>{patientInfo.weight ? `${patientInfo.weight} kg` : 'N/A'}</p>
                     </div>
                   </div>
+
+                  {patientInfo.chiefComplaint && (
+                    <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                      <p className="font-semibold text-lg mb-2">Chief Complaint:</p>
+                      <p>{patientInfo.chiefComplaint}</p>
+                      {patientInfo.complaintDuration && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          Duration: {patientInfo.complaintDuration} {patientInfo.complaintDurationUnit}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                    <p className="font-semibold mb-2">Allergies & Safety:</p>
+                    <p><span className="text-sm">Drug Allergies:</span> {patientInfo.allergies || 'None known'}</p>
+                    <p><span className="text-sm">Safety Alerts:</span> {patientInfo.safetyAlerts || 'None'}</p>
+                  </div>
+
+                  {(patientInfo.bp || patientInfo.heartRate || patientInfo.temperature || patientInfo.respiratoryRate || patientInfo.spo2 || patientInfo.bloodGlucose) && (
+                    <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+                      <p className="font-semibold text-lg mb-3">Vital Signs:</p>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {patientInfo.bp && (
+                          <div className="bg-white p-2 rounded">
+                            <p className="text-xs text-gray-600">BP</p>
+                            <p className="font-semibold">{patientInfo.bp} mmHg</p>
+                          </div>
+                        )}
+                        {patientInfo.heartRate && (
+                          <div className="bg-white p-2 rounded">
+                            <p className="text-xs text-gray-600">Heart Rate</p>
+                            <p className="font-semibold">{patientInfo.heartRate} bpm</p>
+                          </div>
+                        )}
+                        {patientInfo.temperature && (
+                          <div className="bg-white p-2 rounded">
+                            <p className="text-xs text-gray-600">Temperature</p>
+                            <p className="font-semibold">{patientInfo.temperature}°F</p>
+                          </div>
+                        )}
+                        {patientInfo.respiratoryRate && (
+                          <div className="bg-white p-2 rounded">
+                            <p className="text-xs text-gray-600">Resp. Rate</p>
+                            <p className="font-semibold">{patientInfo.respiratoryRate} /min</p>
+                          </div>
+                        )}
+                        {patientInfo.spo2 && (
+                          <div className="bg-white p-2 rounded">
+                            <p className="text-xs text-gray-600">SpO2</p>
+                            <p className="font-semibold">{patientInfo.spo2}%</p>
+                          </div>
+                        )}
+                        {patientInfo.bloodGlucose && (
+                          <div className="bg-white p-2 rounded">
+                            <p className="text-xs text-gray-600">Blood Glucose</p>
+                            <p className="font-semibold">{patientInfo.bloodGlucose} mg/dL</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   {patientInfo.diagnosis && (
                     <div className="mb-6">
