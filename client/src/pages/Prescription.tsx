@@ -30,7 +30,11 @@ import {
   Heart,
   Droplets,
   Wind,
-  AlertTriangle
+  AlertTriangle,
+  Database,
+  Search,
+  Upload,
+  FolderOpen
 } from "lucide-react";
 
 interface PrescriptionMedication {
@@ -131,7 +135,103 @@ const Prescription = () => {
   const [additionalNotes, setAdditionalNotes] = useState("");
   const [followUpDate, setFollowUpDate] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const [showDatabase, setShowDatabase] = useState(false);
+  const [savedPrescriptions, setSavedPrescriptions] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const prescriptionRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Load saved prescriptions when database is opened
+  useEffect(() => {
+    if (showDatabase) {
+      const prescriptions = JSON.parse(localStorage.getItem('prescriptions') || '[]');
+      setSavedPrescriptions(prescriptions.reverse()); // Show newest first
+    }
+  }, [showDatabase]);
+
+  const searchPrescriptions = (query: string) => {
+    setSearchQuery(query);
+    const prescriptions = JSON.parse(localStorage.getItem('prescriptions') || '[]');
+    if (!query.trim()) {
+      setSavedPrescriptions(prescriptions.reverse());
+      return;
+    }
+    
+    const filtered = prescriptions.filter((rx: any) => {
+      const name = rx.patientInfo?.name?.toLowerCase() || '';
+      const regNum = rx.patientInfo?.registerNumber?.toLowerCase() || '';
+      const searchLower = query.toLowerCase();
+      return name.includes(searchLower) || regNum.includes(searchLower);
+    });
+    
+    setSavedPrescriptions(filtered.reverse());
+  };
+
+  const exportPrescriptions = () => {
+    const prescriptions = JSON.parse(localStorage.getItem('prescriptions') || '[]');
+    const dataStr = JSON.stringify(prescriptions, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `prescriptions-export-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importPrescriptions = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const imported = JSON.parse(e.target?.result as string);
+        if (!Array.isArray(imported)) {
+          alert('Invalid file format. Please import a valid prescriptions JSON file.');
+          return;
+        }
+        
+        const existing = JSON.parse(localStorage.getItem('prescriptions') || '[]');
+        const merged = [...existing, ...imported];
+        localStorage.setItem('prescriptions', JSON.stringify(merged));
+        
+        alert(`Successfully imported ${imported.length} prescription(s)!`);
+        if (showDatabase) {
+          setSavedPrescriptions(merged.reverse());
+        }
+      } catch (error) {
+        alert('Error importing file. Please check the file format.');
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const loadPrescription = (rx: any) => {
+    setPatientInfo(rx.patientInfo);
+    setMedications(rx.medications);
+    setAdditionalNotes(rx.additionalNotes || '');
+    setFollowUpDate(rx.followUpDate || '');
+    if (rx.doctorProfile) {
+      setDoctorProfile(rx.doctorProfile);
+    }
+    setShowDatabase(false);
+    alert('Prescription loaded successfully!');
+  };
+
+  const deletePrescription = (id: string) => {
+    if (!confirm('Are you sure you want to delete this prescription?')) return;
+    
+    const prescriptions = JSON.parse(localStorage.getItem('prescriptions') || '[]');
+    const filtered = prescriptions.filter((rx: any) => rx.id !== id);
+    localStorage.setItem('prescriptions', JSON.stringify(filtered));
+    setSavedPrescriptions(filtered.reverse());
+  };
 
   const frequencies = [
     "Once daily (OD)",
@@ -213,7 +313,262 @@ const Prescription = () => {
   };
 
   const handlePrint = () => {
-    window.print();
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('Please allow popups to print the prescription');
+      return;
+    }
+
+    const printContent = generatePrintHTML();
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    
+    // Wait for content to load then print
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
+  };
+
+  const generatePrintHTML = () => {
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prescription - ${patientInfo.name}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 15mm;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.4;
+      color: #000;
+    }
+    .container {
+      max-width: 100%;
+      padding: 10px;
+    }
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #2563eb;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+    .doctor-name {
+      font-size: 18pt;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+    .doctor-specialty {
+      font-size: 12pt;
+      color: #2563eb;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .doctor-info {
+      font-size: 9pt;
+      color: #4b5563;
+    }
+    .title {
+      text-align: center;
+      font-size: 16pt;
+      font-weight: bold;
+      margin: 10px 0;
+      border-bottom: 2px solid #000;
+      padding-bottom: 4px;
+    }
+    .patient-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 15px;
+      margin-bottom: 8px;
+      font-size: 10pt;
+    }
+    .patient-info div {
+      display: flex;
+    }
+    .label {
+      font-weight: 600;
+      min-width: 100px;
+    }
+    .section {
+      margin: 8px 0;
+      padding: 6px;
+      background: #f9fafb;
+      border-left: 3px solid #2563eb;
+    }
+    .section-title {
+      font-weight: bold;
+      font-size: 11pt;
+      margin-bottom: 4px;
+    }
+    .vitals-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+    .vital-item {
+      background: white;
+      padding: 3px 6px;
+      border-radius: 3px;
+      font-size: 9pt;
+    }
+    .vital-label {
+      font-size: 8pt;
+      color: #6b7280;
+    }
+    .medications {
+      margin: 10px 0;
+    }
+    .med-item {
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .med-item:last-child {
+      border-bottom: none;
+    }
+    .med-name {
+      font-weight: bold;
+      font-size: 11pt;
+    }
+    .med-details {
+      margin-left: 15px;
+      font-size: 9pt;
+      margin-top: 2px;
+    }
+    .footer {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #000;
+      display: flex;
+      justify-content: space-between;
+      font-size: 9pt;
+    }
+    @media print {
+      body {
+        font-size: 10pt;
+      }
+      .no-print {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+`;
+
+    // Add doctor header
+    if (doctorProfile.name || doctorProfile.specialty || doctorProfile.contact || doctorProfile.clinicName) {
+      printContent += `
+    <div class="header">`;
+      if (doctorProfile.name) printContent += `<div class="doctor-name">${doctorProfile.name}</div>`;
+      if (doctorProfile.specialty) printContent += `<div class="doctor-specialty">${doctorProfile.specialty}</div>`;
+      if (doctorProfile.contact || doctorProfile.clinicName || doctorProfile.clinicAddress) {
+        printContent += `<div class="doctor-info">`;
+        if (doctorProfile.contact) printContent += `<div>Contact: ${doctorProfile.contact}</div>`;
+        if (doctorProfile.clinicName) printContent += `<div><strong>${doctorProfile.clinicName}</strong></div>`;
+        if (doctorProfile.clinicAddress) printContent += `<div>${doctorProfile.clinicAddress}</div>`;
+        printContent += `</div>`;
+      }
+      printContent += `</div>`;
+    }
+
+    // Title
+    printContent += `<div class="title">MEDICAL PRESCRIPTION</div>`;
+
+    // Patient info - only show filled fields
+    printContent += `<div class="patient-info">`;
+    if (patientInfo.name) printContent += `<div><span class="label">Patient:</span> ${patientInfo.name}</div>`;
+    if (patientInfo.registerNumber) printContent += `<div><span class="label">Register No:</span> ${patientInfo.registerNumber}</div>`;
+    if (patientInfo.age) printContent += `<div><span class="label">Age/Sex:</span> ${patientInfo.age} / ${patientInfo.sex}</div>`;
+    if (patientInfo.phone) printContent += `<div><span class="label">Phone:</span> ${patientInfo.phone}</div>`;
+    if (patientInfo.visitType) printContent += `<div><span class="label">Visit:</span> ${patientInfo.visitType}</div>`;
+    if (patientInfo.weight) printContent += `<div><span class="label">Weight:</span> ${patientInfo.weight} kg</div>`;
+    if (patientInfo.diagnosis) printContent += `<div style="grid-column: 1 / -1;"><span class="label">Diagnosis:</span> ${patientInfo.diagnosis}</div>`;
+    printContent += `</div>`;
+
+    // Chief complaint
+    if (patientInfo.chiefComplaint) {
+      printContent += `<div class="section"><div class="section-title">Chief Complaint</div><div>${patientInfo.chiefComplaint}`;
+      if (patientInfo.complaintDuration) {
+        printContent += ` <em>(Duration: ${patientInfo.complaintDuration} ${patientInfo.complaintDurationUnit})</em>`;
+      }
+      printContent += `</div></div>`;
+    }
+
+    // Allergies & Safety - always show
+    printContent += `<div class="section" style="border-left-color: #f59e0b; background: #fef3c7;">`;
+    printContent += `<div class="section-title">⚠ Allergies & Safety</div>`;
+    printContent += `<div><strong>Allergies:</strong> ${patientInfo.allergies || 'None known'}</div>`;
+    if (patientInfo.safetyAlerts) printContent += `<div><strong>Safety Alerts:</strong> ${patientInfo.safetyAlerts}</div>`;
+    printContent += `</div>`;
+
+    // Vitals - only if any filled
+    if (patientInfo.bp || patientInfo.heartRate || patientInfo.temperature || patientInfo.respiratoryRate || patientInfo.spo2 || patientInfo.bloodGlucose) {
+      printContent += `<div class="section"><div class="section-title">Vital Signs</div><div class="vitals-grid">`;
+      if (patientInfo.bp) printContent += `<div class="vital-item"><div class="vital-label">BP</div><div>${patientInfo.bp} mmHg</div></div>`;
+      if (patientInfo.heartRate) printContent += `<div class="vital-item"><div class="vital-label">Heart Rate</div><div>${patientInfo.heartRate} bpm</div></div>`;
+      if (patientInfo.temperature) printContent += `<div class="vital-item"><div class="vital-label">Temp</div><div>${patientInfo.temperature}°F</div></div>`;
+      if (patientInfo.respiratoryRate) printContent += `<div class="vital-item"><div class="vital-label">RR</div><div>${patientInfo.respiratoryRate} /min</div></div>`;
+      if (patientInfo.spo2) printContent += `<div class="vital-item"><div class="vital-label">SpO2</div><div>${patientInfo.spo2}%</div></div>`;
+      if (patientInfo.bloodGlucose) printContent += `<div class="vital-item"><div class="vital-label">Glucose</div><div>${patientInfo.bloodGlucose} mg/dL</div></div>`;
+      printContent += `</div></div>`;
+    }
+
+    // Medications
+    if (medications.length > 0) {
+      printContent += `<div class="medications"><div class="section-title" style="font-size: 12pt; margin-bottom: 8px;">PRESCRIPTION</div>`;
+      medications.forEach((med, index) => {
+        printContent += `<div class="med-item">`;
+        printContent += `<div class="med-name">${index + 1}. ${med.name}</div>`;
+        printContent += `<div class="med-details">`;
+        printContent += `<div><strong>Dosage:</strong> ${med.dosage} | <strong>Route:</strong> ${med.route}</div>`;
+        printContent += `<div><strong>Frequency:</strong> ${med.frequency}`;
+        if (med.duration) printContent += ` | <strong>Duration:</strong> ${med.duration} ${med.durationUnit}`;
+        printContent += `</div>`;
+        if (med.quantity) printContent += `<div><strong>Quantity:</strong> ${med.quantity}</div>`;
+        if (med.instructions) printContent += `<div><strong>Instructions:</strong> ${med.instructions}</div>`;
+        printContent += `</div></div>`;
+      });
+      printContent += `</div>`;
+    }
+
+    // Additional notes
+    if (additionalNotes) {
+      printContent += `<div class="section"><div class="section-title">Additional Notes</div><div>${additionalNotes}</div></div>`;
+    }
+
+    // Follow-up
+    if (followUpDate) {
+      printContent += `<div style="margin-top: 8px;"><strong>Follow-up:</strong> ${new Date(followUpDate).toLocaleDateString()}</div>`;
+    }
+
+    // Footer with signature
+    printContent += `
+    <div class="footer">
+      <div>
+        <div style="margin-bottom: 30px;">Signature: _______________________</div>
+        <div>Doctor's Signature</div>
+      </div>
+      <div style="text-align: right;">
+        <div><strong>Date:</strong> ${new Date().toLocaleDateString()}</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+
+    return printContent;
   };
 
   const handleCopyToClipboard = () => {
@@ -313,12 +668,45 @@ const Prescription = () => {
   };
 
   const handleSavePrescription = () => {
+    // Validate required fields
+    if (!patientInfo.name.trim()) {
+      alert('Patient Name is required!');
+      return;
+    }
+    if (!patientInfo.age.trim()) {
+      alert('Patient Age is required!');
+      return;
+    }
+    if (medications.length === 0) {
+      alert('Please add at least one medication!');
+      return;
+    }
+    
+    // Validate required medication fields
+    for (const med of medications) {
+      if (!med.name.trim()) {
+        alert('Medication Name is required for all medications!');
+        return;
+      }
+      if (!med.dosage.trim()) {
+        alert('Dosage is required for all medications!');
+        return;
+      }
+      if (!med.frequency) {
+        alert('Frequency is required for all medications!');
+        return;
+      }
+    }
+
     const prescriptionData = {
+      id: Date.now().toString(),
       patientInfo,
       medications,
       additionalNotes,
       followUpDate,
-      createdAt: new Date().toISOString()
+      doctorProfile,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     const savedPrescriptions = JSON.parse(localStorage.getItem('prescriptions') || '[]');
@@ -544,11 +932,12 @@ const Prescription = () => {
                   <TabsContent value="identification" className="space-y-4">
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                       <div className="col-span-2">
-                        <Label>Patient Name *</Label>
+                        <Label>Patient Name <span className="text-red-500">*</span></Label>
                         <Input
                           value={patientInfo.name}
                           onChange={(e) => setPatientInfo({...patientInfo, name: e.target.value})}
-                          placeholder="Full name"
+                          placeholder="Full name (required)"
+                          className="border-2 border-blue-200"
                         />
                       </div>
                       <div>
@@ -556,16 +945,17 @@ const Prescription = () => {
                         <Input
                           value={patientInfo.registerNumber}
                           onChange={(e) => setPatientInfo({...patientInfo, registerNumber: e.target.value})}
-                          placeholder="e.g., PT-2024-001"
+                          placeholder="e.g., PT-2024-001 (optional)"
                         />
                       </div>
                       <div>
-                        <Label>Age *</Label>
+                        <Label>Age <span className="text-red-500">*</span></Label>
                         <Input
                           type="number"
                           value={patientInfo.age}
                           onChange={(e) => setPatientInfo({...patientInfo, age: e.target.value})}
-                          placeholder="Years"
+                          placeholder="Years (required)"
+                          className="border-2 border-blue-200"
                         />
                       </div>
                       <div>
@@ -831,11 +1221,12 @@ const Prescription = () => {
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div>
-                              <Label>Medication Name *</Label>
+                              <Label>Medication Name <span className="text-red-500">*</span></Label>
                               <Input
                                 value={med.name}
                                 onChange={(e) => updateMedication(med.id, "name", e.target.value)}
-                                placeholder="e.g., Paracetamol 500mg"
+                                placeholder="e.g., Paracetamol 500mg (required)"
+                                className="border-2 border-blue-200"
                               />
                               {/* Quick select common medications */}
                               <div className="mt-2 flex flex-wrap gap-1">
@@ -852,11 +1243,12 @@ const Prescription = () => {
                               </div>
                             </div>
                             <div>
-                              <Label>Dosage *</Label>
+                              <Label>Dosage <span className="text-red-500">*</span></Label>
                               <Input
                                 value={med.dosage}
                                 onChange={(e) => updateMedication(med.id, "dosage", e.target.value)}
-                                placeholder="e.g., 1 tablet, 5ml"
+                                placeholder="e.g., 1 tablet, 5ml (required)"
+                                className="border-2 border-blue-200"
                               />
                             </div>
                             <div>
@@ -876,12 +1268,12 @@ const Prescription = () => {
                               </Select>
                             </div>
                             <div>
-                              <Label>Frequency *</Label>
+                              <Label>Frequency <span className="text-red-500">*</span></Label>
                               <Select
                                 value={med.frequency}
                                 onValueChange={(value) => updateMedication(med.id, "frequency", value)}
                               >
-                                <SelectTrigger>
+                                <SelectTrigger className="border-2 border-blue-200">
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -992,6 +1384,14 @@ const Prescription = () => {
                   <Eye className="w-4 h-4 mr-2" />
                   {showPreview ? 'Hide' : 'Show'} Preview
                 </Button>
+                <Button 
+                  onClick={() => setShowDatabase(!showDatabase)} 
+                  className="w-full"
+                  variant="outline"
+                >
+                  <Database className="w-4 h-4 mr-2" />
+                  Prescription Database
+                </Button>
                 <Button onClick={handleSavePrescription} className="w-full">
                   <Save className="w-4 h-4 mr-2" />
                   Save Prescription
@@ -1035,6 +1435,118 @@ const Prescription = () => {
             </Card>
           </div>
         </div>
+
+        {/* Prescription Database Modal */}
+        {showDatabase && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-slate-800 rounded-lg max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white dark:bg-slate-800 border-b p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <Database className="w-6 h-6" />
+                    Prescription Database
+                  </h2>
+                  <Button onClick={() => setShowDatabase(false)} variant="ghost" size="sm">
+                    Close
+                  </Button>
+                </div>
+                
+                {/* Search and Actions */}
+                <div className="flex gap-3 mb-4">
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Input
+                      value={searchQuery}
+                      onChange={(e) => searchPrescriptions(e.target.value)}
+                      placeholder="Search by patient name or register number..."
+                      className="pl-10"
+                    />
+                  </div>
+                  <Button onClick={exportPrescriptions} variant="outline" size="sm">
+                    <Download className="w-4 h-4 mr-2" />
+                    Export All
+                  </Button>
+                  <Button onClick={() => fileInputRef.current?.click()} variant="outline" size="sm">
+                    <Upload className="w-4 h-4 mr-2" />
+                    Import
+                  </Button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".json"
+                    onChange={importPrescriptions}
+                    className="hidden"
+                  />
+                </div>
+                
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Total: {savedPrescriptions.length} prescription(s)
+                </div>
+              </div>
+              
+              <div className="p-4">
+                {savedPrescriptions.length === 0 ? (
+                  <div className="text-center py-12 text-gray-500">
+                    <Database className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                    <p>No saved prescriptions yet</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {savedPrescriptions.map((rx) => (
+                      <Card key={rx.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="pt-4">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <h3 className="font-bold text-lg">{rx.patientInfo?.name || 'Unknown'}</h3>
+                                <Badge variant="secondary">{rx.patientInfo?.visitType || 'N/A'}</Badge>
+                              </div>
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                <div>
+                                  <span className="font-semibold">Age:</span> {rx.patientInfo?.age || 'N/A'}
+                                </div>
+                                <div>
+                                  <span className="font-semibold">Register:</span> {rx.patientInfo?.registerNumber || 'N/A'}
+                                </div>
+                                <div>
+                                  <span className="font-semibold">Date:</span> {new Date(rx.createdAt).toLocaleDateString()}
+                                </div>
+                                <div>
+                                  <span className="font-semibold">Medications:</span> {rx.medications?.length || 0}
+                                </div>
+                              </div>
+                              {rx.patientInfo?.chiefComplaint && (
+                                <p className="text-sm mt-2 text-gray-700 dark:text-gray-300">
+                                  <span className="font-semibold">Complaint:</span> {rx.patientInfo.chiefComplaint}
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex gap-2 ml-4">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => loadPrescription(rx)}
+                              >
+                                <FolderOpen className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => deletePrescription(rx.id)}
+                              >
+                                <Trash2 className="w-4 h-4 text-red-600" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Preview Modal */}
         {showPreview && (
