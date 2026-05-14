@@ -331,7 +331,7 @@ const Prescription = () => {
   };
 
   const generatePrintHTML = () => {
-    return `
+    let printContent = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -467,20 +467,60 @@ const Prescription = () => {
   <div class="container">
 `;
 
-    // Add doctor header
+    // Add doctor header with 3D-style for print
     if (doctorProfile.name || doctorProfile.specialty || doctorProfile.contact || doctorProfile.clinicName) {
       printContent += `
-    <div class="header">`;
-      if (doctorProfile.name) printContent += `<div class="doctor-name">${doctorProfile.name}</div>`;
-      if (doctorProfile.specialty) printContent += `<div class="doctor-specialty">${doctorProfile.specialty}</div>`;
+    <div class="header" style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #8b5cf6 100%); padding: 20px; border-radius: 12px; margin-bottom: 15px; position: relative; overflow: hidden;">
+      <!-- Background Pattern -->
+      <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+      <div style="position: absolute; bottom: -30px; left: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+      
+      <div style="position: relative; z-index: 1;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 15px;">
+            <!-- Doctor Icon -->
+            <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 3px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+              <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); display: flex; align-items: center; justify-content: center;">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2V4.3A.3.3 0 0 0 4.8 2.3z"/>
+                  <path d="M2 9V6a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v3"/>
+                  <path d="M9 22h6c2.5 0 4-1.5 4-4v-3c0-2.5-1.5-4-4-4H9c-2.5 0-4 1.5-4 4v3c0 2.5 1.5 4 4 4z"/>
+                  <path d="M12 11v3"/>
+                  <path d="M12 17v.01"/>
+                  <circle cx="12" cy="7" r="3"/>
+                </svg>
+              </div>
+            </div>
+            
+            <div>`;
+      
+      if (doctorProfile.name) printContent += `<div style="font-size: 20pt; font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin-bottom: 3px;">${doctorProfile.name}</div>`;
+      if (doctorProfile.specialty) printContent += `<div style="font-size: 13pt; color: rgba(255,255,255,0.95); font-weight: 600;">${doctorProfile.specialty}</div>`;
+      
+      printContent += `</div>
+          </div>
+          
+          <!-- Medical Cross Icon -->
+          <div style="width: 50px; height: 50px; border-radius: 8px; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transform: rotate(12deg);">
+            <div style="width: 38px; height: 38px; border-radius: 6px; background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); display: flex; align-items: center; justify-content: center;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#dc2626">
+                <path d="M9 2h6v6h6v6h-6v6H9v-6H3V8h6V2z"/>
+              </svg>
+            </div>
+          </div>
+        </div>`;
+      
       if (doctorProfile.contact || doctorProfile.clinicName || doctorProfile.clinicAddress) {
-        printContent += `<div class="doctor-info">`;
-        if (doctorProfile.contact) printContent += `<div>Contact: ${doctorProfile.contact}</div>`;
-        if (doctorProfile.clinicName) printContent += `<div><strong>${doctorProfile.clinicName}</strong></div>`;
-        if (doctorProfile.clinicAddress) printContent += `<div>${doctorProfile.clinicAddress}</div>`;
+        printContent += `<div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.3); display: flex; flex-wrap: wrap; gap: 12px; font-size: 9pt; color: rgba(255,255,255,0.95);">`;
+        if (doctorProfile.contact) printContent += `<div>📞 ${doctorProfile.contact}</div>`;
+        if (doctorProfile.clinicName) printContent += `<div style="font-weight: 600;">🏥 ${doctorProfile.clinicName}</div>`;
+        if (doctorProfile.clinicAddress) printContent += `<div>📍 ${doctorProfile.clinicAddress}</div>`;
         printContent += `</div>`;
       }
-      printContent += `</div>`;
+      
+      printContent += `
+      </div>
+    </div>`;
     }
 
     // Title
@@ -1560,27 +1600,106 @@ const Prescription = () => {
               </div>
               <div ref={prescriptionRef} className="p-6">
                 <div className="bg-white p-8 border-2 border-gray-300">
-                  {/* Doctor/Clinic Header */}
-                  <div className="text-center mb-6 border-b-2 border-blue-600 pb-4">
-                    {doctorProfile.name && (
-                      <h1 className="text-3xl font-bold text-gray-900 mb-1">
-                        {doctorProfile.name}
-                      </h1>
-                    )}
-                    {doctorProfile.specialty && (
-                      <p className="text-lg text-blue-600 font-semibold mb-2">
-                        {doctorProfile.specialty}
-                      </p>
-                    )}
-                    <div className="space-y-1 text-sm text-gray-600">
-                      {doctorProfile.contact && (
-                        <p>Contact: {doctorProfile.contact}</p>
-                      )}
-                      {doctorProfile.clinicName && (
-                        <p className="font-semibold text-gray-900">{doctorProfile.clinicName}</p>
-                      )}
-                      {doctorProfile.clinicAddress && (
-                        <p>{doctorProfile.clinicAddress}</p>
+                  {/* 3D Doctor Header Design */}
+                  <div className="relative mb-6 rounded-xl overflow-hidden">
+                    {/* Gradient Background */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600"></div>
+                    
+                    {/* 3D Pattern Overlay */}
+                    <div className="absolute inset-0 opacity-10">
+                      <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
+                      <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full translate-x-20 translate-y-20"></div>
+                      <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-white rounded-full"></div>
+                    </div>
+                    
+                    {/* 3D Shadow Effect */}
+                    <div className="absolute inset-0 shadow-2xl"></div>
+                    
+                    {/* Content */}
+                    <div className="relative z-10 p-6">
+                      <div className="flex items-center justify-between">
+                        {/* Left Side - 3D Doctor Icon */}
+                        <div className="flex items-center gap-4">
+                          <div className="relative">
+                            {/* 3D Circular Badge */}
+                            <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm border-4 border-white/30 shadow-lg flex items-center justify-center transform hover:scale-105 transition-transform">
+                              {/* Inner 3D Circle */}
+                              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-white to-gray-100 shadow-inner flex items-center justify-center">
+                                {/* Doctor SVG Icon */}
+                                <svg className="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2V4.3A.3.3 0 0 0 4.8 2.3z"/>
+                                  <path d="M2 9V6a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v3"/>
+                                  <path d="M9 22h6c2.5 0 4-1.5 4-4v-3c0-2.5-1.5-4-4-4H9c-2.5 0-4 1.5-4 4v3c0 2.5 1.5 4 4 4z"/>
+                                  <path d="M12 11v3"/>
+                                  <path d="M12 17v.01"/>
+                                  <circle cx="12" cy="7" r="3"/>
+                                </svg>
+                              </div>
+                            </div>
+                            {/* 3D Shadow beneath */}
+                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 h-3 bg-blue-900/20 rounded-full blur-sm"></div>
+                          </div>
+                          
+                          <div>
+                            {/* Doctor Name with 3D Text Effect */}
+                            {doctorProfile.name && (
+                              <h1 className="text-3xl font-bold text-white drop-shadow-lg mb-1" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.3)'}}>
+                                {doctorProfile.name}
+                              </h1>
+                            )}
+                            {doctorProfile.specialty && (
+                              <p className="text-lg text-white/95 font-semibold" style={{textShadow: '1px 1px 2px rgba(0,0,0,0.3)'}}>
+                                {doctorProfile.specialty}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* Right Side - 3D Medical Cross */}
+                        <div className="relative">
+                          <div className="w-16 h-16 rounded-lg bg-white/20 backdrop-blur-sm border-2 border-white/30 shadow-lg flex items-center justify-center transform rotate-12 hover:rotate-0 transition-transform">
+                            <div className="w-12 h-12 rounded-md bg-gradient-to-br from-white to-gray-100 shadow-inner flex items-center justify-center">
+                              <svg className="w-8 h-8 text-red-600" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 2h6v6h6v6h-6v6H9v-6H3V8h6V2z"/>
+                              </svg>
+                            </div>
+                          </div>
+                          {/* 3D Shadow */}
+                          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-3 bg-blue-900/20 rounded-full blur-sm"></div>
+                        </div>
+                      </div>
+                      
+                      {/* Contact Info Bar */}
+                      {(doctorProfile.contact || doctorProfile.clinicName || doctorProfile.clinicAddress) && (
+                        <div className="mt-4 pt-4 border-t border-white/20">
+                          <div className="flex flex-wrap gap-4 text-sm text-white/95">
+                            {doctorProfile.contact && (
+                              <div className="flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                </svg>
+                                <span>{doctorProfile.contact}</span>
+                              </div>
+                            )}
+                            {doctorProfile.clinicName && (
+                              <div className="flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                                <span className="font-semibold">{doctorProfile.clinicName}</span>
+                              </div>
+                            )}
+                            {doctorProfile.clinicAddress && (
+                              <div className="flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                <span>{doctorProfile.clinicAddress}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>
